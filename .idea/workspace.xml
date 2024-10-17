@@ -1,11 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="firstCommit">
+      <change afterPath="$PROJECT_DIR$/lib/core/status/error/Failure.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/status/success/success.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/fonts/IBMPlexSansArabic-Bold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/fonts/IBMPlexSansArabic-ExtraLight.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/fonts/IBMPlexSansArabic-Light.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/fonts/IBMPlexSansArabic-Medium.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/fonts/IBMPlexSansArabic-Regular.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/fonts/IBMPlexSansArabic-SemiBold.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/fonts/IBMPlexSansArabic-Thin.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/images/Pflag.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/images/dealing.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/domain/usecases/getSuggestionUseCase.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/global/alers.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/global/commonBorder.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/global/constants.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/global/screenSize.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/global/setOfMethods.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/global/trnaslateErrorMessage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/global/validator.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/Widgets/itemInBottomNavigationBar.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/Widgets/leadingAppBar.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/Widgets/progressIndicator.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/authBinding.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/homePageBinding.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/introductionPageBinding.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/orderHistoryPageBinding.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/profilePageBinding.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/settingPageBinding.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/smsVerificationBinding.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/authPageController.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/homePageController.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/introductionPageController.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/orderHistoryPageController.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/profilePageController.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/settingPageController.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/smsVerificationController.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/authPages/authPage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/authPages/introductionPage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/authPages/smsVerificationPage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/orderHistoryPage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/profilePage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/settingPage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/states/noInternetConnection.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/states/waiting.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/routes/initialPage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/themes/FontFamily.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/themes/colors.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/themes/theme.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/dartpad/web_plugin_registrant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/dartpad/web_plugin_registrant.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config_subset" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config_subset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Flutter/Debug.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/Debug.xcconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Flutter/Release.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/Release.xcconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Runner/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Runner/Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/linux/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/macos/Flutter/Flutter-Debug.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/macos/Flutter/Flutter-Debug.xcconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/macos/Flutter/Flutter-Release.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/macos/Flutter/Flutter-Release.xcconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +88,13 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -27,7 +108,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/mohand23213/herafi.git&quot;,
-    &quot;accountId&quot;: &quot;d3e1dc65-3a28-4b4d-9dd1-93ea5e861b13&quot;
+    &quot;accountId&quot;: &quot;03790309-ad0c-4382-9319-325dd6e5dc8f&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -41,6 +122,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
@@ -48,11 +130,26 @@
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/a1/StudioProjects/herafi/lib/presentation&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.google.gct.login2.settings.GoogleLoginApplicationSettingsConfigurableProvider&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib/presentation" />
+      <recent name="$PROJECT_DIR$/lib/presentation/pages" />
+      <recent name="$PROJECT_DIR$/lib" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib/presentation/pages/states" />
+      <recent name="$PROJECT_DIR$/lib/presentation/pages/authPages" />
+      <recent name="$PROJECT_DIR$/lib/core/utils/images" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
@@ -68,6 +165,19 @@
       <option name="presentableId" value="Default" />
       <updated>1727016305558</updated>
     </task>
+    <task id="LOCAL-00001" summary="firstCommit">
+      <option name="closed" value="true" />
+      <created>1727017862373</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1727017862373</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="firstCommit" />
+    <option name="LAST_COMMIT_MESSAGE" value="firstCommit" />
   </component>
 </project>
