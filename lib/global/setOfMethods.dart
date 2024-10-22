@@ -7,8 +7,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
 class globalMethods{
-  Future<String?> selectPhoto(BuildContext context,double width,double height) async {
+  Future<String?> selectPhoto(
+      {required BuildContext context, double? width, double? height}) async {
     return showModalBottomSheet(
+      backgroundColor: Theme.of(context).primaryColor,
       context: context,
       builder: (BuildContext context) {
         return Column(
@@ -18,7 +20,7 @@ class globalMethods{
               trailing: Icon(Icons.filter),
               title: Text('حمل صوره من معرض الصور'),
               onTap: ()async{
-                String? x=await _pickImage(ImageSource.gallery,width,height);
+                String? x=await _pickImage(source:ImageSource.gallery,width: width,height: height);
                 Navigator.of(context).pop(x);
               },
             ),
@@ -26,7 +28,7 @@ class globalMethods{
               trailing: Icon(Icons.camera),
               title: Text('استخدك الكاميرا'),
               onTap: ()async{
-                String? x= await _pickImage(ImageSource.camera,width,height);
+                String? x= await _pickImage(source:ImageSource.camera,width: width,height: height);
                 Navigator.of(context).pop(x);
               },
             ),
@@ -36,11 +38,11 @@ class globalMethods{
     );
   }
 
-  Future _pickImage(ImageSource source,double width,double height) async {
+  Future _pickImage({required ImageSource source, double? width, double? height}) async {
     ImagePicker _imagePicker = ImagePicker();
     final pickedFile = await _imagePicker.pickImage(source: source,maxHeight: height,maxWidth: width);
     if (pickedFile == null) return;
-    var file = await ImageCropper().cropImage(sourcePath: pickedFile.path, aspectRatio: CropAspectRatio(ratioX: width, ratioY: height));
+    var file =await ImageCropper().cropImage(sourcePath: pickedFile.path, aspectRatio:(width==null || height ==null) ?null: CropAspectRatio(ratioX: width, ratioY: height));
     if (file == null) return;
     if(file.path.contains('.jpg') || file.path.contains('.jpeg')){
       return  (await compressImage(file.path, 35))?.path;

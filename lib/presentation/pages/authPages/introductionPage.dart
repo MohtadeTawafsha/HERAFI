@@ -4,14 +4,10 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:herafi/global/constants.dart';
 import 'package:herafi/presentation/controllers/AuthController/introductionPageController.dart';
 
-import '../../../global/setOfMethods.dart';
-
 class introductionPage extends StatelessWidget {
   const introductionPage({super.key});
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 1)).then((v)=>
-        globalMethods().selectPhoto(context, 1000, 1000));
     final introductionPageController controller=Get.find();
     return SafeArea(
       child: Scaffold(

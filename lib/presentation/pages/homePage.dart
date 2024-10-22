@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'package:herafi/presentation/routes/app_routes.dart';
 import '../Widgets/itemInBottomNavigationBar.dart';
 
 class homePage extends StatelessWidget {
@@ -15,12 +13,16 @@ class homePage extends StatelessWidget {
     return Scaffold(
       key: controller.scaffoldKey,
       bottomNavigationBar: bottomNavigationBar(controller),
-      body: Stack(
-        children: [
-          Center(
-            child: Text('الصفحة الرئيسية'),
-          )
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(height: 10,),
+            header(controller),
+            Center(
+              child: Text('الصفحة الرئيسية'),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -38,8 +40,7 @@ class homePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             itemInBottomNavigationBar(
-              icon:
-                Icons.home_outlined,
+              icon: Icons.home_outlined,
               index: 0,
             ),
             itemInBottomNavigationBar(
@@ -47,9 +48,9 @@ class homePage extends StatelessWidget {
               index: 1,
             ),
             itemInBottomNavigationBar(
-                icon: Icons.manage_search,
-                index: 2,
-                ),
+              icon: Icons.manage_search,
+              index: 2,
+            ),
             itemInBottomNavigationBar(
               icon: Icons.task,
               index: 3,
@@ -62,5 +63,44 @@ class homePage extends StatelessWidget {
         ),
       );
     });
+  }
+
+  Widget header(homePageController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Theme(
+          data: ThemeData(),
+          child: TextButton(
+            onPressed: (){
+              controller.toChats();
+            },
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Icon(
+                  Icons.message_outlined,
+                  size: 25,
+                  color: Colors.white,
+                ),
+                Container(
+                  padding: EdgeInsets.all(2),
+                  decoration: BoxDecoration(color: Colors.red,shape: BoxShape.circle),
+                  child: Obx(
+                    () {
+                      return Text(
+                                      controller.chats.fold<int>(0, (sum,combine){return sum+combine.missedMessagesCountByMe;}).toString(),
+                                      style: Theme.of(Get.context!).textTheme!.bodySmall!,
+                                    );
+                    }
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        SizedBox(width: 10,),
+      ],
+    );
   }
 }

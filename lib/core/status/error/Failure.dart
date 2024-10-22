@@ -1,37 +1,39 @@
 abstract class Failure{
   final String message;
-  const Failure(this.message);
+  Failure(this.message){
+    print("Error Happen: "+message);
+  }
 }
 
 class ServerFailure extends Failure{
-  const ServerFailure(String message):super(message);
+   ServerFailure(String message):super(message);
 }
 class ConnectionFailure extends Failure{
-  const ConnectionFailure(String message):super(message);
+   ConnectionFailure(String message):super(message);
 }
 class DatabaseFailure extends Failure{
-  const DatabaseFailure(String message):super(message);
+   DatabaseFailure(String message):super(message);
 }
 class signInFaliure extends Failure{
-  const signInFaliure(String message):super(message);
+   signInFaliure(String message):super(message);
 }
 class NoLocaleStoredLocally extends Failure{
-  const NoLocaleStoredLocally(String message):super(message);
+   NoLocaleStoredLocally(String message):super(message);
 }
 class SignOutFailure extends Failure{
-  const SignOutFailure(String message):super(message);
+   SignOutFailure(String message):super(message);
 }
 class deleteAccountFailure extends Failure{
-  const deleteAccountFailure(String message):super(message);
+   deleteAccountFailure(String message):super(message);
 }
 class incompatibleProblems extends Failure{
-  const incompatibleProblems(String message):super(message);
+   incompatibleProblems(String message):super(message);
 
 }
 class emailSentFailure extends Failure{
-  const emailSentFailure(String message):super(message);
+   emailSentFailure(String message):super(message);
 
 }
 class notificationFailure extends Failure{
-  const notificationFailure(String message):super(message);
+   notificationFailure(String message):super(message);
 }

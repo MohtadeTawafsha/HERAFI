@@ -1,17 +1,21 @@
 import 'package:get/get.dart';
+import 'package:herafi/presentation/bindings/chatsBinding/chatPageBinding.dart';
 import 'package:herafi/presentation/bindings/orderHistoryPageBinding.dart';
 import 'package:herafi/presentation/bindings/profilePageBinding.dart';
 import 'package:herafi/presentation/bindings/settingPageBinding.dart';
 import 'package:herafi/presentation/bindings/smsVerificationBinding.dart';
 import 'package:herafi/presentation/pages/authPages/authPage.dart';
 import 'package:herafi/presentation/pages/orderHistoryPage.dart';
+import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
 import 'package:herafi/presentation/pages/settingPage.dart';
 
 import '../bindings/authBinding.dart';
+import '../bindings/chatsBinding/chatsBinding.dart';
 import '../bindings/homePageBinding.dart';
 import '../bindings/introductionPageBinding.dart';
 import '../pages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
+import '../pages/orderProcessPage/chatPage.dart';
 import '../pages/states/noInternetConnection.dart';
 import '../pages/profilePage.dart';
 import '../pages/authPages/smsVerificationPage.dart';
@@ -29,6 +33,8 @@ class AppRoutes {
   static const String noInternetConnection='/noInternetConnection';
   static const String selectPointOnMap = '/selectPointOnMap';
   static const String waitingPage = '/waitingPage';
+  static const String chatpage = '/chatPage';
+  static const String chatspage = '/chatsPage';
 
 
   static List<GetPage> pages = [
@@ -75,5 +81,16 @@ class AppRoutes {
       name: waitingPage,
       page: () => WaitingPage(),
     ),
+
+    GetPage(
+      name: chatpage,
+      page: () => chatPage(),
+      binding: chatPageBinding()
+    ),GetPage(
+        name: chatspage,
+        page: () => chatsPage(),
+        binding: chatsPageBinding()
+    ),
+
   ];
 }

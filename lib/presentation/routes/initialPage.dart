@@ -6,18 +6,19 @@ import 'package:get/get_core/src/get_main.dart';
 import 'app_routes.dart';
 
 class initialPage{
+  static bool? isLogIn;
   void handleInitialPage(snapshot){
-    print(snapshot);
-    print('snapshot');
     final User? user=snapshot[0];
     final ConnectivityResult connectivity=snapshot[1][0];
     if(!connectivity.name.contains('none')){
       if(user!=null){
-        if(!(Get.currentRoute.startsWith('/home'))){
+        if(isLogIn!=true){
+          isLogIn=true;
           Get.offAllNamed(AppRoutes.home);
         }
       }
-      else {
+      else{
+        isLogIn=false;
         Get.offAllNamed(AppRoutes.introduction);
       }
     }
