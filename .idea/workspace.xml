@@ -10,42 +10,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="firstCommit">
-      <change afterPath="$PROJECT_DIR$/lib/data/models/chatModel.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/data/models/userModel.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/data/remotDataSource/chatsRemotDataSource.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/data/repositroies/ChatRepositoryImpl.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/entites/Message.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/entites/chat.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/entites/user.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/repositories/ChatRepository.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/usecases/chatUseCases/GetMessagesUseCase.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/usecases/chatUseCases/SendMessageUseCase.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/usecases/chatUseCases/fetchUserChats.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/domain/usecases/chatUseCases/getStreamMessagesUseCase.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding/chatPageBinding.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding/chatsBinding.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/orderPageControllers/chatPageController.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/orderPageControllers/chatsPageController.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/chatPage.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/chatsPage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/dartpad/web_plugin_registrant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/dartpad/web_plugin_registrant.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/images/robot-setting.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding/chatbot_binding.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/ChatbotController.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/Chatbot.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.dart_tool/package_config_subset" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config_subset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/core/status/error/Failure.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/status/error/Failure.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/global/setOfMethods.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/global/setOfMethods.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/bindings/homePageBinding.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/bindings/homePageBinding.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/homePageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/homePageController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/authPages/introductionPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/authPages/introductionPage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/routes/initialPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/routes/initialPage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,6 +68,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;ScreenRecorder.SavePath&quot;: &quot;/Users/a1/Desktop&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
@@ -111,11 +88,11 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib/core/utils/images" />
       <recent name="$PROJECT_DIR$/lib/data/repositroies" />
       <recent name="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding" />
       <recent name="$PROJECT_DIR$/lib/presentation/pages/states" />
       <recent name="$PROJECT_DIR$/lib/presentation/pages/authPages" />
-      <recent name="$PROJECT_DIR$/lib/core/utils/images" />
     </key>
   </component>
   <component name="RunManager">
@@ -149,7 +126,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729165199853</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="firstCommit">
+      <option name="closed" value="true" />
+      <created>1729596344185</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1729596344185</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

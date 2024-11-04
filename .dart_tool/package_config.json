@@ -80,6 +80,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "chat_gpt_sdk",
+      "rootUri": "file:///Users/a1/.pub-cache/hosted/pub.dev/chat_gpt_sdk-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "clock",
       "rootUri": "file:///Users/a1/.pub-cache/hosted/pub.dev/clock-1.1.1",
       "packageUri": "lib/",
@@ -150,6 +156,18 @@
       "rootUri": "file:///Users/a1/.pub-cache/hosted/pub.dev/dbus-0.7.10",
       "packageUri": "lib/",
       "languageVersion": "2.17"
+    },
+    {
+      "name": "dio",
+      "rootUri": "file:///Users/a1/.pub-cache/hosted/pub.dev/dio-5.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "dio_web_adapter",
+      "rootUri": "file:///Users/a1/.pub-cache/hosted/pub.dev/dio_web_adapter-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "fake_async",
@@ -890,7 +908,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-10-22T10:52:25.008681Z",
+  "generated": "2024-10-29T14:32:56.694197Z",
   "generator": "pub",
   "generatorVersion": "3.5.3",
   "flutterRoot": "file:///Users/a1/development/flutter",

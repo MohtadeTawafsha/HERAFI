@@ -16,7 +16,9 @@ class homePage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             header(controller),
             Center(
               child: Text('الصفحة الرئيسية'),
@@ -72,7 +74,7 @@ class homePage extends StatelessWidget {
         Theme(
           data: ThemeData(),
           child: TextButton(
-            onPressed: (){
+            onPressed: () {
               controller.toChats();
             },
             child: Stack(
@@ -85,21 +87,42 @@ class homePage extends StatelessWidget {
                 ),
                 Container(
                   padding: EdgeInsets.all(2),
-                  decoration: BoxDecoration(color: Colors.red,shape: BoxShape.circle),
-                  child: Obx(
-                    () {
-                      return Text(
-                                      controller.chats.fold<int>(0, (sum,combine){return sum+combine.missedMessagesCountByMe;}).toString(),
-                                      style: Theme.of(Get.context!).textTheme!.bodySmall!,
-                                    );
-                    }
-                  ),
+                  decoration:
+                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                  child: Obx(() {
+                    return Text(
+                      controller.chats.fold<int>(0, (sum, combine) {
+                        return sum + combine.missedMessagesCountByMe;
+                      }).toString(),
+                      style: Theme.of(Get.context!).textTheme!.bodySmall!,
+                    );
+                  }),
                 )
               ],
             ),
           ),
         ),
-        SizedBox(width: 10,),
+        SizedBox(
+          width: 10,
+        ),
+        Theme(
+          data: ThemeData(),
+          child: IconButton(
+            onPressed: () {
+              controller.toChatBot();
+            },
+            icon: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                CircleAvatar(
+                  child: Image.asset('lib/core/utils/images/robot-setting.png'),
+                  radius: 25,
+                  backgroundColor: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

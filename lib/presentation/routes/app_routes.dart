@@ -10,11 +10,13 @@ import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
 import 'package:herafi/presentation/pages/settingPage.dart';
 
 import '../bindings/authBinding.dart';
+import '../bindings/chatsBinding/chatbot_binding.dart';
 import '../bindings/chatsBinding/chatsBinding.dart';
 import '../bindings/homePageBinding.dart';
 import '../bindings/introductionPageBinding.dart';
 import '../pages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
+import '../pages/orderProcessPage/Chatbot.dart';
 import '../pages/orderProcessPage/chatPage.dart';
 import '../pages/states/noInternetConnection.dart';
 import '../pages/profilePage.dart';
@@ -35,6 +37,7 @@ class AppRoutes {
   static const String waitingPage = '/waitingPage';
   static const String chatpage = '/chatPage';
   static const String chatspage = '/chatsPage';
+  static const String chatbot = '/chatbot';
 
 
   static List<GetPage> pages = [
@@ -90,6 +93,11 @@ class AppRoutes {
         name: chatspage,
         page: () => chatsPage(),
         binding: chatsPageBinding()
+    ),
+    GetPage(
+      name: chatbot,
+      page: () => ChatbotPage(),
+      binding: ChatbotBinding(),
     ),
 
   ];

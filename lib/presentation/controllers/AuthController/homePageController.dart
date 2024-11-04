@@ -61,6 +61,9 @@ class homePageController extends GetxController {
   void toChats() {
     Get.toNamed(AppRoutes.chatspage);
   }
+  void toChatBot() {
+    Get.toNamed(AppRoutes.chatbot);
+  }
   void fetchChats() async {
     Either<Failure, List<chatEntity>> chats =
         await fetchChatsUseCase(userId: FirebaseAuth.instance.currentUser!.uid);
