@@ -1,17 +1,33 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:herafi/presentation/Widgets/progressIndicator.dart';
+import '../../Widgets/leadingAppBar.dart';
 import '../../controllers/ChatbotController.dart';
 
 class ChatbotPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Access the controller through Get
     final ChatbotController _controller = Get.find<ChatbotController>();
+
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الدردشة'),
-        centerTitle: true,
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: AssetImage(
+                'lib/core/utils/images/robot-setting.png',
+              ),
+              backgroundColor: Theme.of(context).focusColor,
+            ),
+            SizedBox(width: 15,),
+            Text('مساعد الحرفيين')
+          ],
+        ),
+        leading: leadingAppBar(),
+        actions: [IconButton(onPressed: (){}, icon: Icon(Icons.explore,color: Theme.of(context).focusColor,))],
+
       ),
       body: Column(
         children: [
@@ -19,8 +35,14 @@ class ChatbotPage extends StatelessWidget {
           Expanded(
             child: Obx(() {
               return ListView.builder(
-                itemCount: _controller.chatMessages.length,
+                itemCount: _controller.chatMessages.length+1,
                 itemBuilder: (context, index) {
+                  if(index==_controller.chatMessages.length){
+                    if(_controller.isLoading.value){
+                      return ListTile(trailing: SizedBox(width:50,height:50,child: progressIndicator()),);
+                    }
+                    return Container();
+                  }
                   final message = _controller.chatMessages[index];
                   bool isUser=message.role.name.compareTo("user")==0;
                   return ListTile(

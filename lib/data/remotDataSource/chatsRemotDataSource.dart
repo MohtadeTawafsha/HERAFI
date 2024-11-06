@@ -17,10 +17,12 @@ class chatsRemotDataSource{
     return await firestore.collection('chats').where("users",arrayContains: userId).get();
   }
 
+  void _x()async{
+    return await supabaseClient.from('users').insert({'name':'moa','id':FirebaseAuth.instance.currentUser!.uid});
+  }
   Future<List<Map<String, dynamic>>> fetchUsersViaArrayOfIds(List<String> ids)async{
     return await supabaseClient.from('users').select().inFilter('id', ids);
   }
-
   Future  fetchMessages(chatEntity chat)async{
     final QuerySnapshot result;
     if(document==null)
@@ -63,13 +65,15 @@ class chatsRemotDataSource{
 
   Future sendMessage(Message message)async{
     if(message.resource!=null){
-        final result=await FirebaseStorage.instance.ref().child('messageChannel').child('images/${FirebaseAuth.instance.currentUser?.uid}/${DateTime.now()}');
-        await result.putFile(File(message.resource!),SettableMetadata(contentType: "image/jpeg"));
-        String url=await result.getDownloadURL();
-        message.resource=url;
+      message.resource=await uplaodImage(message.resource!,'messageChannel');
     }
-    print(message.resource);
     await firestore.collection('chats').doc('chatId').collection('messages').add(message.toJson());
   }
 
+  Future<String> uplaodImage(String resource,String channel)async{
+    final result=await FirebaseStorage.instance.ref().child(channel).child('images/${FirebaseAuth.instance.currentUser?.uid}/${DateTime.now()}');
+    await result.putFile(File(resource),SettableMetadata(contentType: "image/jpeg"));
+    String url=await result.getDownloadURL();
+    return url;
+  }
 }

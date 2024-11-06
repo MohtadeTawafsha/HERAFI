@@ -7,7 +7,6 @@ class ChatbotController extends GetxController {
   final TextEditingController textController=TextEditingController();
   // Initialize OpenAI instance
   late OpenAI openAI;
-  late final AssistantModel model;
   // Observables for managing loading state and messages
   var isLoading = false.obs;
   var chatMessages = <Messages>[].obs;
@@ -22,23 +21,23 @@ class ChatbotController extends GetxController {
         connectTimeout: const Duration(seconds: 20),
       ),
       enableLog: true,
-
     );
   }
   Future<void> sendMessage(String message) async {
-    isLoading.value = true;
     update();
+    isLoading.value=true;
     try {
       final request = ChatCompleteText(
         messages: [Messages(role: Role.assistant, content: message).toJson()],
         maxToken: 200,
-        model: ChatModelFromValue(model: model.model),
+        model: ChatModelFromValue(model: 'gpt-4o'),
       );
+
+      chatMessages.add(Messages(role: Role.user, content: message));
       ChatCTResponse? response = await openAI.onChatCompletion(request: request);
 
       if (response != null && response.choices.isNotEmpty) {
         // Update chat messages with user message and bot response
-        chatMessages.add(Messages(role: Role.user, content: message));
         chatMessages.add(Messages(role: Role.assistant, content: response.choices.first.message!.content));
       } else {
         Get.snackbar('خطأ', 'لم يتم استرداد الرد من الدردشة');
@@ -47,8 +46,9 @@ class ChatbotController extends GetxController {
       print(e.toString());
       Get.snackbar('خطأ', 'حدث خطأ أثناء الاتصال بالدردشة: $e');
     } finally {
-      isLoading.value = false;
       update();
     }
+
+    isLoading.value=false;
   }
 }

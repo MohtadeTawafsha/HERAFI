@@ -4,8 +4,6 @@ import 'package:herafi/presentation/controllers/orderPageControllers/chatsPageCo
 class chatsPageBinding extends Bindings {
   @override
   void dependencies() {
-
-
     Get.lazyPut(()=>chatsPageController(HomePageController: Get.find()));
   }
 }

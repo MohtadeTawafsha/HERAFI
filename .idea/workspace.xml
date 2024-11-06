@@ -10,18 +10,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="firstCommit">
-      <change afterPath="$PROJECT_DIR$/lib/core/utils/images/robot-setting.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding/chatbot_binding.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/ChatbotController.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/Chatbot.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config_subset" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config_subset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/homePageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/homePageController.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/data/remotDataSource/chatsRemotDataSource.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/data/remotDataSource/chatsRemotDataSource.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/data/repositroies/ChatRepositoryImpl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/data/repositroies/ChatRepositoryImpl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding/chatbot_binding.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding/chatbot_binding.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding/chatsBinding.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding/chatsBinding.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/ChatbotController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/ChatbotController.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/Chatbot.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/Chatbot.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +46,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/mohand23213/herafi.git&quot;,
-    &quot;accountId&quot;: &quot;03790309-ad0c-4382-9319-325dd6e5dc8f&quot;
+    &quot;accountId&quot;: &quot;e4bf3dab-4f83-4001-bcf9-180751e55e14&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -76,7 +72,7 @@
     &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/a1/StudioProjects/herafi/lib/presentation&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.google.gct.login2.settings.GoogleLoginApplicationSettingsConfigurableProvider&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>
@@ -134,7 +130,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729596344185</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="firstCommit">
+      <option name="closed" value="true" />
+      <created>1730713868737</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1730713868738</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

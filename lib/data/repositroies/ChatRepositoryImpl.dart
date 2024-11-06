@@ -70,9 +70,6 @@ class ChatRepositoryImpl implements ChatRepository {
     try{
       final QuerySnapshot<Map<String, dynamic>> x=await remoteDataSource.fetchChats(userId: userId);
 
-
-
-      print(x.docs);
       if(x.docs.isEmpty)return Right([]);
       /// get user ids
       List<String> userIdForFetching=[];
@@ -82,8 +79,7 @@ class ChatRepositoryImpl implements ChatRepository {
         userIdForFetching.add(users.first);
       });
       
-      ///retrieve user chats
-      
+
       final List<Map<String, dynamic>> users=await remoteDataSource.fetchUsersViaArrayOfIds(userIdForFetching);
       final List<chatEntity> chats=[];
       
@@ -91,7 +87,6 @@ class ChatRepositoryImpl implements ChatRepository {
         Map userData=_getFreindUser(users,doc.data()['users'],userId);
         print({...doc.data(),...userData});
         chats.add(chatModel.fromJson({...doc.data(),...userData,"documentId":doc.id}));
-        
       });
       
       return Right(chats);
