@@ -18,10 +18,13 @@ import '../pages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
 import '../pages/orderProcessPage/Chatbot.dart';
 import '../pages/orderProcessPage/chatPage.dart';
+import '../pages/register_craftsman.dart';
+import '../pages/register_customer.dart';
 import '../pages/states/noInternetConnection.dart';
 import '../pages/profilePage.dart';
 import '../pages/authPages/smsVerificationPage.dart';
 import '../pages/states/waiting.dart';
+
 
 class AppRoutes {
   static const String home = '/';
@@ -38,7 +41,8 @@ class AppRoutes {
   static const String chatpage = '/chatPage';
   static const String chatspage = '/chatsPage';
   static const String chatbot = '/chatbot';
-
+  static const String registerCustomer = '/RegisterCustomer';
+  static const String registerCraftsman = '/RegisterCraftsman';
 
   static List<GetPage> pages = [
     GetPage(
@@ -99,6 +103,13 @@ class AppRoutes {
       page: () => ChatbotPage(),
       binding: ChatbotBinding(),
     ),
-
+    GetPage(
+      name: registerCustomer,
+      page: () => RegisterCustomer(),
+    ),
+    GetPage(
+      name: registerCraftsman,
+      page: () => RegisterCraftsman(),
+    ),
   ];
 }
