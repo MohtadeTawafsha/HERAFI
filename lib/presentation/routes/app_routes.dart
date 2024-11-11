@@ -20,6 +20,7 @@ import '../pages/orderProcessPage/Chatbot.dart';
 import '../pages/orderProcessPage/chatPage.dart';
 import '../pages/register_craftsman.dart';
 import '../pages/register_customer.dart';
+import '../pages/register_role.dart';
 import '../pages/states/noInternetConnection.dart';
 import '../pages/profilePage.dart';
 import '../pages/authPages/smsVerificationPage.dart';
@@ -43,6 +44,8 @@ class AppRoutes {
   static const String chatbot = '/chatbot';
   static const String registerCustomer = '/RegisterCustomer';
   static const String registerCraftsman = '/RegisterCraftsman';
+  static const String registerRole = '/RegisterRole'; // Added route for RegisterRole
+
 
   static List<GetPage> pages = [
     GetPage(
@@ -110,6 +113,10 @@ class AppRoutes {
     GetPage(
       name: registerCraftsman,
       page: () => RegisterCraftsman(),
+    ),
+    GetPage(
+      name: registerRole,
+      page: () => RegisterRole(),
     ),
   ];
 }
