@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class trnaslateErrorMessage {
   static String handleFirebaseAuthException(errorCode) {
-    print(errorCode);
     final errorMessages = {
       'invalid-email': {
         'en': 'The email address you entered is invalid.',

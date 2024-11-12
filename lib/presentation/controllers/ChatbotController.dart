@@ -10,6 +10,9 @@ class ChatbotController extends GetxController {
   // Observables for managing loading state and messages
   var isLoading = false.obs;
   var chatMessages = <Messages>[].obs;
+  String? threadId;
+  final String assistantId='asst_p6PPNuKhw74ifZTv4kuJoFeH';
+  final double borderRadius=15;
 
   @override
   void onInit() {
@@ -22,33 +25,62 @@ class ChatbotController extends GetxController {
       ),
       enableLog: true,
     );
+    createThread();
   }
-  Future<void> sendMessage(String message) async {
-    update();
-    isLoading.value=true;
+
+  Future createThread()async{
+    final thread = await openAI.threads.createThread();
+    threadId=thread.id;
+  }
+  void createPrompt(String prompt) async {
     try {
-      final request = ChatCompleteText(
-        messages: [Messages(role: Role.assistant, content: message).toJson()],
-        maxToken: 200,
-        model: ChatModelFromValue(model: 'gpt-4o'),
+      this.chatMessages.add(Messages(role: Role.user,content: prompt));
+      isLoading.value=true;
+
+      if(threadId==null){
+        await createThread();
+      }
+      await openAI.threads.v2.messages.createMessage(
+        threadId: threadId!,
+        request: CreateMessage(
+          role: "user",
+          content: prompt,
+        ),
+      );
+      await openAI.threads.runs.createRun(
+        threadId: threadId!,
+        request: CreateRun(
+          assistantId: assistantId,
+        ),
       );
 
-      chatMessages.add(Messages(role: Role.user, content: message));
-      ChatCTResponse? response = await openAI.onChatCompletion(request: request);
 
-      if (response != null && response.choices.isNotEmpty) {
-        // Update chat messages with user message and bot response
-        chatMessages.add(Messages(role: Role.assistant, content: response.choices.first.message!.content));
+      late MessageDataResponse messages;
+      double time=0;
+      
+
+
+      while(true){
+        if(time>10){
+          Get.snackbar("خطأ","لقد حدث خطأ الرجاء المحاولة مرة اخرى لاحقا");
+          return;
+        }
+        await Future.delayed(Duration(milliseconds: 500)); // Wait for a few seconds
+        messages = await openAI.threads.v2.messages.listMessage(threadId: threadId!);
+        if(messages.data.length!=this.chatMessages.length && messages.data.first.content.length!=0){
+          break;
+        };
+        time+=0.5;
+      }
+
+      if (messages.data.isNotEmpty) {
+          this.chatMessages.add(Messages(role: Role.assistant,content: messages.data.first.content.first.text.value));
+          isLoading.value=false;
       } else {
-        Get.snackbar('خطأ', 'لم يتم استرداد الرد من الدردشة');
       }
     } catch (e) {
-      print(e.toString());
-      Get.snackbar('خطأ', 'حدث خطأ أثناء الاتصال بالدردشة: $e');
-    } finally {
-      update();
+      Get.snackbar("خطأ","لقد حدث خطأ الرجاء المحاولة مرة اخرى");
     }
-
-    isLoading.value=false;
   }
+
 }
