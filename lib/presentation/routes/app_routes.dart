@@ -5,6 +5,7 @@ import 'package:herafi/presentation/bindings/profilePageBinding.dart';
 import 'package:herafi/presentation/bindings/settingPageBinding.dart';
 import 'package:herafi/presentation/bindings/smsVerificationBinding.dart';
 import 'package:herafi/presentation/pages/authPages/PravicyPolicy.dart';
+import 'package:herafi/presentation/pages/authPages/RegisterCustomer.dart';
 import 'package:herafi/presentation/pages/authPages/authPage.dart';
 import 'package:herafi/presentation/pages/orderHistoryPage.dart';
 import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
@@ -15,10 +16,17 @@ import '../bindings/chatsBinding/chatbot_binding.dart';
 import '../bindings/chatsBinding/chatsBinding.dart';
 import '../bindings/homePageBinding.dart';
 import '../bindings/introductionPageBinding.dart';
+import '../pages/DiplomaScreen.dart';
+import '../pages/account_screen.dart';
+import '../pages/authPages/RegisterCraftsman.dart';
+import '../pages/authPages/accountType.dart';
+import '../pages/availability_screen.dart';
+import '../pages/edit_profile_screen.dart';
 import '../pages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
 import '../pages/orderProcessPage/Chatbot.dart';
 import '../pages/orderProcessPage/chatPage.dart';
+import '../pages/portfolio_screen.dart';
 import '../pages/states/noInternetConnection.dart';
 import '../pages/profilePage.dart';
 import '../pages/authPages/smsVerificationPage.dart';
@@ -40,7 +48,16 @@ class AppRoutes {
   static const String chatspage = '/chatsPage';
   static const String chatbot = '/chatbot';
   static const String privacyPolicy = '/privacyPolicy';
-
+  static const String registerRole = '/RegisterRole';
+  static const String accountScreen = '/AccountScreen';
+  static const String availabilityScreen = '/AvailabilityScreen';
+  static const String diplomaScreen = '/DiplomaScreen';
+  static const String editProfileScreen = '/EditProfileScreen';
+  static const String portfolioScreen = '/PortfolioScreen';
+  static const String ProfilePage = '/profilePage';
+  static const String registerCustomer = '/RegisterCustomer';
+  static const String registerCraftsman = '/RegisterCraftsman';
+  static const String accountType = '/accountType';
 
   static List<GetPage> pages = [
     GetPage(
@@ -105,6 +122,37 @@ class AppRoutes {
     GetPage(
       name: privacyPolicy,
       page: () => PrivacyPolicy(),
+    ),
+    GetPage(
+      name: accountScreen,
+      page: () => AccountScreen(),
+    ),GetPage(
+      name: diplomaScreen,
+      page: () => DiplomaScreen(),
+    ),GetPage(
+      name: editProfileScreen,
+      page: () => EditProfileScreen(),
+    ),GetPage(
+      name: portfolioScreen,
+      page: () => PortfolioScreen(),
+    ),GetPage(
+      name: ProfilePage,
+      page: () => profilePage(),
+    ),GetPage(
+      name: availabilityScreen,
+      page: () => AvailabilityScreen(),
+    ),
+    GetPage(
+      name: accountType,
+      page: () => AccountType(),
+    ),
+    GetPage(
+      name: registerCraftsman,
+      page: () => RegisterCraftsman(),
+    ),
+    GetPage(
+      name: registerCustomer,
+      page: () => RegisterCustomer(),
     ),
 
   ];

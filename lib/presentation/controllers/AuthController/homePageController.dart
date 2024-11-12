@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:herafi/domain/entites/chat.dart';
+import 'package:herafi/domain/entites/user.dart';
 import 'package:herafi/domain/usecases/chatUseCases/fetchUserChats.dart';
 import 'package:herafi/presentation/routes/app_routes.dart';
 
@@ -13,7 +14,7 @@ class homePageController extends GetxController {
   final fetchUserChatsUseCase fetchChatsUseCase;
 
   homePageController({required this.fetchChatsUseCase});
-
+  UserEntity? userEntity;
   Rx<int> index = 0.obs;
   List list = [];
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -24,6 +25,7 @@ class homePageController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     fetchChats();
+    fetchUserData();
   }
 
   void orderherafi() {
@@ -63,6 +65,9 @@ class homePageController extends GetxController {
   }
   void toChatBot() {
     Get.toNamed(AppRoutes.chatbot);
+  }
+  void fetchUserData() {
+    Future.delayed(Duration(seconds: 1)).then((onValue)=>Get.toNamed(AppRoutes.accountType));
   }
   void fetchChats() async {
     Either<Failure, List<chatEntity>> chats =

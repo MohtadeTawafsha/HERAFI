@@ -79,7 +79,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> getData() async {
     try {
       final data = await supabase.from('craftsman').select().limit(1).single();
-
       setState(() {
         userId = data['id'];
         nameController.text = data['Name'] ?? '';

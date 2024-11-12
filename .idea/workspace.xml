@@ -9,9 +9,20 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="Second Commit">
-      <change afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="commit">
+      <change afterPath="$PROJECT_DIR$/lib/presentation/Widgets/CustomButton.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/authPages/RegisterCraftsman.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/authPages/RegisterCustomer.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/authPages/accountType.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/homePageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/homePageController.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/profilePageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/profilePageController.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/account_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/account_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/edit_profile_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/edit_profile_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/profilePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/profilePage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +40,6 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -38,12 +48,12 @@
     &quot;assignee&quot;: &quot;mohand23213&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/mohand23213/herafi.git&quot;,
-    &quot;accountId&quot;: &quot;3d1b7cae-f8e1-433e-b03f-9d8d3096240e&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/mohand23213/herafi.git",
+    "accountId": "e4bf3dab-4f83-4001-bcf9-180751e55e14"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -53,29 +63,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;ScreenRecorder.SavePath&quot;: &quot;/Users/a1/Desktop&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/flutter_application_1&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
-  },
-  &quot;keyToStringList&quot;: {
-    &quot;ChangesTree.GroupingKeys&quot;: [
-      &quot;module&quot;
-    ]
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Flutter.main.dart.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "ScreenRecorder.SavePath": "/Users/a1/Desktop",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main",
+    "io.flutter.reload.alreadyRun": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/flutter_application_1",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater",
+    "show.migrate.to.gradle.popup": "false"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/lib/presentation" />
@@ -85,10 +90,10 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\12002\StudioProjects\herafi\lib\presentation\pages" />
-      <recent name="C:\Users\12002\StudioProjects\herafi\lib\presentation\pages\states" />
       <recent name="$PROJECT_DIR$/lib/core/utils/images" />
       <recent name="$PROJECT_DIR$/lib/data/repositroies" />
       <recent name="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding" />
+      <recent name="$PROJECT_DIR$/lib/presentation/pages/states" />
     </key>
   </component>
   <component name="RunManager">
@@ -170,47 +175,7 @@
       <option name="project" value="LOCAL" />
       <updated>1731318367879</updated>
     </task>
-    <task id="LOCAL-00009" summary="Second Commit">
-      <option name="closed" value="true" />
-      <created>1731323782085</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1731323782085</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Second Commit">
-      <option name="closed" value="true" />
-      <created>1731416428189</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1731416428189</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Second Commit">
-      <option name="closed" value="true" />
-      <created>1731417517155</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1731417517155</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Second Commit">
-      <option name="closed" value="true" />
-      <created>1731417640226</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1731417640226</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Second Commit">
-      <option name="closed" value="true" />
-      <created>1731417817709</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1731417817709</updated>
-    </task>
-    <option name="localTasksCounter" value="14" />
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class profilePageController extends GetxController{
@@ -11,6 +12,6 @@ class profilePageController extends GetxController{
 
   }
   void logout(){
-
+    FirebaseAuth.instance.signOut();
   }
 }

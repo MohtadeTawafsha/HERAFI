@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
+import 'package:herafi/presentation/pages/account_screen.dart';
 import '../Widgets/itemInBottomNavigationBar.dart';
 
 class homePage extends StatelessWidget {
@@ -12,22 +13,34 @@ class homePage extends StatelessWidget {
     return Scaffold(
       key: controller.scaffoldKey,
       bottomNavigationBar: bottomNavigationBar(controller),
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            header(controller),
-            Center(
-              child: Text('الصفحة الرئيسية'),
-            )
-          ],
-        ),
-      ),
+      body: Expanded(
+        child: Obx(() {
+          return getSelectedPage(controller);
+        }),
+      )
     );
   }
 
+  Widget getSelectedPage(homePageController controller) {
+    switch (controller.index.value) {
+      case 4:
+        return AccountScreen();
+      default:
+        return HomePage(controller);
+    }
+  }
+  Widget HomePage(homePageController controller){
+    return SafeArea(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 10,
+          ),
+          header(controller),
+        ],
+      ),
+    );
+  }
   Widget bottomNavigationBar(homePageController controller) {
     return Builder(builder: (context) {
       return Container(

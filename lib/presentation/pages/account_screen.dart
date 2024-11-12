@@ -14,6 +14,7 @@ class AccountScreen extends StatelessWidget {
         title: Text("Account"),
       ),
       body: ListView(
+        shrinkWrap: true,
         children: [
           ListTile(
             leading: Icon(Icons.person),

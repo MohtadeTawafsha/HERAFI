@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
 import 'package:herafi/presentation/controllers/AuthController/profilePageController.dart';
 import 'package:herafi/presentation/themes/colors.dart';
 
