@@ -4,6 +4,7 @@ import 'package:herafi/presentation/bindings/orderHistoryPageBinding.dart';
 import 'package:herafi/presentation/bindings/profilePageBinding.dart';
 import 'package:herafi/presentation/bindings/settingPageBinding.dart';
 import 'package:herafi/presentation/bindings/smsVerificationBinding.dart';
+import 'package:herafi/presentation/pages/authPages/PravicyPolicy.dart';
 import 'package:herafi/presentation/pages/authPages/authPage.dart';
 import 'package:herafi/presentation/pages/orderHistoryPage.dart';
 import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
@@ -18,14 +19,10 @@ import '../pages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
 import '../pages/orderProcessPage/Chatbot.dart';
 import '../pages/orderProcessPage/chatPage.dart';
-import '../pages/register_craftsman.dart';
-import '../pages/register_customer.dart';
-import '../pages/register_role.dart';
 import '../pages/states/noInternetConnection.dart';
 import '../pages/profilePage.dart';
 import '../pages/authPages/smsVerificationPage.dart';
 import '../pages/states/waiting.dart';
-
 
 class AppRoutes {
   static const String home = '/';
@@ -42,9 +39,7 @@ class AppRoutes {
   static const String chatpage = '/chatPage';
   static const String chatspage = '/chatsPage';
   static const String chatbot = '/chatbot';
-  static const String registerCustomer = '/RegisterCustomer';
-  static const String registerCraftsman = '/RegisterCraftsman';
-  static const String registerRole = '/RegisterRole'; // Added route for RegisterRole
+  static const String privacyPolicy = '/privacyPolicy';
 
 
   static List<GetPage> pages = [
@@ -106,17 +101,11 @@ class AppRoutes {
       page: () => ChatbotPage(),
       binding: ChatbotBinding(),
     ),
+
     GetPage(
-      name: registerCustomer,
-      page: () => RegisterCustomer(),
+      name: privacyPolicy,
+      page: () => PrivacyPolicy(),
     ),
-    GetPage(
-      name: registerCraftsman,
-      page: () => RegisterCraftsman(),
-    ),
-    GetPage(
-      name: registerRole,
-      page: () => RegisterRole(),
-    ),
+
   ];
 }

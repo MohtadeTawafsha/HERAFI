@@ -19,7 +19,6 @@ class ChatRepositoryImpl implements ChatRepository {
       await remoteDataSource.sendMessage(message);
       return Right(null);
     } catch (e) {
-      print(e.toString());
       return Left(DatabaseFailure('Failed to send message'));
     }
   }
@@ -49,7 +48,6 @@ class ChatRepositoryImpl implements ChatRepository {
 
       Stream<List<Message>> messages = querySnapshot.map((snapshot) {
         return snapshot.docs.map((doc) {
-          print(doc.data());
             return Message(
               senderId: doc['senderId'],
               text: doc['text'],
@@ -85,7 +83,6 @@ class ChatRepositoryImpl implements ChatRepository {
       
       x.docs.forEach((doc){
         Map userData=_getFreindUser(users,doc.data()['users'],userId);
-        print({...doc.data(),...userData});
         chats.add(chatModel.fromJson({...doc.data(),...userData,"documentId":doc.id}));
       });
       

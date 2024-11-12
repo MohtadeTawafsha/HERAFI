@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:herafi/global/commonBorder.dart';
 import 'package:herafi/presentation/controllers/AuthController/authPageController.dart';
+import 'package:herafi/presentation/routes/app_routes.dart';
 import 'package:herafi/presentation/themes/colors.dart';
 
 class authPage extends StatelessWidget {
@@ -26,13 +28,19 @@ class authPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('التسجيل',style: Theme.of(context).textTheme.headlineLarge,),
+                  Text(
+                    'التسجيل',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
                 ],
               ),
               SizedBox(
                 height: 30,
               ),
-              Text('ادخل رقم هاتفك للبدء',style: Theme.of(context).textTheme.bodyLarge,),
+              Text(
+                'ادخل رقم هاتفك للبدء',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
               SizedBox(
                 height: 5,
               ),
@@ -48,31 +56,35 @@ class authPage extends StatelessWidget {
                       style: Theme.of(context).textTheme!.bodyMedium,
                       controller: controller.textFiledController,
                       decoration: InputDecoration(
-                        prefix: Text('رقم الهاتف: ',style: Theme.of(context).textTheme!.bodyMedium,),
+                        prefix: Text(
+                          'رقم الهاتف: ',
+                          style: Theme.of(context).textTheme!.bodyMedium,
+                        ),
                         label: Text('+970'),
                         hintText: "5XXXXXXXX",
-
                       ),
                     ),
-                  ))
+                  )
+                  )
                 ],
               ),
               ...[
                 Row(
                   children: [
-                    Checkbox(
-                        value: true,
-                        onChanged: (value) {
-                          print(value);
-                        }),
+                    Checkbox(value: true, onChanged: (value) {}),
                     RichText(
                         text: TextSpan(children: [
                       TextSpan(text: "اوافق على "),
-                      TextSpan(text: "الشروط والاحكام")
+                      TextSpan(
+                          text: "الشروط والاحكام",
+                          style: TextStyle(color: Theme.of(context).focusColor),
+                          recognizer: TapGestureRecognizer()..onTap = ()=>Get.toNamed(AppRoutes.privacyPolicy)),
                     ]))
                   ],
                 ),
-                SizedBox(height: Get.height*0.23,),
+                SizedBox(
+                  height: Get.height * 0.23,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

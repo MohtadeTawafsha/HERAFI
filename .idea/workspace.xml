@@ -9,10 +9,31 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="Second Commit">
+    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="firstCommit">
+      <change afterPath="$PROJECT_DIR$/lib/core/utils/animations/chatBotAnalyzing.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/Widgets/showImage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/authPages/PravicyPolicy.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config_subset" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config_subset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dart_tool/version" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/version" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/data/repositroies/ChatRepositoryImpl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/data/repositroies/ChatRepositoryImpl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/domain/usecases/getSuggestionUseCase.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/domain/usecases/getSuggestionUseCase.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/global/trnaslateErrorMessage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/global/trnaslateErrorMessage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/authPageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/authPageController.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/smsVerificationController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/smsVerificationController.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/ChatbotController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/ChatbotController.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/orderPageControllers/chatPageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/orderPageControllers/chatPageController.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/authPages/authPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/authPages/authPage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/widget_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/Chatbot.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/Chatbot.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/chatPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/chatPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/chatsPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/orderProcessPage/chatsPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/routes/initialPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/routes/initialPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +62,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/mohand23213/herafi.git&quot;,
-    &quot;accountId&quot;: &quot;3d1b7cae-f8e1-433e-b03f-9d8d3096240e&quot;
+    &quot;accountId&quot;: &quot;e4bf3dab-4f83-4001-bcf9-180751e55e14&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -66,8 +87,8 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/flutter_application_1&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/a1/StudioProjects/herafi/lib/presentation&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;dart.settings&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>
@@ -79,11 +100,11 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\12002\StudioProjects\herafi\lib\presentation\pages" />
       <recent name="$PROJECT_DIR$/lib/core/utils/images" />
       <recent name="$PROJECT_DIR$/lib/data/repositroies" />
       <recent name="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding" />
       <recent name="$PROJECT_DIR$/lib/presentation/pages/states" />
+      <recent name="$PROJECT_DIR$/lib/presentation/pages/authPages" />
     </key>
   </component>
   <component name="RunManager">
@@ -143,45 +164,17 @@
     </task>
     <task id="LOCAL-00006" summary="firstCommit">
       <option name="closed" value="true" />
-      <created>1731236809740</created>
+      <created>1730928360674</created>
       <option name="number" value="00006" />
       <option name="presentableId" value="LOCAL-00006" />
       <option name="project" value="LOCAL" />
-      <updated>1731236809740</updated>
+      <updated>1730928360674</updated>
     </task>
-    <task id="LOCAL-00007" summary="Second Commit">
-      <option name="closed" value="true" />
-      <created>1731317987819</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1731317987819</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Second Commit">
-      <option name="closed" value="true" />
-      <created>1731318367879</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1731318367879</updated>
-    </task>
-    <option name="localTasksCounter" value="9" />
+    <option name="localTasksCounter" value="7" />
     <servers />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="firstCommit" />
-    <MESSAGE value="Second Commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Second Commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="firstCommit" />
   </component>
 </project>

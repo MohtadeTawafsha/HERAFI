@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:herafi/global/constants.dart';
-import 'package:herafi/presentation/pages/register_role.dart';
 import 'package:herafi/presentation/routes/app_routes.dart';
 import 'package:herafi/presentation/routes/initialPage.dart';
 import 'package:herafi/presentation/themes/theme.dart';
@@ -28,10 +27,19 @@ void main()async{
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    handleStatus();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    handleStatus();
     return ScreenUtilInit(
         designSize: const Size(414, 896),
         minTextAdapt: true,
