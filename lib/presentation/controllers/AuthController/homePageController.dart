@@ -67,7 +67,7 @@ class homePageController extends GetxController {
     Get.toNamed(AppRoutes.chatbot);
   }
   void fetchUserData() {
-    Future.delayed(Duration(seconds: 1)).then((onValue)=>Get.toNamed(AppRoutes.accountType));
+    Future.delayed(Duration(seconds: 1)).then((onValue)=>Get.offAllNamed(AppRoutes.accountType));
   }
   void fetchChats() async {
     Either<Failure, List<chatEntity>> chats =
