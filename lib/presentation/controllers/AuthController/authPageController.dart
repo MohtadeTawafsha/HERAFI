@@ -40,11 +40,12 @@ class authPageController extends GetxController{
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: '+970'+textFiledController.text,
         verificationCompleted: (PhoneAuthCredential credential) {},
-        verificationFailed: (FirebaseAuthException e) {
+        verificationFailed: (FirebaseAuthException e){
+          print('failed');
           alerts().showErrorSnackBar(Get.context!, "لقد حدثة مشكلة ما تأكد من الرقم وحاول مرة اخرى");
-          Get.back();
         },
         codeSent: (String verificationId, int? resendToken) {
+          print('done');
           Get.back();
           Get.toNamed(AppRoutes.smsVerification,arguments: {"verificationId":verificationId,"phoneNumber":phoneNumber});
         },
@@ -54,7 +55,6 @@ class authPageController extends GetxController{
 
     }
     catch(e){
-      print(e.toString());
     }
 
   }

@@ -1,7 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:herafi/presentation/Widgets/progressIndicator.dart';
+import 'package:lottie/lottie.dart';
 import '../../Widgets/leadingAppBar.dart';
 import '../../controllers/ChatbotController.dart';
 
@@ -10,12 +9,12 @@ class ChatbotPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ChatbotController _controller = Get.find<ChatbotController>();
 
-
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
             CircleAvatar(
+              radius: 18,
               backgroundImage: AssetImage(
                 'lib/core/utils/images/robot-setting.png',
               ),
@@ -26,7 +25,6 @@ class ChatbotPage extends StatelessWidget {
           ],
         ),
         leading: leadingAppBar(),
-        actions: [IconButton(onPressed: (){}, icon: Icon(Icons.explore,color: Theme.of(context).focusColor,))],
 
       ),
       body: Column(
@@ -39,7 +37,7 @@ class ChatbotPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   if(index==_controller.chatMessages.length){
                     if(_controller.isLoading.value){
-                      return ListTile(trailing: SizedBox(width:50,height:50,child: progressIndicator()),);
+                      return ListTile(trailing: lottieAnimation());
                     }
                     return Container();
                   }
@@ -56,7 +54,7 @@ class ChatbotPage extends StatelessWidget {
                           color: isUser
                               ? Colors.blueAccent
                               : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius:BorderRadius.only(topLeft: Radius.circular(_controller.borderRadius),topRight: Radius.circular(_controller.borderRadius),bottomRight: Radius.circular(isUser?0:_controller.borderRadius),bottomLeft: Radius.circular(isUser?_controller.borderRadius:0)),
                         ),
                         child: Column(
                           children: [
@@ -98,7 +96,7 @@ class ChatbotPage extends StatelessWidget {
                   onPressed: () {
                     final text = _controller.textController.text;
                     if (text.isNotEmpty) {
-                      _controller.sendMessage(text);
+                      _controller.createPrompt(text);
                       _controller.textController.clear();
                     }
                   },
@@ -109,5 +107,8 @@ class ChatbotPage extends StatelessWidget {
         ],
       ),
     );
+  }
+  Widget lottieAnimation(){
+    return Container(child: Lottie.asset('lib/core/utils/animations/chatBotAnalyzing.json'),width: 100,height: 50,decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: Theme.of(Get.context!).focusColor));
   }
 }

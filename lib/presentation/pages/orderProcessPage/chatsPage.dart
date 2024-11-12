@@ -25,8 +25,19 @@ class chatsPage extends StatelessWidget {
                 'الرسائل',
                 style: Theme.of(context).textTheme!.bodyLarge,
               ),
-              TextField(
-                controller: controller.searchController,
+              Container(
+                margin: EdgeInsets.all(15),
+                decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2)),
+                child: TextField(
+                  style:Theme.of(context).textTheme!.bodyMedium,
+                  decoration: InputDecoration(
+                    hintText: 'بحث...',
+                    hintStyle: Theme.of(context).textTheme!.bodyMedium,
+                    prefixIcon: Icon(Icons.search,color: Colors.white.withOpacity(0.8),size: 40,),
+
+                  ),
+                  controller: controller.searchController,
+                ),
               ),
               ValueListenableBuilder(
                 valueListenable: controller.searchController,

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:herafi/main.dart';
 import '../../../global/alers.dart';
 import '../../Widgets/progressIndicator.dart';
 class smsVerificationController extends GetxController{
@@ -36,6 +37,7 @@ class smsVerificationController extends GetxController{
         },
         codeSent: (String verificationId, int? resendToken) {
           verificationId=verificationId;
+          timer.value=60;
         },
         codeAutoRetrievalTimeout: (String verificationId) {
         },
@@ -43,7 +45,6 @@ class smsVerificationController extends GetxController{
 
     }
     catch(e){
-      print(e.toString());
     }
 
   }
@@ -65,7 +66,6 @@ class smsVerificationController extends GetxController{
   }
   void onChange(String value,int index,BuildContext context){
     if (value.isNotEmpty) {
-      print('ad');
       FocusScope.of(context).nextFocus();
     } else {
       FocusScope.of(context).previousFocus();

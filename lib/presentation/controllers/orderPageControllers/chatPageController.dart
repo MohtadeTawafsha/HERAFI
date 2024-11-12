@@ -10,6 +10,7 @@ import '../../../domain/usecases/chatUseCases/GetMessagesUseCase.dart';
 import '../../../domain/usecases/chatUseCases/SendMessageUseCase.dart';
 import '../../../domain/usecases/chatUseCases/getStreamMessagesUseCase.dart';
 import '../../../global/setOfMethods.dart';
+import '../../Widgets/showImage.dart';
 
 class chatPageController extends GetxController{
   final SendMessageUseCase sendMessageUseCase;
@@ -122,5 +123,8 @@ class chatPageController extends GetxController{
       ],
       actionsAlignment: MainAxisAlignment.center,
     ));
+  }
+  void handleImageTap(String imageSource){
+    Get.to(imageViewWithInteractiveView(title: 'صورة', image: imageSource,));
   }
 }
