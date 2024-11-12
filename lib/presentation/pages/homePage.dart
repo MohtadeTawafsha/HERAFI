@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
-import 'package:herafi/presentation/routes/app_routes.dart';
 import '../Widgets/itemInBottomNavigationBar.dart';
 
 class homePage extends StatelessWidget {
@@ -35,42 +33,32 @@ class homePage extends StatelessWidget {
       return Container(
         height: 70.spMin,
         decoration: BoxDecoration(
-          color: Theme.of(context).focusColor,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15.spMin),
-            topRight: Radius.circular(15.spMin),
-          ),
-        ),
+            color: Theme.of(context).focusColor,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.spMin),
+                topRight: Radius.circular(15.spMin))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             itemInBottomNavigationBar(
               icon: Icons.home_outlined,
               index: 0,
-              onPressed: () {}, // Placeholder for other tabs
             ),
             itemInBottomNavigationBar(
               icon: Icons.shopping_cart_outlined,
               index: 1,
-              onPressed: () {},
             ),
             itemInBottomNavigationBar(
               icon: Icons.manage_search,
               index: 2,
-              onPressed: () {},
             ),
             itemInBottomNavigationBar(
               icon: Icons.task,
               index: 3,
-              onPressed: () {},
             ),
             itemInBottomNavigationBar(
               icon: Icons.person,
               index: 4,
-              onPressed: () {
-                // Navigate to RegisterRole page when index 4 is clicked
-                Get.toNamed(AppRoutes.registerRole);
-              },
             ),
           ],
         ),
@@ -91,9 +79,8 @@ class homePage extends StatelessWidget {
             child: Stack(
               alignment: Alignment.topRight,
               children: [
-                const Icon(
+                Icon(
                   Icons.message_outlined,
-                  size: 25,
                   color: Colors.white,
                 ),
                 Container(
@@ -113,7 +100,7 @@ class homePage extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(
+        SizedBox(
           width: 10,
         ),
         Theme(
@@ -127,7 +114,6 @@ class homePage extends StatelessWidget {
               children: [
                 CircleAvatar(
                   child: Image.asset('lib/core/utils/images/robot-setting.png'),
-                  radius: 25,
                   backgroundColor: Colors.white,
                 ),
               ],
