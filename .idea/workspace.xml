@@ -9,7 +9,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="Second Commit" />
+    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="Second Commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/routes/app_routes.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,10 +80,10 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\12002\StudioProjects\herafi\lib\presentation\pages" />
+      <recent name="C:\Users\12002\StudioProjects\herafi\lib\presentation\pages\states" />
       <recent name="$PROJECT_DIR$/lib/core/utils/images" />
       <recent name="$PROJECT_DIR$/lib/data/repositroies" />
       <recent name="$PROJECT_DIR$/lib/presentation/bindings/chatsBinding" />
-      <recent name="$PROJECT_DIR$/lib/presentation/pages/states" />
     </key>
   </component>
   <component name="RunManager">
@@ -169,7 +173,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731323782085</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Second Commit">
+      <option name="closed" value="true" />
+      <created>1731416428189</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1731416428189</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

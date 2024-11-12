@@ -4,7 +4,10 @@ import 'package:herafi/presentation/bindings/orderHistoryPageBinding.dart';
 import 'package:herafi/presentation/bindings/profilePageBinding.dart';
 import 'package:herafi/presentation/bindings/settingPageBinding.dart';
 import 'package:herafi/presentation/bindings/smsVerificationBinding.dart';
+import 'package:herafi/presentation/pages/DiplomaScreen.dart';
 import 'package:herafi/presentation/pages/authPages/authPage.dart';
+import 'package:herafi/presentation/pages/availability_screen.dart';
+import 'package:herafi/presentation/pages/edit_profile_screen.dart';
 import 'package:herafi/presentation/pages/orderHistoryPage.dart';
 import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
 import 'package:herafi/presentation/pages/settingPage.dart';
@@ -14,10 +17,12 @@ import '../bindings/chatsBinding/chatbot_binding.dart';
 import '../bindings/chatsBinding/chatsBinding.dart';
 import '../bindings/homePageBinding.dart';
 import '../bindings/introductionPageBinding.dart';
+import '../pages/account_screen.dart';
 import '../pages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
 import '../pages/orderProcessPage/Chatbot.dart';
 import '../pages/orderProcessPage/chatPage.dart';
+import '../pages/portfolio_screen.dart';
 import '../pages/register_craftsman.dart';
 import '../pages/register_customer.dart';
 import '../pages/register_role.dart';
@@ -44,8 +49,13 @@ class AppRoutes {
   static const String chatbot = '/chatbot';
   static const String registerCustomer = '/RegisterCustomer';
   static const String registerCraftsman = '/RegisterCraftsman';
-  static const String registerRole = '/RegisterRole'; // Added route for RegisterRole
-
+  static const String registerRole = '/RegisterRole';
+  static const String accountScreen = '/AccountScreen';
+  static const String availabilityScreen = '/AvailabilityScreen';
+  static const String diplomaScreen = '/DiplomaScreen';
+  static const String editProfileScreen = '/EditProfileScreen';
+  static const String portfolioScreen = '/PortfolioScreen';
+  static const String ProfilePage = '/profilePage';
 
   static List<GetPage> pages = [
     GetPage(
@@ -118,5 +128,24 @@ class AppRoutes {
       name: registerRole,
       page: () => RegisterRole(),
     ),
+    GetPage(
+      name: accountScreen,
+      page: () => AccountScreen(),
+    ),GetPage(
+      name: diplomaScreen,
+      page: () => DiplomaScreen(),
+    ),GetPage(
+      name: editProfileScreen,
+      page: () => EditProfileScreen(),
+    ),GetPage(
+      name: portfolioScreen,
+      page: () => PortfolioScreen(),
+    ),GetPage(
+      name: ProfilePage,
+      page: () => profilePage(),
+    ),GetPage(
+      name: availabilityScreen,
+      page: () => AvailabilityScreen(),
+    )
   ];
 }

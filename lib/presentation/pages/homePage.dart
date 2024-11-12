@@ -69,7 +69,7 @@ class homePage extends StatelessWidget {
               index: 4,
               onPressed: () {
                 // Navigate to RegisterRole page when index 4 is clicked
-                Get.toNamed(AppRoutes.registerRole);
+                Get.toNamed(AppRoutes.accountScreen);
               },
             ),
           ],
