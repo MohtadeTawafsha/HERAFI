@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,6 +7,7 @@ import '../Widgets/itemInBottomNavigationBar.dart';
 
 class homePage extends StatelessWidget {
   const homePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final homePageController controller = Get.find();
@@ -17,11 +17,11 @@ class homePage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             header(controller),
-            Center(
+            const Center(
               child: Text('الصفحة الرئيسية'),
             )
           ],
@@ -97,15 +97,15 @@ class homePage extends StatelessWidget {
                   color: Colors.white,
                 ),
                 Container(
-                  padding: EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(2),
                   decoration:
-                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                      const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
                   child: Obx(() {
                     return Text(
                       controller.chats.fold<int>(0, (sum, combine) {
                         return sum + combine.missedMessagesCountByMe;
                       }).toString(),
-                      style: Theme.of(Get.context!).textTheme!.bodySmall!,
+                      style: Theme.of(Get.context!).textTheme.bodySmall!,
                     );
                   }),
                 )
@@ -126,9 +126,9 @@ class homePage extends StatelessWidget {
               alignment: Alignment.topRight,
               children: [
                 CircleAvatar(
-                  child: Image.asset('lib/core/utils/images/robot-setting.png'),
                   radius: 25,
                   backgroundColor: Colors.white,
+                  child: Image.asset('lib/core/utils/images/robot-setting.png'),
                 ),
               ],
             ),
