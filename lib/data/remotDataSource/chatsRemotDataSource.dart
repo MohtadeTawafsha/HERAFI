@@ -19,6 +19,7 @@ class chatsRemotDataSource{
 
   void _x()async{
     return await supabaseClient.from('users').insert({'name':'moa','id':FirebaseAuth.instance.currentUser!.uid});
+
   }
   Future<List<Map<String, dynamic>>> fetchUsersViaArrayOfIds(List<String> ids)async{
     return await supabaseClient.from('users').select().inFilter('id', ids);
@@ -44,6 +45,7 @@ class chatsRemotDataSource{
         .startAfterDocument(document!)
         .limit(20)
         .get();
+
     if(result.docs.isNotEmpty)
       document=result.docs.last;
     return result;

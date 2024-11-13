@@ -15,6 +15,7 @@ import 'package:firebase_storage_web/firebase_storage_web.dart';
 import 'package:flutter_image_compress_web/flutter_image_compress_web.dart';
 import 'package:image_cropper_for_web/image_cropper_for_web.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
+import 'package:location_web/location_web.dart';
 import 'package:shared_preferences_web/shared_preferences_web.dart';
 import 'package:url_launcher_web/url_launcher_web.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -30,6 +31,7 @@ void registerPlugins([final Registrar? pluginRegistrar]) {
   FlutterImageCompressWeb.registerWith(registrar);
   ImageCropperPlugin.registerWith(registrar);
   ImagePickerPlugin.registerWith(registrar);
+  LocationWebPlugin.registerWith(registrar);
   SharedPreferencesPlugin.registerWith(registrar);
   UrlLauncherPlugin.registerWith(registrar);
   registrar.registerMessageHandler();

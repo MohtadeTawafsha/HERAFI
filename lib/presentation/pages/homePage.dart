@@ -3,21 +3,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
 import 'package:herafi/presentation/pages/account_screen.dart';
+import 'package:herafi/presentation/pages/trakingPage.dart';
 import '../Widgets/itemInBottomNavigationBar.dart';
 
 class homePage extends StatelessWidget {
   const homePage({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     final homePageController controller = Get.find();
     return Scaffold(
       key: controller.scaffoldKey,
+      backgroundColor: Colors.transparent,
       bottomNavigationBar: bottomNavigationBar(controller),
-      body: Expanded(
-        child: Obx(() {
+        body: Obx(() {
           return getSelectedPage(controller);
         }),
-      )
     );
   }
 
@@ -25,6 +25,7 @@ class homePage extends StatelessWidget {
     switch (controller.index.value) {
       case 4:
         return AccountScreen();
+      case 3:return trackingPage();
       default:
         return HomePage(controller);
     }

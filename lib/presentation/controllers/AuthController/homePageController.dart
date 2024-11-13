@@ -69,6 +69,7 @@ class homePageController extends GetxController {
     Get.toNamed(AppRoutes.chatbot);
   }
   void fetchUserData()async{
+    Future.delayed(Duration(seconds: 1)).then((onValue)=>Get.toNamed(AppRoutes.accountType));
     final result=await FetchUserData(userId: FirebaseAuth.instance.currentUser!.uid);
     result.fold(
             (left){
