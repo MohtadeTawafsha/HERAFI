@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:herafi/data/models/userModel.dart';
 import 'package:herafi/data/remotDataSource/userDataSource.dart';
 import 'package:herafi/domain/repositories/userRepository.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/status/error/Failure.dart';
 import '../../domain/entites/user.dart';

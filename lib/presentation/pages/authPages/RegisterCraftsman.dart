@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:herafi/data/remotDataSource/craftsmanRemotDataSource.dart';
+import 'package:herafi/domain/entites/craftsman.dart';
 import 'package:herafi/presentation/routes/app_routes.dart';
 
+import '../../../data/repositroies/CraftsmanRepositoryImp.dart';
 import '../../Widgets/CustomButton.dart';
 
 
@@ -187,18 +190,42 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
 
                 const SizedBox(height: 20),
 
-                // Submit Button
                 CustomButton(
                   icon: Icons.check,
                   label: 'تسجيل',
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      print("تم إرسال النموذج بنجاح! سنوات الخبرة: $_yearsOfExperience");
-                      Get.offAllNamed(AppRoutes.home);
+                      try {
+                        final repository = CraftsmanRepositoryImpl(CraftsmanRemoteDataSource());
+                        final craftsman = CraftsmanEntity(
+                          id: '',
+                          createdAt: DateTime.now(),
+                          firstName: _firstNameController.text,
+                          lastName: _lastNameController.text,
+                          phoneNumber: _phoneController.text,
+                          dateOfBirth: DateTime.parse(_dobController.text),
+                          yearsOfExperience: _yearsOfExperience,
+                          category: _selectedCategory!,
+                        );
+
+                        final result = await repository.insertCraftsman(craftsman);
+
+                        result.fold(
+                              (failure) => Get.snackbar('Error', failure.message),
+                              (_) {
+                            Get.snackbar('Success', 'تم التسجيل بنجاح!');
+                            Get.offAllNamed(AppRoutes.home);
+                          },
+                        );
+                      } catch (e) {
+                        Get.snackbar('Error', 'حدث خطأ أثناء التسجيل: $e');
+                      }
                     }
                   },
                   color: Colors.blue,
                 ),
+
+
               ],
             ),
           ),
