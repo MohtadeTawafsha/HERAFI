@@ -17,8 +17,8 @@ import 'firebase_options.dart';
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await supabase.Supabase.initialize(
-    url: 'https://lnvastxceyhstrmvhgvo.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxudmFzdHhjZXloc3RybXZoZ3ZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc2MDcyMjEsImV4cCI6MjA0MzE4MzIyMX0.DAK3TRleQoejxAJ5lWd_2TbdqhuBIYNfV5QRZLSvdBE',
+    url: 'https://vbfjfbdgupmnltcjanhl.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZiZmpmYmRndXBtbmx0Y2phbmhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjk0OTM2MzQsImV4cCI6MjA0NTA2OTYzNH0.YGGiHIrhaljmmrkMeJhYgP_o2ebGvOdA2gf7_lK07ng',
   );
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

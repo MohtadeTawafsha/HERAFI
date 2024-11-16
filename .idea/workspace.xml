@@ -9,24 +9,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="commit">
-      <change afterPath="$PROJECT_DIR$/lib/core/utils/animations/liveLocation.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/Widgets/liveLocationMarker.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/bindings/trackingPageBinding.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/controllers/trackingPageController.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/presentation/pages/trakingPage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/dartpad/web_plugin_registrant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/dartpad/web_plugin_registrant.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config_subset" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config_subset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/data/remotDataSource/chatsRemotDataSource.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/data/remotDataSource/chatsRemotDataSource.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/homePageController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/controllers/AuthController/homePageController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/account_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/account_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/presentation/pages/homePage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
-    </list>
+    <list default="true" id="9c91aee3-31ea-4ddb-bc59-6b1229b2193c" name="Changes" comment="Second Commit" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,6 +26,12 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -54,7 +43,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/mohand23213/herafi.git&quot;,
-    &quot;accountId&quot;: &quot;e4bf3dab-4f83-4001-bcf9-180751e55e14&quot;
+    &quot;accountId&quot;: &quot;3d1b7cae-f8e1-433e-b03f-9d8d3096240e&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -66,24 +55,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;ScreenRecorder.SavePath&quot;: &quot;/Users/a1/Desktop&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/flutter_application_1&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Flutter.main.dart.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ScreenRecorder.SavePath": "/Users/a1/Desktop",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.google.services.firebase.aqiPopupShown": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "registeration-branch",
+    "ignore.virus.scanning.warn.message": "true",
+    "io.flutter.reload.alreadyRun": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/flutter_application_1",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater",
+    "show.migrate.to.gradle.popup": "false"
+  },
+  "keyToStringList": {
+    "ChangesTree.GroupingKeys": [
+      "module"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/lib/presentation" />
@@ -92,17 +89,19 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/lib/core/utils/animations" />
-      <recent name="$PROJECT_DIR$/lib/data/repositroies" />
-      <recent name="$PROJECT_DIR$/lib/data/remotDataSource" />
+      <recent name="C:\Users\12002\StudioProjects\herafi\lib\presentation\pages\authPages" />
       <recent name="C:\Users\12002\StudioProjects\herafi\lib\presentation\pages" />
+      <recent name="C:\Users\12002\StudioProjects\herafi\lib\presentation\pages\states" />
       <recent name="$PROJECT_DIR$/lib/core/utils/images" />
+      <recent name="$PROJECT_DIR$/lib/data/repositroies" />
     </key>
   </component>
   <component name="RunManager">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
-      <method v="2" />
+      <method v="2">
+        <option name="Gradle.BeforeRunTask" enabled="true" tasks="" externalProjectPath="" vmOptions="" scriptParameters="" />
+      </method>
     </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -178,31 +177,63 @@
       <option name="project" value="LOCAL" />
       <updated>1731318367879</updated>
     </task>
-    <task id="LOCAL-00009" summary="commit">
+    <task id="LOCAL-00009" summary="Second Commit">
       <option name="closed" value="true" />
-      <created>1731446498186</created>
+      <created>1731323782085</created>
       <option name="number" value="00009" />
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
-      <updated>1731446498186</updated>
+      <updated>1731323782085</updated>
     </task>
-    <task id="LOCAL-00010" summary="commit">
+    <task id="LOCAL-00010" summary="Second Commit">
       <option name="closed" value="true" />
-      <created>1731446629870</created>
+      <created>1731416428189</created>
       <option name="number" value="00010" />
       <option name="presentableId" value="LOCAL-00010" />
       <option name="project" value="LOCAL" />
-      <updated>1731446629870</updated>
+      <updated>1731416428189</updated>
     </task>
-    <task id="LOCAL-00011" summary="commit">
+    <task id="LOCAL-00011" summary="Second Commit">
       <option name="closed" value="true" />
-      <created>1731448826059</created>
+      <created>1731417517155</created>
       <option name="number" value="00011" />
       <option name="presentableId" value="LOCAL-00011" />
       <option name="project" value="LOCAL" />
-      <updated>1731448826059</updated>
+      <updated>1731417517155</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Second Commit">
+      <option name="closed" value="true" />
+      <created>1731417640226</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1731417640226</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Second Commit">
+      <option name="closed" value="true" />
+      <created>1731417817709</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1731417817709</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Second Commit">
+      <option name="closed" value="true" />
+      <created>1731719888123</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1731719888124</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Second Commit">
+      <option name="closed" value="true" />
+      <created>1731724028507</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1731724028507</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -219,7 +250,6 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="firstCommit" />
     <MESSAGE value="Second Commit" />
-    <MESSAGE value="commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Second Commit" />
   </component>
 </project>
