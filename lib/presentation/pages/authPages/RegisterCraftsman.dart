@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:herafi/data/remotDataSource/craftsmanRemotDataSource.dart';
-import 'package:herafi/domain/entites/craftsman.dart';
-import 'package:herafi/presentation/routes/app_routes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../data/repositroies/CraftsmanRepositoryImp.dart';
-import '../../Widgets/CustomButton.dart';
-
+import '../../../data/remotDataSource/craftsmanRemotDataSource.dart';
 
 class RegisterCraftsman extends StatefulWidget {
   const RegisterCraftsman({Key? key}) : super(key: key);
@@ -17,15 +14,15 @@ class RegisterCraftsman extends StatefulWidget {
 
 class _RegisterCraftsmanState extends State<RegisterCraftsman> {
   final _formKey = GlobalKey<FormState>();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _dobController = TextEditingController();
-  final _addressController = TextEditingController();
-
+  final _locationController = TextEditingController();
   final List<String> _categories = ['السباكة', 'النجارة', 'الكهرباء', 'الطلاء', 'أخرى'];
   String? _selectedCategory;
-  int _yearsOfExperience = 0; // Starting at 0 years
+  int _yearsOfExperience = 0;
+
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final SupabaseClient supabaseClient = Supabase.instance.client;
 
   void _incrementExperience() {
     setState(() {
@@ -43,6 +40,34 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
     });
   }
 
+  Future<void> _registerCraftsman() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        final String name = _nameController.text.trim();
+        final String phoneNumber = _phoneController.text.trim();
+        final String location = _locationController.text.trim();
+
+        final CraftsmanRemoteDataSource dataSource = CraftsmanRemoteDataSource(
+          supabaseClient,
+          firebaseAuth,
+        );
+
+        await dataSource.saveCraftsmanDetails(
+          category: _selectedCategory!,
+          yearsOfExperience: _yearsOfExperience,
+          name: name,
+          location: location,
+          phoneNumber: phoneNumber,
+        );
+
+        Get.snackbar('Success', 'Craftsman registered successfully!');
+        Get.offAllNamed('/home'); // Navigate to home after success
+      } catch (e) {
+        Get.snackbar('Error', 'An error occurred: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -57,32 +82,20 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
           child: Form(
             key: _formKey,
             child: ListView(
-              children: <Widget>[
-                // First Name
+              children: [
+                // Name Field
                 TextFormField(
-                  controller: _firstNameController,
-                  decoration: const InputDecoration(labelText: 'الاسم الأول'),
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'الاسم'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى إدخال الاسم الأول';
+                      return 'يرجى إدخال الاسم';
                     }
                     return null;
                   },
                 ),
 
-                // Last Name
-                TextFormField(
-                  controller: _lastNameController,
-                  decoration: const InputDecoration(labelText: 'الاسم الأخير'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'يرجى إدخال الاسم الأخير';
-                    }
-                    return null;
-                  },
-                ),
-
-                // Phone Number
+                // Phone Number Field
                 TextFormField(
                   controller: _phoneController,
                   decoration: const InputDecoration(labelText: 'رقم الهاتف'),
@@ -95,28 +108,13 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                   },
                 ),
 
-                // Date of Birth
+                // Location Field
                 TextFormField(
-                  controller: _dobController,
-                  decoration: const InputDecoration(labelText: 'تاريخ الميلاد'),
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime(2100),
-                    );
-                    if (pickedDate != null) {
-                      setState(() {
-                        _dobController.text =
-                        "${pickedDate.toLocal()}".split(' ')[0];
-                      });
-                    }
-                  },
+                  controller: _locationController,
+                  decoration: const InputDecoration(labelText: 'الموقع'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'يرجى إدخال تاريخ الميلاد';
+                      return 'يرجى إدخال الموقع';
                     }
                     return null;
                   },
@@ -124,7 +122,7 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
 
                 const SizedBox(height: 10),
 
-                // Years of Experience with Increment/Decrement Buttons
+                // Years of Experience Field
                 Row(
                   children: [
                     IconButton(
@@ -176,56 +174,18 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                   },
                 ),
 
-                // Address
-                TextFormField(
-                  controller: _addressController,
-                  decoration: const InputDecoration(labelText: 'العنوان'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'يرجى إدخال العنوان';
-                    }
-                    return null;
-                  },
-                ),
-
                 const SizedBox(height: 20),
 
-                CustomButton(
-                  icon: Icons.check,
-                  label: 'تسجيل',
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      try {
-                        final repository = CraftsmanRepositoryImpl(CraftsmanRemoteDataSource());
-                        final craftsman = CraftsmanEntity(
-                          id: '',
-                          createdAt: DateTime.now(),
-                          firstName: _firstNameController.text,
-                          lastName: _lastNameController.text,
-                          phoneNumber: _phoneController.text,
-                          dateOfBirth: DateTime.parse(_dobController.text),
-                          yearsOfExperience: _yearsOfExperience,
-                          category: _selectedCategory!,
-                        );
-
-                        final result = await repository.insertCraftsman(craftsman);
-
-                        result.fold(
-                              (failure) => Get.snackbar('Error', failure.message),
-                              (_) {
-                            Get.snackbar('Success', 'تم التسجيل بنجاح!');
-                            Get.offAllNamed(AppRoutes.home);
-                          },
-                        );
-                      } catch (e) {
-                        Get.snackbar('Error', 'حدث خطأ أثناء التسجيل: $e');
-                      }
-                    }
-                  },
-                  color: Colors.blue,
+                // Register Button
+                ElevatedButton(
+                  onPressed: _registerCraftsman,
+                  child: const Text('تسجيل'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    textStyle: const TextStyle(fontSize: 16),
+                  ),
                 ),
-
-
               ],
             ),
           ),
@@ -236,11 +196,9 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
+    _nameController.dispose();
     _phoneController.dispose();
-    _dobController.dispose();
-    _addressController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 }

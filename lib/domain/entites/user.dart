@@ -5,6 +5,7 @@ class UserEntity {
   final DateTime createdAt;
   final String phoneNumber;
   final String userType;
+  final String location;
 
   UserEntity({
     required this.name,
@@ -13,6 +14,7 @@ class UserEntity {
     required this.createdAt,
     required this.phoneNumber,
     required this.userType,
+    required this.location,
   });
 
   @override
@@ -25,7 +27,8 @@ class UserEntity {
         other.image == image &&
         other.createdAt == createdAt &&
         other.phoneNumber == phoneNumber &&
-        other.userType == userType;
+        other.userType == userType &&
+        other.location == location;
   }
 
   @override
@@ -35,14 +38,13 @@ class UserEntity {
     image.hashCode ^
     createdAt.hashCode ^
     phoneNumber.hashCode ^
-    userType.hashCode;
+    userType.hashCode ^
+    location.hashCode;
   }
-
-
   String getImage(){
     if(image.isEmpty){
       if(userType=="craftsman"){
-          return  "https://firebasestorage.googleapis.com/v0/b/herrfi-bd37c.appspot.com/o/craftsman.png?alt=media&token=d15afb8f-ec47-4460-bc6f-13119c30d3b5";
+        return  "https://firebasestorage.googleapis.com/v0/b/herrfi-bd37c.appspot.com/o/craftsman.png?alt=media&token=d15afb8f-ec47-4460-bc6f-13119c30d3b5";
       }
       else{
         return "https://firebasestorage.googleapis.com/v0/b/herrfi-bd37c.appspot.com/o/profile-2.png?alt=media&token=f5385b3c-c568-449e-9185-c20fdc4b374b";

@@ -9,6 +9,7 @@ class UserModel  extends UserEntity{
     required super.createdAt,
     required super.phoneNumber,
     required super.userType,
+    required super.location,
   });
 
   // From JSON
@@ -20,6 +21,7 @@ class UserModel  extends UserEntity{
       createdAt: DateTime.parse(json['created_at']),
       phoneNumber: json['phone_number'],
       userType: json['user_type'],
+      location: json['location']
     );
   }
 
@@ -32,6 +34,7 @@ class UserModel  extends UserEntity{
       'createdAt': createdAt.toIso8601String(),
       'phoneNumber': phoneNumber,
       'userType': userType,
+      'location' : location,
     };
   }
 
@@ -44,6 +47,7 @@ class UserModel  extends UserEntity{
       createdAt: entity.createdAt,
       phoneNumber: entity.phoneNumber,
       userType: entity.userType,
+      location: entity.location,
     );
   }
 
@@ -56,6 +60,7 @@ class UserModel  extends UserEntity{
       createdAt: createdAt,
       phoneNumber: phoneNumber,
       userType: userType,
+      location:location,
     );
   }
 }

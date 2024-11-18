@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:herafi/domain/entites/chat.dart';
 import 'package:herafi/domain/entites/user.dart';
@@ -16,7 +15,7 @@ class homePageController extends GetxController {
   final fetchUserDataUseCase FetchUserData;
 
   homePageController({required this.fetchChatsUseCase,required this.FetchUserData});
-  Rx<UserEntity> userEntity=Rx(UserEntity(name: '', id: '', image: '', createdAt: DateTime.now(), phoneNumber: '', userType: ''));
+  Rx<UserEntity> userEntity=Rx(UserEntity(name: '', id: '', image: '', createdAt: DateTime.now(), phoneNumber: '', userType: '', location: ''));
   Rx<int> index = 0.obs;
   List list = [];
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -73,21 +72,21 @@ class homePageController extends GetxController {
     final result=await FetchUserData(userId: FirebaseAuth.instance.currentUser!.uid);
     result.fold(
             (left){
-              Get.snackbar('خطا', 'لقد حدث خطا ما يرجى المحاولة مرة اخرى');
-            },
+          Get.snackbar('خطا', 'لقد حدث خطا ما يرجى المحاولة مرة اخرى');
+        },
             (right){
-              if(right==null){
-                Get.offAllNamed(AppRoutes.accountType);
-              }
-              else{
-                userEntity.value=right;
-              }
-            }
+          if(right==null){
+            Get.offAllNamed(AppRoutes.accountType);
+          }
+          else{
+            userEntity.value=right;
+          }
+        }
     );
   }
   void fetchChats() async {
     Either<Failure, List<chatEntity>> chats =
-        await fetchChatsUseCase(userId: FirebaseAuth.instance.currentUser!.uid);
+    await fetchChatsUseCase(userId: FirebaseAuth.instance.currentUser!.uid);
     chats.fold((ifLeft) {
       Get.snackbar('مشكلة', 'لقد حدثة مشكلة اثناء تحميل الرسائل');
     }, (ifRight) {
