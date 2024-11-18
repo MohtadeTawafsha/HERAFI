@@ -14,5 +14,6 @@ class CraftsmanEntity extends UserEntity {
     required super.phoneNumber,
     required super.userType,
     required super.location,
+    required super.dateOfBirth, // Pass date_of_birth from UserEntity
   });
 }

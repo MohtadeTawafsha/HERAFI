@@ -12,7 +12,8 @@ class CraftsmanRemoteDataSource {
     final response = await client
         .from('craftsman')
         .select('*, users(*)') // Fetch associated user data from 'users' table
-        .eq('id', id);
+        .eq('id', id)
+        .maybeSingle();
 
     if (response == null) {
       throw Exception('No craftsman details found for ID: $id');
@@ -28,6 +29,7 @@ class CraftsmanRemoteDataSource {
     required String name,
     required String location,
     required String phoneNumber,
+    required DateTime dateOfBirth, // Include DOB
   }) async {
     // Fetch UID from FirebaseAuth
     final user = firebaseAuth.currentUser;
@@ -43,6 +45,7 @@ class CraftsmanRemoteDataSource {
       'phone_number': phoneNumber,
       'user_type': 'craftsman',
       'location': location,
+      'date_of_birth': dateOfBirth.toIso8601String(), // Save DOB
     });
 
     // Insert craftsman data into `craftsman` table

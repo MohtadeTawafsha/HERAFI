@@ -15,7 +15,7 @@ class homePageController extends GetxController {
   final fetchUserDataUseCase FetchUserData;
 
   homePageController({required this.fetchChatsUseCase,required this.FetchUserData});
-  Rx<UserEntity> userEntity=Rx(UserEntity(name: '', id: '', image: '', createdAt: DateTime.now(), phoneNumber: '', userType: '', location: ''));
+  Rx<UserEntity> userEntity=Rx(UserEntity(name: '', id: '', image: '', createdAt: DateTime.now(), phoneNumber: '', userType: '', location: '', dateOfBirth: DateTime.now()));
   Rx<int> index = 0.obs;
   List list = [];
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();

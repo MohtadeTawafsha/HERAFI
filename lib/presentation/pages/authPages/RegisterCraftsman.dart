@@ -17,6 +17,7 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _locationController = TextEditingController();
+  final _dobController = TextEditingController(); // For Date of Birth
   final List<String> _categories = ['السباكة', 'النجارة', 'الكهرباء', 'الطلاء', 'أخرى'];
   String? _selectedCategory;
   int _yearsOfExperience = 0;
@@ -46,6 +47,7 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
         final String name = _nameController.text.trim();
         final String phoneNumber = _phoneController.text.trim();
         final String location = _locationController.text.trim();
+        final String dob = _dobController.text.trim();
 
         final CraftsmanRemoteDataSource dataSource = CraftsmanRemoteDataSource(
           supabaseClient,
@@ -58,6 +60,7 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
           name: name,
           location: location,
           phoneNumber: phoneNumber,
+          dateOfBirth: DateTime.parse(dob), // Pass DOB
         );
 
         Get.snackbar('Success', 'Craftsman registered successfully!');
@@ -103,6 +106,32 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'يرجى إدخال رقم الهاتف';
+                    }
+                    return null;
+                  },
+                ),
+
+                // Date of Birth Field
+                TextFormField(
+                  controller: _dobController,
+                  decoration: const InputDecoration(labelText: 'تاريخ الميلاد'),
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime(2100),
+                    );
+                    if (pickedDate != null) {
+                      setState(() {
+                        _dobController.text = "${pickedDate.toLocal()}".split(' ')[0];
+                      });
+                    }
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'يرجى إدخال تاريخ الميلاد';
                     }
                     return null;
                   },
@@ -199,6 +228,7 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
     _nameController.dispose();
     _phoneController.dispose();
     _locationController.dispose();
+    _dobController.dispose(); // Dispose the DOB controller
     super.dispose();
   }
 }
