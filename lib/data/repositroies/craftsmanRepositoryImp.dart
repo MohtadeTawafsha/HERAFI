@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:herafi/core/status/error/Failure.dart';
-import 'package:herafi/data/models/craftsmanModel.dart';
 import 'package:herafi/domain/entites/craftsman.dart';
 import 'package:herafi/domain/repositories/craftsmanRepository.dart';
+import '../models/craftsmanModel.dart';
 import '../remotDataSource/craftsmanRemotDataSource.dart';
 
 class CraftsmanRepositoryImpl extends CraftsmanRepository {
@@ -17,7 +17,9 @@ class CraftsmanRepositoryImpl extends CraftsmanRepository {
         category: craftsman.category,
         yearsOfExperience: craftsman.yearsOfExp,
         name: craftsman.name,
-        location: craftsman.location, phoneNumber: '',
+        location: craftsman.location,
+        phoneNumber: craftsman.phoneNumber,
+        dateOfBirth: craftsman.dateOfBirth, // Pass DOB
       );
       return const Right(null);
     } catch (error) {

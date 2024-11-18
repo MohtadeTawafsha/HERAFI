@@ -6,6 +6,7 @@ class UserEntity {
   final String phoneNumber;
   final String userType;
   final String location;
+  final DateTime dateOfBirth; // New field
 
   UserEntity({
     required this.name,
@@ -15,6 +16,7 @@ class UserEntity {
     required this.phoneNumber,
     required this.userType,
     required this.location,
+    required this.dateOfBirth, // Include dateOfBirth
   });
 
   @override
@@ -28,7 +30,8 @@ class UserEntity {
         other.createdAt == createdAt &&
         other.phoneNumber == phoneNumber &&
         other.userType == userType &&
-        other.location == location;
+        other.location == location &&
+        other.dateOfBirth == dateOfBirth;
   }
 
   @override
@@ -39,7 +42,8 @@ class UserEntity {
     createdAt.hashCode ^
     phoneNumber.hashCode ^
     userType.hashCode ^
-    location.hashCode;
+    location.hashCode ^
+    dateOfBirth.hashCode;
   }
   String getImage(){
     if(image.isEmpty){

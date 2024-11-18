@@ -1,54 +1,45 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:herafi/domain/entites/customer.dart';
-
-class CustomerModel extends CustomerEntity {
-  CustomerModel({
-    required super.id,
-    required super.createdAt,
-    required super.firstName,
-    required super.lastName,
-    required super.phoneNumber,
-    required super.dateOfBirth,
-  });
-  // Convert JSON to Model
-  factory CustomerModel.fromJson(Map<String, dynamic> json) {
-    return CustomerModel(
-      id: json['id'].toString(),
-      createdAt: DateTime.parse(json['created_at']),
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      phoneNumber: json['phoneNumber'],
-      dateOfBirth: DateTime.parse(json['dateOfBirth']),
-    );
-  }
-
-  // Convert Model to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'created_at': createdAt.toIso8601String(),
-      'firstName': firstName,
-      'lastName': lastName,
-      'phoneNumber': phoneNumber,
-      'dateOfBirth': dateOfBirth.toIso8601String(),
-    };
-  }
-
-  Future<void> insertCustomer({
-    required String firstName,
-    required String lastName,
-    required String phoneNumber,
-    required DateTime dateOfBirth,
-  }) async {
-    final response = await Supabase.instance.client.from('customer').insert({
-      'firstName': firstName,
-      'lastName': lastName,
-      'phoneNumber': phoneNumber,
-      'dateOfBirth': dateOfBirth.toIso8601String(),
-    });
-
-    if (response.error != null) {
-      throw Exception("Failed to insert customer: ${response.error!.message}");
-    }
-  }
-}
+// import 'package:herafi/domain/entites/craftsman.dart';
+//
+// class CraftsmanModel extends CraftsmanEntity {
+//   CraftsmanModel({
+//     required super.category,
+//     required super.yearsOfExp,
+//     required super.name,
+//     required super.id,
+//     required super.image,
+//     required super.createdAt,
+//     required super.phoneNumber,
+//     required super.userType,
+//     required super.location,
+//   });
+//
+//   /// Convert JSON to CraftsmanModel
+//   factory CraftsmanModel.fromJson(Map<String, dynamic> json) {
+//     return CraftsmanModel(
+//       category: json['category'],
+//       yearsOfExp: json['years_of_experience'],
+//       name: json['name'],
+//       id: json['id'],
+//       image: json['image'] ?? '',
+//       createdAt: DateTime.parse(json['created_at']),
+//       phoneNumber: json['phone_number'],
+//       userType: json['user_type'],
+//       location: json['location'],
+//     );
+//   }
+//
+//   /// Convert CraftsmanModel to JSON
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'id': id,
+//       'category': category,
+//       'years_of_experience': yearsOfExp,
+//       'name': name,
+//       'image': image,
+//       'created_at': createdAt.toIso8601String(),
+//       'phone_number': phoneNumber,
+//       'user_type': userType,
+//       'location': location,
+//     };
+//   }
+// }

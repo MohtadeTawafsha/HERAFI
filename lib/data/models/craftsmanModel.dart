@@ -11,6 +11,7 @@ class CraftsmanModel extends CraftsmanEntity {
     required super.phoneNumber,
     required super.userType,
     required super.location,
+    required super.dateOfBirth, // Include DOB
   });
 
   /// Convert JSON to CraftsmanModel
@@ -25,6 +26,7 @@ class CraftsmanModel extends CraftsmanEntity {
       phoneNumber: json['phone_number'],
       userType: json['user_type'],
       location: json['location'],
+      dateOfBirth: DateTime.parse(json['date_of_birth']), // Parse DOB
     );
   }
 
@@ -40,6 +42,7 @@ class CraftsmanModel extends CraftsmanEntity {
       'phone_number': phoneNumber,
       'user_type': userType,
       'location': location,
+      'date_of_birth': dateOfBirth.toIso8601String(), // Save DOB
     };
   }
 }
