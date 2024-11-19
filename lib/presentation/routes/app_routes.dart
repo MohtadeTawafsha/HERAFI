@@ -16,7 +16,7 @@ import '../bindings/chatsBinding/chatbot_binding.dart';
 import '../bindings/chatsBinding/chatsBinding.dart';
 import '../bindings/homePageBinding.dart';
 import '../bindings/introductionPageBinding.dart';
-import '../pages/DiplomaScreen.dart';
+import '../pages/certificatePage.dart';
 import '../pages/account_screen.dart';
 import '../pages/authPages/RegisterCraftsman.dart';
 import '../pages/authPages/accountType.dart';
@@ -128,7 +128,7 @@ class AppRoutes {
       page: () => AccountScreen(),
     ),GetPage(
       name: diplomaScreen,
-      page: () => DiplomaScreen(),
+      page: () => CertificateScreen(),
     ),GetPage(
       name: editProfileScreen,
       page: () => EditProfileScreen(),

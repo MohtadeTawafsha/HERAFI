@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class DiplomaScreen extends StatefulWidget {
+class CertificateScreen extends StatefulWidget {
   @override
-  _DiplomaScreenState createState() => _DiplomaScreenState();
+  _CertificateScreenState createState() => _CertificateScreenState();
 }
 
-class _DiplomaScreenState extends State<DiplomaScreen> {
+class _CertificateScreenState extends State<CertificateScreen> {
   final List<File> diplomaImages = [];
 
   Future<void> _pickImage() async {
@@ -24,7 +24,7 @@ class _DiplomaScreenState extends State<DiplomaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Diploma"),
+        title: Text("certificate"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -33,7 +33,7 @@ class _DiplomaScreenState extends State<DiplomaScreen> {
           children: [
             Expanded(
               child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
