@@ -150,10 +150,10 @@ class AppRoutes {
       name: registerCraftsman,
       page: () => RegisterCraftsman(),
     ),
-    // GetPage(
-    //   name: registerCustomer,
-    //   page: () => RegisterCustomer(),
-    // ),
+    GetPage(
+      name: registerCustomer,
+      page: () => RegisterCustomer(),
+    ),
 
   ];
 }
