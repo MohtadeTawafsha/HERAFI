@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'DiplomaScreen.dart';
+import 'certificatePage.dart';
 import 'availability_screen.dart';
 import 'edit_profile_screen.dart';
 import 'portfolio_screen.dart';
@@ -48,7 +48,7 @@ class AccountScreen extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DiplomaScreen()),
+                MaterialPageRoute(builder: (context) => CertificateScreen()),
               );
             },
           ),
