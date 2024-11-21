@@ -43,7 +43,7 @@ class AccountScreen extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.school),
-            title: Text('Diploma'),
+            title: Text('Certificate'),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
               Navigator.push(
