@@ -131,7 +131,7 @@ class AppRoutes {
       page: () => CertificateScreen(),
     ),GetPage(
       name: editProfileScreen,
-      page: () => EditProfileScreen(),
+      page: () => EditCraftsmanScreen(),
     ),GetPage(
       name: portfolioScreen,
       page: () => PortfolioScreen(),
