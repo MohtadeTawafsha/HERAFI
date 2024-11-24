@@ -1,30 +1,26 @@
 import 'package:herafi/domain/entites/availability.dart';
 
 class AvailabilityModel extends AvailabilityEntity {
-  AvailabilityModel({
+  const AvailabilityModel({
     required super.id,
     required super.craftsmanId,
     required super.availabilityType,
-    super.dayOfWeek, // Nullable
+    super.dayOfWeek,
     required super.available,
-    super.unavailabilityReason, // Nullable
-    required super.receiveOffersOffline,
+    super.unavailabilityReason,
   });
 
-  // Factory method to create a model from Supabase JSON data
   factory AvailabilityModel.fromJson(Map<String, dynamic> json) {
     return AvailabilityModel(
-      id: json['id'] is int ? json['id'] as int : int.parse(json['id']),
+      id: json['id'] as int,
       craftsmanId: json['craftsman_id'] as String,
       availabilityType: json['availability_type'] as String,
-      dayOfWeek: json['day_of_week'] as String?, // Nullable
+      dayOfWeek: json['day_of_week'] as String?,
       available: json['available'] as bool,
-      unavailabilityReason: json['unavailability_reason'] as String?, // Nullable
-      receiveOffersOffline: json['receive_offers_offline'] as bool,
+      unavailabilityReason: json['unavailability_reason'] as String?,
     );
   }
 
-  // Method to convert the model to JSON for Supabase
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -33,7 +29,6 @@ class AvailabilityModel extends AvailabilityEntity {
       'day_of_week': dayOfWeek,
       'available': available,
       'unavailability_reason': unavailabilityReason,
-      'receive_offers_offline': receiveOffersOffline,
     };
   }
 }

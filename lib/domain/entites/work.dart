@@ -1,7 +1,7 @@
 class WorkEntity {
-  final String id;
+  final int id; // 
   final String craftsmanId;
-  final String image;
+  final String image; // رابط الصورة (download URL)
   final String title;
   final String description;
   final DateTime createdAt;

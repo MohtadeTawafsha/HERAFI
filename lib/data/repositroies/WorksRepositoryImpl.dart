@@ -5,7 +5,7 @@ import 'package:herafi/data/remotDataSource/WorksRemoteDataSource.dart';
 import 'package:herafi/domain/entites/work.dart';
 import 'package:herafi/domain/repositories/WorksRepository.dart';
 
-class WorksRepositoryImpl extends WorksRepository {
+class WorksRepositoryImpl implements WorksRepository {
   final WorksRemoteDataSource remoteDataSource;
 
   WorksRepositoryImpl(this.remoteDataSource);
@@ -13,9 +13,8 @@ class WorksRepositoryImpl extends WorksRepository {
   @override
   Future<Either<Failure, List<WorkEntity>>> fetchWorks(String craftsmanId) async {
     try {
-      // Fetch works from the remote data source and map them to WorkEntity
       final works = await remoteDataSource.fetchWorks(craftsmanId);
-      return Right(works.map((work) => WorkModel.fromJson(work.toJson())).toList());
+      return Right(works);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -24,7 +23,6 @@ class WorksRepositoryImpl extends WorksRepository {
   @override
   Future<Either<Failure, void>> insertWork(WorkEntity work) async {
     try {
-      // Convert WorkEntity to WorkModel
       final workModel = WorkModel(
         id: work.id,
         craftsmanId: work.craftsmanId,
@@ -40,4 +38,33 @@ class WorksRepositoryImpl extends WorksRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+  @override
+Future<Either<Failure, void>> updateWork(WorkEntity work) async {
+  try {
+    final workModel = WorkModel(
+      id: work.id,
+      craftsmanId: work.craftsmanId,
+      image: work.image,
+      title: work.title,
+      description: work.description,
+      createdAt: work.createdAt,
+    );
+
+    await remoteDataSource.updateWork(workModel);
+    return const Right(null);
+  } catch (e) {
+    return Left(ServerFailure(e.toString()));
+  }
+}
+
+@override
+Future<Either<Failure, void>> deleteWork(int id) async {
+  try {
+    await remoteDataSource.deleteWork(id);
+    return const Right(null);
+  } catch (e) {
+    return Left(ServerFailure(e.toString()));
+  }
+}
+
 }
