@@ -1,19 +1,17 @@
 class AvailabilityEntity {
   final int id;
   final String craftsmanId;
-  final String availabilityType; // 'simple' or 'schedule'
-  final String? dayOfWeek; // Nullable, only relevant for 'schedule'
+  final String availabilityType;
+  final String? dayOfWeek;
   final bool available;
-  final String? unavailabilityReason; // Nullable, reason for unavailability
-  final bool receiveOffersOffline; // Whether the craftsman can receive offers offline
+  final String? unavailabilityReason;
 
-  AvailabilityEntity({
+  const AvailabilityEntity({
     required this.id,
     required this.craftsmanId,
     required this.availabilityType,
-    this.dayOfWeek, // Nullable
+    this.dayOfWeek,
     required this.available,
-    this.unavailabilityReason, // Nullable
-    required this.receiveOffersOffline,
+    this.unavailabilityReason,
   });
 }

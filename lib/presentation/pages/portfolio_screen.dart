@@ -1,243 +1,204 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:herafi/presentation/pages/WorkDetailScreen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:herafi/data/remotDataSource/WorksRemoteDataSource.dart';
+import 'package:herafi/data/repositroies/WorksRepositoryImpl.dart';
+import 'package:herafi/domain/entites/work.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'AddWorkPage .dart';
+import 'WorkDetailsPage.dart';
 
-class PortfolioScreen extends StatefulWidget {
+class WorkPage extends StatefulWidget {
   @override
-  _PortfolioScreenState createState() => _PortfolioScreenState();
+  _WorkPageState createState() => _WorkPageState();
 }
 
-class _PortfolioScreenState extends State<PortfolioScreen> {
-  final SupabaseClient supabaseClient = Supabase.instance.client;
-  final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
-
-  List<Map<String, dynamic>> works = [];
+class _WorkPageState extends State<WorkPage> {
+  late WorksRepositoryImpl worksRepository;
+  List<WorkEntity> works = [];
+  String? imagePath;
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    worksRepository = WorksRepositoryImpl(
+      WorksRemoteDataSource(Supabase.instance.client),
+    );
     _fetchWorks();
   }
 
   Future<void> _fetchWorks() async {
+    setState(() => isLoading = true);
+
+    final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
+    if (craftsmanId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: User not logged in.')),
+      );
+      setState(() => isLoading = false);
+      return;
+    }
+
+    final result = await worksRepository.fetchWorks(craftsmanId);
+    result.fold(
+      (failure) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching works: ${failure.message}')),
+      ),
+      (fetchedWorks) {
+        setState(() => works = fetchedWorks);
+      },
+    );
+
+    setState(() => isLoading = false);
+  }
+
+  Future<String?> _uploadImageToFirebase(String imagePath) async {
+    try {
+      final file = File(imagePath);
+      final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      final ref = FirebaseStorage.instance.ref().child('works/$fileName');
+      final uploadTask = await ref.putFile(file);
+      return await ref.getDownloadURL();
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
+
+  Future<void> _addWork() async {
     final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
 
     if (craftsmanId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('User not logged in.')),
+        SnackBar(content: Text('Error: User not logged in.')),
       );
       return;
     }
 
-    final response = await supabaseClient
-        .from('works')
-        .select('*')
-        .eq('craftsman_id', craftsmanId)
-        .order('created_at', ascending: false)
-        .execute();
+    if (imagePath != null &&
+        titleController.text.isNotEmpty &&
+        descriptionController.text.isNotEmpty) {
+      final downloadUrl = await _uploadImageToFirebase(imagePath!);
+      if (downloadUrl == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error uploading image to Firebase.')),
+        );
+        return;
+      }
 
-    if (response.error == null) {
+      final newWork = WorkEntity(
+        id: 0, // يتم إنشاؤه تلقائيًا في قاعدة البيانات
+        craftsmanId: craftsmanId,
+        image: downloadUrl,
+        title: titleController.text,
+        description: descriptionController.text,
+        createdAt: DateTime.now(),
+      );
+
+      final result = await worksRepository.insertWork(newWork);
+      result.fold(
+        (failure) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error adding work: ${failure.message}')),
+        ),
+        (_) {
+          _fetchWorks(); // تحديث البيانات مباشرة
+          Navigator.of(context).pop(); // العودة للشاشة السابقة
+        },
+      );
+
       setState(() {
-        works = (response.data as List)
-            .map((work) => {
-                  'id': work['id'],
-                  'title': work['title'],
-                  'description': work['description'],
-                  'imagePath': work['image'],
-                })
-            .toList();
+        imagePath = null;
+        titleController.clear();
+        descriptionController.clear();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching works: ${response.error!.message}')),
+        SnackBar(content: Text('Please fill all fields.')),
       );
     }
   }
 
-  Future<String> _uploadImageToFirebase(String imagePath, String workId) async {
-    final file = File(imagePath);
-    final storageRef = firebaseStorage.ref().child('works/$workId/${file.uri.pathSegments.last}');
-
-    final uploadTask = storageRef.putFile(file);
-    final snapshot = await uploadTask;
-    final downloadUrl = await snapshot.ref.getDownloadURL();
-
-    return downloadUrl;
-  }
-
-  Future<void> _addNewWork() async {
-    final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
-
-    if (craftsmanId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('User not logged in.')),
-      );
-      return;
-    }
-
-    final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => WorkDetailScreen(
-            onSave: (String title, String description, String imagePath) async {
-              try {
-                final response = await supabaseClient
-                    .from('works')
-                    .insert({
-                      'craftsman_id': craftsmanId,
-                      'title': title,
-                      'description': description,
-                      'image': '',
-                    })
-                    .select('id')
-                    .execute();
-
-                if (response.error != null) {
-                  throw Exception('Failed to add work: ${response.error!.message}');
-                }
-
-                final workId = response.data[0]['id'];
-
-                // رفع الصورة إلى Firebase
-                final imageUrl = await _uploadImageToFirebase(imagePath, workId);
-
-                // تحديث رابط الصورة في Supabase
-                await supabaseClient.from('works').update({'image': imageUrl}).eq('id', workId);
-
-                setState(() {
-                  works.add({
-                    'id': workId,
-                    'title': title,
-                    'description': description,
-                    'imagePath': imageUrl,
-                  });
-                });
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error adding work: $e')),
-                );
-              }
-            },
-            imagePath: image.path,
-          ),
-        ),
-      );
-    }
-  }
-
-  void _viewWorkDetail(int index) {
-    final work = works[index];
+  void _navigateToAddWork() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => WorkDetailScreen(
-          title: work['title'],
-          description: work['description'],
-          imagePath: work['imagePath'],
-          onSave: (String title, String description, String imagePath) async {
-            try {
-              // رفع صورة جديدة إذا تم تعديلها
-              String imageUrl = work['imagePath'];
-              if (imagePath != work['imagePath']) {
-                imageUrl = await _uploadImageToFirebase(imagePath, work['id']);
-              }
-
-              // تحديث البيانات في Supabase
-              await supabaseClient.from('works').update({
-                'title': title,
-                'description': description,
-                'image': imageUrl,
-              }).eq('id', work['id']);
-
-              setState(() {
-                works[index] = {
-                  'id': work['id'],
-                  'title': title,
-                  'description': description,
-                  'imagePath': imageUrl,
-                };
-              });
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error updating work: $e')),
-              );
-            }
+        builder: (context) => AddWorkPage(
+          titleController: titleController,
+          descriptionController: descriptionController,
+          imagePath: imagePath,
+          onImagePicked: (pickedImagePath) {
+            setState(() {
+              imagePath = pickedImagePath;
+            });
           },
-          onDelete: () async {
-            try {
-              // حذف العمل من Supabase
-              await supabaseClient.from('works').delete().eq('id', work['id']);
-
-              setState(() {
-                works.removeAt(index);
-              });
-
-              Navigator.pop(context);
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Error deleting work: $e')),
-              );
-            }
+          onAddWork: () {
+            _addWork();
+            Navigator.pop(context); // العودة للشاشة السابقة
           },
         ),
       ),
     );
   }
 
+  void _navigateToWorkDetails(WorkEntity work) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WorkDetailsPage(work: work),
+      ),
+    );
+  }
+
+  Widget buildWorksGrid() {
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+      ),
+      itemCount: works.length,
+      itemBuilder: (context, index) {
+        final work = works[index];
+        return GestureDetector(
+          onTap: () => _navigateToWorkDetails(work),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: NetworkImage(work.image),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Portfolio"),
-      ),
+      appBar: AppBar(title: Text('Portfolio')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Previous work:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: Icon(Icons.add, size: 32),
+                onPressed: _navigateToAddWork,
+              ),
             ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: _addNewWork,
-                  child: Icon(Icons.add_box, size: 50),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: works.map((work) {
-                        int index = works.indexOf(work);
-                        return GestureDetector(
-                          onTap: () => _viewWorkDetail(index),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Image.network(
-                              work['imagePath'],
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              ],
+            Expanded(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : buildWorksGrid(),
             ),
           ],
         ),

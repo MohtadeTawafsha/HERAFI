@@ -26,7 +26,6 @@ import '../pages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
 import '../pages/orderProcessPage/Chatbot.dart';
 import '../pages/orderProcessPage/chatPage.dart';
-import '../pages/portfolio_screen.dart';
 import '../pages/states/noInternetConnection.dart';
 import '../pages/profilePage.dart';
 import '../pages/authPages/smsVerificationPage.dart';
@@ -132,9 +131,6 @@ class AppRoutes {
     ),GetPage(
       name: editProfileScreen,
       page: () => EditCraftsmanScreen(),
-    ),GetPage(
-      name: portfolioScreen,
-      page: () => PortfolioScreen(),
     ),GetPage(
       name: ProfilePage,
       page: () => profilePage(),
