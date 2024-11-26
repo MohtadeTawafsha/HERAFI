@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:herafi/presentation/pages/certificatePage.dart';
+import 'package:herafi/presentation/pages/craftsmanProfilePage.dart';
 import 'package:herafi/presentation/pages/portfolio_screen.dart';
 import 'availability_screen.dart';
 import 'edit_profile_screen.dart';
@@ -109,6 +110,16 @@ class _AccountScreenState extends State<AccountScreen> {
                   onTap: () {
                     FirebaseAuth.instance.signOut();
                   },
+                ),
+                ListTile(
+                  leading: Icon(Icons.school),
+                  title: Text('Profile'),
+                  trailing: Icon(Icons.arrow_forward),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CraftsmanProfilePage()),
+                    );                  },
                 ),
               ],
             ),
