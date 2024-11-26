@@ -72,7 +72,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 Divider(),
                 ListTile(
                   leading: Icon(Icons.work),
-                  title: Text('Portfolio'),
+                  title: Text('Works'),
                   trailing: Icon(Icons.arrow_forward),
                   onTap: () {
                     Navigator.push(
@@ -83,7 +83,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 ListTile(
                   leading: Icon(Icons.school),
-                  title: Text('Diploma'),
+                  title: Text('Certificate'),
                   trailing: Icon(Icons.arrow_forward),
                   onTap: () {
                     Navigator.push(
