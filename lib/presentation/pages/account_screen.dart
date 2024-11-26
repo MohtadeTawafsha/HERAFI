@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:herafi/presentation/pages/CraftsmanProfilePage.dart';
 import 'package:herafi/presentation/pages/certificatePage.dart';
 import 'package:herafi/presentation/pages/portfolio_screen.dart';
+import 'package:herafi/presentation/pages/CraftsmanListPage.dart';
 import 'availability_screen.dart';
 import 'edit_profile_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,33 +15,36 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
   String _userName = '';
+  String? _userType; 
+  String? _userId; 
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserName();
+    _fetchUserData();
   }
 
-  Future<void> _fetchUserName() async {
+  Future<void> _fetchUserData() async {
     try {
-      final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (userId == null) throw Exception("User not logged in");
+      _userId = FirebaseAuth.instance.currentUser?.uid;
+      if (_userId == null) throw Exception("User not logged in");
 
       final response = await Supabase.instance.client
           .from('users')
-          .select('name')
-          .eq('id', userId)
+          .select('name, user_type')
+          .eq('id', _userId as Object)
           .single();
 
       if (response != null) {
         setState(() {
           _userName = response['name'] ?? 'Unknown User';
+          _userType = response['user_type'];
         });
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to fetch user name: $error")),
+        SnackBar(content: Text("Failed to fetch user data: $error")),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -70,36 +75,68 @@ class _AccountScreenState extends State<AccountScreen> {
                   },
                 ),
                 Divider(),
+                if (_userType == 'craftsman') ...[
+                  ListTile(
+                    leading: Icon(Icons.work),
+                    title: Text('Works'),
+                    trailing: Icon(Icons.arrow_forward),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => WorkPage()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.school),
+                    title: Text('Certificates'),
+                    trailing: Icon(Icons.arrow_forward),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CertificateScreen()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.schedule),
+                    title: Text('Availability'),
+                    trailing: Icon(Icons.arrow_forward),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AvailabilityScreen()),
+                      );
+                    },
+                  ),
+                ],
                 ListTile(
-                  leading: Icon(Icons.work),
-                  title: Text('Portfolio'),
+                  leading: Icon(Icons.person),
+                  title: Text('Profile'),
                   trailing: Icon(Icons.arrow_forward),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => WorkPage()),
-                    );
+                    if (_userType == 'craftsman') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CraftsmanProfilePage(craftsmanId: _userId!),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Profile feature is not available for customers.')),
+                      );
+                    }
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.school),
-                  title: Text('Diploma'),
+                  leading: Icon(Icons.people),
+                  title: Text('Craftsmen List'),
                   trailing: Icon(Icons.arrow_forward),
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CertificateScreen()),
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.schedule),
-                  title: Text('Availability'),
-                  trailing: Icon(Icons.arrow_forward),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AvailabilityScreen()),
+                      MaterialPageRoute(builder: (context) => CraftsmanListPage()),
                     );
                   },
                 ),
