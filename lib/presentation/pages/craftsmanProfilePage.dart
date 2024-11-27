@@ -13,7 +13,9 @@ import 'package:herafi/domain/entites/work.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CraftsmanProfilePage extends StatefulWidget {
-  const CraftsmanProfilePage({Key? key}) : super(key: key);
+  final String craftsmanId;
+
+  const CraftsmanProfilePage({Key? key, required this.craftsmanId}) : super(key: key);
 
   @override
   _CraftsmanProfilePageState createState() => _CraftsmanProfilePageState();
@@ -27,18 +29,89 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
   List<WorkEntity> works = [];
   bool isLoading = true;
 
+  bool isFollowing = false;
+  bool isLoadingFollow = false;
+
   @override
   void initState() {
     super.initState();
     _fetchData();
+    _checkFollowingStatus();
+  }
+
+  Future<void> _checkFollowingStatus() async {
+    final customerId = FirebaseAuth.instance.currentUser?.uid;
+    final craftsmanId = widget.craftsmanId;
+
+    if (customerId == null || craftsmanId == null) return;
+
+    try {
+      final response = await Supabase.instance.client
+          .from('friendship')
+          .select('id')
+          .eq('craftsman_id', craftsmanId)
+          .eq('customer_id', customerId)
+          .maybeSingle();
+
+      setState(() {
+        isFollowing = response != null;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error checking follow status: $e')),
+      );
+    }
+  }
+
+  Future<void> _toggleFollow() async {
+    final customerId = FirebaseAuth.instance.currentUser?.uid;
+    final craftsmanId = widget.craftsmanId;
+
+    if (customerId == null || craftsmanId == null) return;
+
+    setState(() {
+      isLoadingFollow = true;
+    });
+
+    try {
+      if (isFollowing) {
+        await Supabase.instance.client
+            .from('friendship')
+            .delete()
+            .eq('craftsman_id', craftsmanId)
+            .eq('customer_id', customerId);
+
+        setState(() {
+          isFollowing = false;
+        });
+      } else {
+        await Supabase.instance.client.from('friendship').insert({
+          'craftsman_id': craftsmanId,
+          'customer_id': customerId,
+          'status': 1,
+        });
+
+        setState(() {
+          isFollowing = true;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error toggling follow status: $e')),
+      );
+    } finally {
+      setState(() {
+        isLoadingFollow = false;
+      });
+    }
   }
 
   Future<void> _fetchData() async {
-    final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
+    final craftsmanId = widget.craftsmanId;
 
     if (craftsmanId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: User not logged in.')),
+        const SnackBar(content: Text('Error: Craftsman ID not provided.')),
       );
       return;
     }
@@ -62,7 +135,7 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
           .single();
       craftsman = CraftsmanModel.fromJson({
         ...craftsmanResponse,
-        ...userResponse, // Merge user fields for craftsman
+        ...userResponse,
       });
 
       // Fetch certificates
@@ -102,6 +175,9 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    final isCraftsmanViewingOwnProfile = currentUserId == widget.craftsmanId;
+
     return isLoading
         ? const Scaffold(body: Center(child: CircularProgressIndicator()))
         : DefaultTabController(
@@ -112,12 +188,12 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
         ),
         body: Column(
           children: [
-            _buildCraftsmanInfoSection(),
+            _buildCraftsmanInfoSection(isCraftsmanViewingOwnProfile),
             const Divider(),
-            const TabBar(
+            TabBar(
               indicatorColor: Colors.white,
-              tabs: [
-                Tab(text: 'Certificates'),
+              tabs: const [
+                Tab(text: 'certificates'),
                 Tab(text: 'Works'),
               ],
             ),
@@ -135,9 +211,9 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
     );
   }
 
-  Widget _buildCraftsmanInfoSection() {
-    final isAvailable = availability.any(
-            (entry) => entry.available && entry.availabilityType == 'simple');
+  Widget _buildCraftsmanInfoSection(bool isCraftsmanViewingOwnProfile) {
+    final isAvailable =
+    availability.any((entry) => entry.available && entry.availabilityType == 'simple');
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -156,8 +232,7 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
                 children: [
                   Text(
                     user?.name ?? '',
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text(craftsman?.category ?? ''),
                   Text(user?.location ?? ''),
@@ -179,78 +254,91 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
                   const SizedBox(width: 8),
                   Text(
                     isAvailable ? 'I’m available to work' : 'I’m not available',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
+              if (!isCraftsmanViewingOwnProfile)
+                ElevatedButton(
+                  onPressed: isLoadingFollow ? null : _toggleFollow,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isFollowing ? Colors.red : Colors.blue,
+                  ),
+                  child: isLoadingFollow
+                      ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                      : Text(isFollowing ? 'Unfollow' : 'Follow'),
+                ),
               IconButton(
                 icon: const Icon(Icons.calendar_today, size: 24),
                 onPressed: () {
-                  final highlightedDays = availability
-                      .where((entry) =>
-                  entry.available && entry.dayOfWeek != null)
-                      .map((entry) => entry.dayOfWeek!.split(','))
-                      .expand((days) => days)
-                      .toSet()
-                      .toList();
-
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Available Days'),
-                        content: Wrap(
-                          spacing: 8.0,
-                          runSpacing: 8.0,
-                          children: [
-                            'Sunday',
-                            'Monday',
-                            'Tuesday',
-                            'Wednesday',
-                            'Thursday',
-                            'Friday',
-                            'Saturday'
-                          ].map((day) {
-                            final isHighlighted =
-                            highlightedDays.contains(day);
-
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: isHighlighted
-                                    ? Colors.green
-                                    : Colors.grey[300],
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                day,
-                                style: TextStyle(
-                                  color: isHighlighted
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Close'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  _showAvailabilityDays();
                 },
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  void _showAvailabilityDays() {
+    final highlightedDays = availability
+        .where((entry) => entry.available && entry.dayOfWeek != null)
+        .map((entry) => entry.dayOfWeek!.split(','))
+        .expand((days) => days)
+        .toSet()
+        .toList();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Available Days'),
+          content: Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: [
+              'Sunday',
+              'Monday',
+              'Tuesday',
+              'Wednesday',
+              'Thursday',
+              'Friday',
+              'Saturday'
+            ].map((day) {
+              final isHighlighted = highlightedDays.contains(day);
+
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: isHighlighted ? Colors.green : Colors.grey[300],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  day,
+                  style: TextStyle(
+                    color: isHighlighted ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 

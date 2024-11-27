@@ -31,16 +31,16 @@ class _CraftsmanListPageState extends State<CraftsmanListPage> {
       setState(() {
         craftsmen = response
             .where((json) {
-              final userJson = json['users'];
-              return userJson['user_type'] == 'craftsman'; 
-            })
+          final userJson = json['users'];
+          return userJson['user_type'] == 'craftsman';
+        })
             .map((json) {
-              final userJson = json['users'] as Map<String, dynamic>;
-              return CraftsmanModel.fromJson({
-                ...json,
-                ...userJson, 
-              });
-            })
+          final userJson = json['users'] as Map<String, dynamic>;
+          return CraftsmanModel.fromJson({
+            ...json,
+            ...userJson,
+          });
+        })
             .toList();
 
         isLoading = false;
@@ -64,34 +64,34 @@ class _CraftsmanListPageState extends State<CraftsmanListPage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : craftsmen.isEmpty
-              ? const Center(child: Text('No craftsmen found.'))
-              : ListView.builder(
-                  itemCount: craftsmen.length,
-                  itemBuilder: (context, index) {
-                    final craftsman = craftsmen[index];
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(craftsman.image ?? ''),
-                        child: craftsman.image == null
-                            ? const Icon(Icons.person)
-                            : null,
-                      ),
-                      title: Text(craftsman.name ?? 'Unknown'),
-                      subtitle: Text(craftsman.category ?? 'No category'),
-                      onTap: () {
-                        
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CraftsmanProfilePage(
-                              craftsmanId: craftsman.id, 
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+          ? const Center(child: Text('No craftsmen found.'))
+          : ListView.builder(
+        itemCount: craftsmen.length,
+        itemBuilder: (context, index) {
+          final craftsman = craftsmen[index];
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(craftsman.image ?? ''),
+              child: craftsman.image == null
+                  ? const Icon(Icons.person)
+                  : null,
+            ),
+            title: Text(craftsman.name ?? 'Unknown'),
+            subtitle: Text(craftsman.category ?? 'No category'),
+            onTap: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CraftsmanProfilePage(
+                    craftsmanId: craftsman.id,
+                  ),
                 ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

@@ -48,7 +48,7 @@ class FriendshipRepositoryImpl extends FriendshipRepository {
   }) async {
     try {
       final result =
-          await remoteDataSource.isFollowing(craftsmanId, customerId);
+      await remoteDataSource.isFollowing(craftsmanId, customerId);
       return Right(result);
     } catch (error) {
       return Left(ServerFailure(error.toString()));
@@ -71,7 +71,7 @@ class FriendshipRepositoryImpl extends FriendshipRepository {
       String customerId) async {
     try {
       final followedCraftsmen =
-          await remoteDataSource.fetchFollowedCraftsmen(customerId);
+      await remoteDataSource.fetchFollowedCraftsmen(customerId);
       return Right(followedCraftsmen);
     } catch (error) {
       return Left(ServerFailure(error.toString()));
