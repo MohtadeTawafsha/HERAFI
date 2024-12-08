@@ -6,7 +6,7 @@ import 'package:herafi/domain/repositories/userRepository.dart';
 import '../../core/status/error/Failure.dart';
 import '../../domain/entites/user.dart';
 
-class userRepositoryImp extends userRepository{
+class userRepositoryImp extends UserRepository{
   final userRemotDataSource dataSource=userRemotDataSource();
 
 
