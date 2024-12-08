@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -6,6 +8,7 @@ import 'package:herafi/presentation/Widgets/liveLocationMarker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
+import 'package:geolocator/geolocator.dart' as geoLocator;
 import '../routes/app_routes.dart';
 
 
@@ -19,7 +22,6 @@ class trackingPageController extends GetxController{
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     getUserLocation();
   }
@@ -29,20 +31,31 @@ class trackingPageController extends GetxController{
       var location=Location();
       await location.requestPermission();
       userLocation=(await location.getLocation()).obs;
-      for(int i=0;i<5;i++){
-        markers.value.add(Marker(point: LatLng(userLocation.value.latitude!+i,userLocation.value.longitude!), child: liveLocationMarker(),width: 100,height: 100));
-        mapController.move(LatLng(userLocation.value.latitude!+i, userLocation.value.longitude!), 17);
-        await Future.delayed(Duration(seconds: 1));
-      }
-
+        markers.value.add(Marker(point: LatLng(userLocation.value.latitude!,userLocation.value.longitude!), child: liveLocationMarker(),width: 100,height: 100));
+         moveCameraToLocation(userLocation.value);
       markers.refresh();
+      getStreamLocation();
     }
     catch(e){
       print(e.toString());
     }
   }
-  void m(){
+  void getStreamLocation(){
 
+    final geoLocator.LocationSettings locationSettings = geoLocator.LocationSettings(
+      accuracy: geoLocator.LocationAccuracy.high,
+      distanceFilter: 1,
+    );
+
+    geoLocator.Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+            (geoLocator.Position? position) {
+              if(position==null)return;
+              userLocation.value=LocationData.fromMap({"latitude":position!.latitude,"longitude":position.longitude});
+              markers.removeLast();
+              markers.value.add(Marker(point: LatLng(position.latitude,position.longitude), child: liveLocationMarker(),width: 100,height: 100));
+              moveCameraToLocation(userLocation.value);
+              markers.refresh();
+        });
   }
   void openDrawer(){
     scaffoldKey.currentState!.openDrawer();
@@ -58,5 +71,8 @@ class trackingPageController extends GetxController{
   }
   void navigateOrderHistoryPage(){
     Get.toNamed(AppRoutes.orderHistory);
+  }
+  void moveCameraToLocation(LocationData location){
+    mapController.move(LatLng(location.latitude!,location.longitude!), mapController.camera.zoom);
   }
 }
