@@ -30,7 +30,7 @@ class AddWorkPage extends StatelessWidget {
                 onTap: () async {
                   final picker = ImagePicker();
                   final pickedFile =
-                      await picker.pickImage(source: ImageSource.gallery);
+                  await picker.pickImage(source: ImageSource.gallery);
                   if (pickedFile != null) {
                     onImagePicked(pickedFile.path);
                   }
@@ -43,29 +43,29 @@ class AddWorkPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     image: imagePath != null
                         ? DecorationImage(
-                            image: FileImage(File(imagePath!)),
-                            fit: BoxFit.cover,
-                          )
+                      image: FileImage(File(imagePath!)),
+                      fit: BoxFit.cover,
+                    )
                         : null,
                   ),
                   child: imagePath == null
                       ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add_a_photo,
-                                  size: 40, color: Colors.black54),
-                              SizedBox(height: 8),
-                              Text(
-                                "Add Image",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add_a_photo,
+                            size: 40, color: Colors.black54),
+                        SizedBox(height: 8),
+                        Text(
+                          "Add Image",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
                           ),
-                        )
+                        ),
+                      ],
+                    ),
+                  )
                       : null,
                 ),
               ),
