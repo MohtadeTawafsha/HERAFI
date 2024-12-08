@@ -1,21 +1,19 @@
-class CraftsmanEntity {
-  final String id;
-  final DateTime createdAt;
-  final String firstName;
-  final String lastName;
-  final String phoneNumber;
-  final DateTime dateOfBirth;
-  final int yearsOfExperience;
+import 'package:herafi/domain/entites/user.dart';
+
+class CraftsmanEntity extends UserEntity {
   final String category;
+  final int yearsOfExp;
 
   CraftsmanEntity({
-    required this.id,
-    required this.createdAt,
-    required this.firstName,
-    required this.lastName,
-    required this.phoneNumber,
-    required this.dateOfBirth,
-    required this.yearsOfExperience,
     required this.category,
+    required this.yearsOfExp,
+    required super.name,
+    required super.id,
+    required super.image,
+    required super.createdAt,
+    required super.phoneNumber,
+    required super.userType,
+    required super.location,
+    required super.dateOfBirth, // Pass date_of_birth from UserEntity
   });
 }

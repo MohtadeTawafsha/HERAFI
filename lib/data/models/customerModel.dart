@@ -1,54 +1,43 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:herafi/domain/entites/craftsman.dart';
 import 'package:herafi/domain/entites/customer.dart';
 
 class CustomerModel extends CustomerEntity {
   CustomerModel({
+    required super.name,
     required super.id,
+    required super.image,
     required super.createdAt,
-    required super.firstName,
-    required super.lastName,
     required super.phoneNumber,
-    required super.dateOfBirth,
+    required super.userType,
+    required super.location,
+    required super.dateOfBirth, // Include DOB
   });
-  // Convert JSON to Model
+
+  /// Convert JSON to CraftsmanModel
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
     return CustomerModel(
-      id: json['id'].toString(),
+      name: json['name'],
+      id: json['id'],
+      image: json['image'] ?? '',
       createdAt: DateTime.parse(json['created_at']),
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      phoneNumber: json['phoneNumber'],
-      dateOfBirth: DateTime.parse(json['dateOfBirth']),
+      phoneNumber: json['phone_number'],
+      userType: json['user_type'],
+      location: json['location'],
+      dateOfBirth: DateTime.parse(json['date_of_birth']), // Parse DOB
     );
   }
 
-  // Convert Model to JSON
+  /// Convert CraftsmanModel to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'name': name,
+      'image': image,
       'created_at': createdAt.toIso8601String(),
-      'firstName': firstName,
-      'lastName': lastName,
-      'phoneNumber': phoneNumber,
-      'dateOfBirth': dateOfBirth.toIso8601String(),
+      'phone_number': phoneNumber,
+      'user_type': userType,
+      'location': location,
+      'date_of_birth': dateOfBirth.toIso8601String(), // Save DOB
     };
-  }
-
-  Future<void> insertCustomer({
-    required String firstName,
-    required String lastName,
-    required String phoneNumber,
-    required DateTime dateOfBirth,
-  }) async {
-    final response = await Supabase.instance.client.from('customer').insert({
-      'firstName': firstName,
-      'lastName': lastName,
-      'phoneNumber': phoneNumber,
-      'dateOfBirth': dateOfBirth.toIso8601String(),
-    });
-
-    if (response.error != null) {
-      throw Exception("Failed to insert customer: ${response.error!.message}");
-    }
   }
 }

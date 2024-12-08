@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:herafi/domain/entites/chat.dart';
 
 import '../../../core/status/error/Failure.dart';
-import '../../entites/Message.dart';
 import '../../repositories/ChatRepository.dart';
 
 class fetchUserChatsUseCase{
