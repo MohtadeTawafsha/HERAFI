@@ -8,7 +8,9 @@ class smsVerificationController extends GetxController{
   var timer = 60.obs;
   String verificationId;
   final String phoneNumber;
-  List<int> codes=List.generate(6, (index)=>0);
+  final TextEditingController smsCodeController=TextEditingController();
+  final Rx<bool> isCodeFull=false.obs;
+  final Rx<String> errorMessage="".obs;
   smsVerificationController({required this.verificationId,required this.phoneNumber});
   @override
   void onInit() {
@@ -48,7 +50,7 @@ class smsVerificationController extends GetxController{
     }
 
   }
-  void verifyNumber(){
+  void verifyNumber()async{
     Get.dialog(
       Center(
         child: progressIndicator(),
@@ -56,22 +58,26 @@ class smsVerificationController extends GetxController{
       barrierDismissible: false, // Prevents dismissing the dialog by tapping outside
     );
     try{
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: '123456');
-      FirebaseAuth.instance.signInWithCredential(credential);
+      PhoneAuthCredential credential =await PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCodeController.text);
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    }
+    on FirebaseAuthException catch(e){
+      if(e.code=="invalid-verification-code"){
+        errorMessage.value="رقم التأكيد غير صحيح يرجى المحاولة مرة اخرى";
+        smsCodeController.clear();
+      }
+      else{
+        errorMessage.value="لقد حدث خطأ غير متوقع الرجاء المحاولة مرة اخرى";
+        smsCodeController.clear();
+      }
     }
     catch(e){
+      errorMessage.value="لقد حدث خطأ غير متوقع الرجاء المحاولة مرة اخرى";
+      smsCodeController.clear();
 
     }
     Get.back();
-  }
-  void onChange(String value,int index,BuildContext context){
-    if (value.isNotEmpty) {
-      FocusScope.of(context).nextFocus();
-    } else {
-      FocusScope.of(context).previousFocus();
-      return;
-    }
-    codes[index]=int.parse(value);
   }
 
 }

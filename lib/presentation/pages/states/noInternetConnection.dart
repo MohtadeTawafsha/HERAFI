@@ -12,9 +12,9 @@ class NoInternetConnection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(height: MediaQuery.sizeOf(context).height*0.21,),
-              Image.asset("lib/core/utils/images/no-wifi.png",width: MediaQuery.sizeOf(context).width*0.5,color: Colors.red,),
+              Image.asset("lib/core/utils/images/no-internet.png",width: MediaQuery.sizeOf(context).width*0.5,color: Colors.red,),
               Text("لا يوجد اتصال بالانترنت",style: Theme.of(context).textTheme!.bodyMedium,),
-              SizedBox(height: MediaQuery.sizeOf(context).height*0.3,),
+              SizedBox(height: MediaQuery.sizeOf(context).height*0.1,),
               Text("قم بالأتصال بالانترنت, وسوف يتم تحويلك مباشرة الى البرنامج",style: Theme.of(context).textTheme!.bodyMedium,),
             ],
           ),

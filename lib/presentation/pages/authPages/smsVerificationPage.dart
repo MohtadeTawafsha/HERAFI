@@ -1,14 +1,38 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:herafi/presentation/controllers/AuthController/smsVerificationController.dart';
+import 'package:pinput/pinput.dart';
 import '../../themes/colors.dart';
 
 class smsVerificationPage extends StatelessWidget {
   const smsVerificationPage({super.key});
   @override
   Widget build(BuildContext context) {
+    final defaultPinTheme = PinTheme(
+      width: min(MediaQuery.sizeOf(context).width*0.14, 56),
+      height: 56,
+      textStyle: TextStyle(fontSize: 20, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.3),
+        border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
+        borderRadius: BorderRadius.circular(20),
+      ),
+    );
+    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+      border: Border.all(color: Color.fromRGBO(114, 178, 238, 1)),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    final submittedPinTheme = defaultPinTheme.copyWith(
+      decoration: defaultPinTheme.decoration?.copyWith(
+        color: Theme.of(context).focusColor,
+      ),
+    );
+
     final smsVerificationController controller = Get.find();
     return SafeArea(
       child: Scaffold(
@@ -25,63 +49,63 @@ class smsVerificationPage extends StatelessWidget {
           title:
               Text("تاكيد رقم الهاتف", style: TextStyle(color: Colors.white)),
         ),
-        body: Container(
-          padding: EdgeInsets.all(10),
-          width: Get.width,
-          height: Get.height,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 50,
-              ),
-              Text('لقد تم ارسال رقم تاكيد يرجى ادخاله والاتسمرار'),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                  children: List.generate(6, (index) {
-                return number(Get.size, index, context,controller);
-              })),
-              SizedBox(
-                height: 50,
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        body: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(10),
+              width: Get.width,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextButton(onPressed: controller.verifyNumber, child: Text("تاكيد الرقم")),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Text('لقد تم ارسال رقم تاكيد يرجى ادخاله والاتسمرار'),
+                  SizedBox(
+                    height: 30,
+                  ),
+
+                  Row(
+                    children: [
+                      Pinput(
+                        defaultPinTheme: defaultPinTheme,
+                        focusedPinTheme: focusedPinTheme,
+                        submittedPinTheme: submittedPinTheme,
+                        controller: controller.smsCodeController,
+                        pinContentAlignment: Alignment.center,
+                        length: 6,
+                        onChanged: (x)=>controller.isCodeFull.value=(x.length==6),
+
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 5,),
+                  Row(
+                    children: [
+                      Obx((){
+                        return Text(controller.errorMessage.value);
+                      })
+                    ],
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Obx((){
+                        return TextButton(onPressed: controller.isCodeFull.value?controller.verifyNumber:null, child: Text("تاكيد الرقم"));
+                      })
+                    ],
+                  ),
                 ],
-              )
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-
-  Container number(Size size, int index, BuildContext context,smsVerificationController controller) {
-    return Container(
-      margin: EdgeInsets.all(5),
-      width: size.width * 0.13,
-      child: TextFormField(
-        autofocus: true,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.grey,
-          border: InputBorder.none,
-          enabledBorder: UnderlineInputBorder(),
-        ),
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(1),
-        ],
-        textAlign: TextAlign.center,
-        onChanged:(value)=>controller.onChange(value,index,context),
-      ),
-    );
-  }
-
   Widget resendCode(smsVerificationController controller) {
     return TextButton(onPressed:controller.sendCode, child: Text('resend'));
   }

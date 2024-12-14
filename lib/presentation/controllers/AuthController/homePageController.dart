@@ -9,7 +9,6 @@ import 'package:herafi/presentation/routes/app_routes.dart';
 
 import '../../../core/status/error/Failure.dart';
 import '../../../domain/usecases/chatUseCases/fetchUserData.dart';
-
 class homePageController extends GetxController {
   final fetchUserChatsUseCase fetchChatsUseCase;
   final fetchUserDataUseCase FetchUserData;
@@ -68,7 +67,6 @@ class homePageController extends GetxController {
     Get.toNamed(AppRoutes.chatbot);
   }
   void fetchUserData()async{
-    Future.delayed(Duration(seconds: 1)).then((onValue)=>Get.toNamed(AppRoutes.accountType));
     final result=await FetchUserData(userId: FirebaseAuth.instance.currentUser!.uid);
     result.fold(
             (left){
@@ -85,8 +83,7 @@ class homePageController extends GetxController {
     );
   }
   void fetchChats() async {
-    Either<Failure, List<chatEntity>> chats =
-    await fetchChatsUseCase(userId: FirebaseAuth.instance.currentUser!.uid);
+    Either<Failure, List<chatEntity>> chats = await fetchChatsUseCase(userId: FirebaseAuth.instance.currentUser!.uid);
     chats.fold((ifLeft) {
       Get.snackbar('مشكلة', 'لقد حدثة مشكلة اثناء تحميل الرسائل');
     }, (ifRight) {
