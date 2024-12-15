@@ -57,6 +57,7 @@ class AppRoutes {
   static const String registerCustomer = '/RegisterCustomer';
   static const String registerCraftsman = '/RegisterCraftsman';
   static const String accountType = '/accountType';
+  static const String createJob = '/createJob';
 
   static List<GetPage> pages = [
     GetPage(

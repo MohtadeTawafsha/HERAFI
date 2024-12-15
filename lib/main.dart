@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:herafi/global/constants.dart';
+import 'package:herafi/presentation/bindings/crossDataBinding.dart';
+import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/routes/app_routes.dart';
 import 'package:herafi/presentation/routes/initialPage.dart';
 import 'package:herafi/presentation/themes/theme.dart';
@@ -46,6 +48,7 @@ class _MyAppState extends State<MyApp> {
         splitScreenMode: true,
       builder: (context,widget) {
         return GetMaterialApp(
+          initialBinding: crossDataBinding(),
           theme: themeData,
           debugShowCheckedModeBanner: false,
           locale: Locale("ar"),

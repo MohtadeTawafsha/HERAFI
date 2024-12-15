@@ -4,6 +4,10 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../data/remotDataSource/customerDataSource.dart';
+import '../../../domain/entites/user.dart';
+import '../../../global/constants.dart';
+import '../../Widgets/progressIndicator.dart';
+import '../../controllers/crossDataContoller.dart';
 
 class RegisterCustomer extends StatefulWidget {
   const RegisterCustomer({Key? key}) : super(key: key);
@@ -15,9 +19,9 @@ class RegisterCustomer extends StatefulWidget {
 class _RegisterCustomerState extends State<RegisterCustomer> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
   final _dobController = TextEditingController();
   final _locationController = TextEditingController();
+  String? _selectedCity;
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final SupabaseClient supabaseClient = Supabase.instance.client;
@@ -25,8 +29,13 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   Future<void> _registerCustomer() async {
     if (_formKey.currentState!.validate()) {
       try {
+        Get.dialog(
+          Center(
+            child: progressIndicator(),
+          ),
+          barrierDismissible: false, // Prevents dismissing the dialog by tapping outside
+        );
         final String name = _nameController.text.trim();
-        final String phoneNumber = _phoneController.text.trim();
         final String location = _locationController.text.trim();
         final String dob = _dobController.text.trim();
 
@@ -38,11 +47,11 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
         await dataSource.saveCustomerDetails(
           name: name,
           location: location,
-          phoneNumber: phoneNumber,
+          phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!,
           dateOfBirth: DateTime.parse(dob), // Pass DOB
         );
+        Get.find<crossData>().userEntity=UserEntity(name: name, id: FirebaseAuth.instance.currentUser!.uid, image: '', createdAt: DateTime.now(), phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!, userType: "customer", location: location, dateOfBirth: DateTime.parse(dob));
 
-        Get.snackbar('Success', 'Customer registered successfully!');
         Get.offAllNamed('/home'); // Navigate to home after success
       } catch (e) {
         Get.snackbar('Error', 'An error occurred: $e');
@@ -77,19 +86,6 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                   },
                 ),
 
-                // Phone Number Field
-                TextFormField(
-                  controller: _phoneController,
-                  decoration: const InputDecoration(labelText: 'رقم الهاتف'),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'يرجى إدخال رقم الهاتف';
-                    }
-                    return null;
-                  },
-                ),
-
                 // Date of Birth Field
                 TextFormField(
                   controller: _dobController,
@@ -118,9 +114,21 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                 ),
 
                 // Location Field
-                TextFormField(
-                  controller: _locationController,
+
+                DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: 'الموقع'),
+                  value: _selectedCity,
+                  items: constants.palestinianCities.map((String category) {
+                    return DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(category),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedCity = newValue;
+                    });
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'يرجى إدخال الموقع';
@@ -152,7 +160,6 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   @override
   void dispose() {
     _nameController.dispose();
-    _phoneController.dispose();
     _dobController.dispose();
     _locationController.dispose();
     super.dispose();

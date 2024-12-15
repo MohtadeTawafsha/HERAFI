@@ -56,4 +56,11 @@ class UserEntity {
     }
     return image;
   }
+
+  bool isCraftsman(){
+    return userType=="craftsman";
+  }
+  bool isCustomer(){
+    return userType=="customer";
+  }
 }

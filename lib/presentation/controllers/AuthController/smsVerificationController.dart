@@ -2,16 +2,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:herafi/main.dart';
+import 'package:herafi/presentation/controllers/crossDataContoller.dart';
+import '../../../domain/usecases/chatUseCases/fetchUserData.dart';
 import '../../../global/alers.dart';
 import '../../Widgets/progressIndicator.dart';
+import '../../routes/app_routes.dart';
 class smsVerificationController extends GetxController{
+
+  smsVerificationController({required this.verificationId,required this.phoneNumber});
+
+
+
   var timer = 60.obs;
   String verificationId;
   final String phoneNumber;
   final TextEditingController smsCodeController=TextEditingController();
   final Rx<bool> isCodeFull=false.obs;
   final Rx<String> errorMessage="".obs;
-  smsVerificationController({required this.verificationId,required this.phoneNumber});
+
+
   @override
   void onInit() {
     super.onInit();
@@ -77,7 +86,6 @@ class smsVerificationController extends GetxController{
       smsCodeController.clear();
 
     }
-    Get.back();
   }
 
 }

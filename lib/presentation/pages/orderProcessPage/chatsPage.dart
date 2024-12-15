@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/controllers/orderPageControllers/chatsPageController.dart';
 
 import '../../../domain/entites/chat.dart';
@@ -11,7 +12,7 @@ class chatsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chatsPageController controller = Get.find();
-    final List<chatEntity> chats = controller.HomePageController.chats;
+    final List<chatEntity> chats = Get.find<crossData>().chats;
     return Scaffold(
       body: SizedBox.expand(
         child: SafeArea(

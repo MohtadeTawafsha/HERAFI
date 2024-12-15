@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
+import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/pages/account_screen.dart';
 import 'package:herafi/presentation/pages/trakingPage.dart';
 import '../Widgets/itemInBottomNavigationBar.dart';
@@ -10,11 +11,13 @@ class homePage extends StatelessWidget {
   const homePage({super.key});
   @override
   Widget build(BuildContext context){
+    final crossData cross_Data=Get.find<crossData>();
     final homePageController controller = Get.find();
+    print(cross_Data.userEntity.userType);
     return Scaffold(
       key: controller.scaffoldKey,
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: bottomNavigationBar(controller),
+      bottomNavigationBar: cross_Data.userEntity.isCraftsman()?bottomNavigationBarForCraftsman(controller):bottomNavigationBarForCustomer(controller),
         body: Obx(() {
           return getSelectedPage(controller);
         }),
@@ -37,12 +40,48 @@ class homePage extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          header(controller),
         ],
       ),
     );
   }
-  Widget bottomNavigationBar(homePageController controller) {
+  Widget bottomNavigationBarForCustomer(homePageController controller) {
+    return Builder(builder: (context) {
+      return Container(
+        height: 70.spMin,
+        decoration: BoxDecoration(
+            color: Theme.of(context).focusColor,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.spMin),
+                topRight: Radius.circular(15.spMin))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            itemInBottomNavigationBar(
+              icon: Icons.home_outlined,
+              index: 0,
+            ),
+            itemInBottomNavigationBar(
+              icon: Icons.shopping_cart_outlined,
+              index: 1,
+            ),
+            itemInBottomNavigationBar(
+              icon: Icons.add,
+              index: 2,
+            ),
+            itemInBottomNavigationBar(
+              icon: Icons.task,
+              index: 3,
+            ),
+            itemInBottomNavigationBar(
+              icon: Icons.person,
+              index: 4,
+            ),
+          ],
+        ),
+      );
+    });
+  }
+  Widget bottomNavigationBarForCraftsman(homePageController controller) {
     return Builder(builder: (context) {
       return Container(
         height: 70.spMin,
@@ -78,63 +117,5 @@ class homePage extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Widget header(homePageController controller) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Theme(
-          data: ThemeData(),
-          child: TextButton(
-            onPressed: () {
-              controller.toChats();
-            },
-            child: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                Icon(
-                  Icons.message_outlined,
-                  color: Colors.white,
-                ),
-                Container(
-                  padding: EdgeInsets.all(2),
-                  decoration:
-                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                  child: Obx(() {
-                    return Text(
-                      controller.chats.fold<int>(0, (sum, combine) {
-                        return sum + combine.missedMessagesCountByMe;
-                      }).toString(),
-                      style: Theme.of(Get.context!).textTheme!.bodySmall!,
-                    );
-                  }),
-                )
-              ],
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Theme(
-          data: ThemeData(),
-          child: IconButton(
-            onPressed: () {
-              controller.toChatBot();
-            },
-            icon: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                CircleAvatar(
-                  child: Image.asset('lib/core/utils/images/robot-setting.png'),
-                  backgroundColor: Colors.white,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }

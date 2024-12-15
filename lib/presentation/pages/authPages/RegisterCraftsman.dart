@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:herafi/domain/entites/user.dart';
+import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../data/remotDataSource/craftsmanRemotDataSource.dart';
+import '../../../global/constants.dart';
+import '../../Widgets/progressIndicator.dart';
 
 class RegisterCraftsman extends StatefulWidget {
   const RegisterCraftsman({Key? key}) : super(key: key);
@@ -15,11 +19,10 @@ class RegisterCraftsman extends StatefulWidget {
 class _RegisterCraftsmanState extends State<RegisterCraftsman> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
   final _locationController = TextEditingController();
   final _dobController = TextEditingController(); // For Date of Birth
-  final List<String> _categories = ['السباكة', 'النجارة', 'الكهرباء', 'الطلاء', 'أخرى'];
   String? _selectedCategory;
+  String? _selectedCity;
   int _yearsOfExperience = 0;
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -44,8 +47,13 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
   Future<void> _registerCraftsman() async {
     if (_formKey.currentState!.validate()) {
       try {
+        Get.dialog(
+          Center(
+            child: progressIndicator(),
+          ),
+          barrierDismissible: false, // Prevents dismissing the dialog by tapping outside
+        );
         final String name = _nameController.text.trim();
-        final String phoneNumber = _phoneController.text.trim();
         final String location = _locationController.text.trim();
         final String dob = _dobController.text.trim();
 
@@ -59,11 +67,10 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
           yearsOfExperience: _yearsOfExperience,
           name: name,
           location: location,
-          phoneNumber: phoneNumber,
+          phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!,
           dateOfBirth: DateTime.parse(dob), // Pass DOB
         );
-
-        Get.snackbar('Success', 'Craftsman registered successfully!');
+        Get.find<crossData>().userEntity=UserEntity(name: name, id: FirebaseAuth.instance.currentUser!.uid, image: '', createdAt: DateTime.now(), phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!, userType: "craftsman", location: location, dateOfBirth: DateTime.parse(dob));
         Get.offAllNamed('/home'); // Navigate to home after success
       } catch (e) {
         Get.snackbar('Error', 'An error occurred: $e');
@@ -97,20 +104,6 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                     return null;
                   },
                 ),
-
-                // Phone Number Field
-                TextFormField(
-                  controller: _phoneController,
-                  decoration: const InputDecoration(labelText: 'رقم الهاتف'),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'يرجى إدخال رقم الهاتف';
-                    }
-                    return null;
-                  },
-                ),
-
                 // Date of Birth Field
                 TextFormField(
                   controller: _dobController,
@@ -137,10 +130,20 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                   },
                 ),
 
-                // Location Field
-                TextFormField(
-                  controller: _locationController,
+                DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: 'الموقع'),
+                  value: _selectedCity,
+                  items: constants.palestinianCities.map((String category) {
+                    return DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(category),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedCity = newValue;
+                    });
+                  },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'يرجى إدخال الموقع';
@@ -184,7 +187,7 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                 DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: 'التخصص'),
                   value: _selectedCategory,
-                  items: _categories.map((String category) {
+                  items: constants.categories.map((String category) {
                     return DropdownMenuItem<String>(
                       value: category,
                       child: Text(category),
@@ -226,7 +229,6 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
   @override
   void dispose() {
     _nameController.dispose();
-    _phoneController.dispose();
     _locationController.dispose();
     _dobController.dispose(); // Dispose the DOB controller
     super.dispose();

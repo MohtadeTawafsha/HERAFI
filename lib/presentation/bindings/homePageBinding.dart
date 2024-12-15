@@ -12,14 +12,8 @@ class homePageBinding extends Bindings {
   @override
   void dependencies() {
 
-    Get.lazyPut(()=>chatsRemotDataSource());
-    Get.lazyPut(()=>userRepositoryImp());
 
 
-    Get.lazyPut(()=>ChatRepositoryImpl(Get.find<chatsRemotDataSource>()));
-    Get.lazyPut(()=>fetchUserChatsUseCase(Get.find<ChatRepositoryImpl>()));
-
-    Get.lazyPut(()=>fetchUserDataUseCase(userRepos: Get.find<userRepositoryImp>()));
-    Get.put(homePageController(fetchChatsUseCase: Get.find<fetchUserChatsUseCase>(),FetchUserData: Get.find<fetchUserDataUseCase>()));
+    Get.put(homePageController());
   }
 }

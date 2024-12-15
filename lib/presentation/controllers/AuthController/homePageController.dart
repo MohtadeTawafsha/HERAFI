@@ -10,22 +10,16 @@ import 'package:herafi/presentation/routes/app_routes.dart';
 import '../../../core/status/error/Failure.dart';
 import '../../../domain/usecases/chatUseCases/fetchUserData.dart';
 class homePageController extends GetxController {
-  final fetchUserChatsUseCase fetchChatsUseCase;
-  final fetchUserDataUseCase FetchUserData;
 
-  homePageController({required this.fetchChatsUseCase,required this.FetchUserData});
-  Rx<UserEntity> userEntity=Rx(UserEntity(name: '', id: '', image: '', createdAt: DateTime.now(), phoneNumber: '', userType: '', location: '', dateOfBirth: DateTime.now()));
+  homePageController();
   Rx<int> index = 0.obs;
   List list = [];
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  RxList<chatEntity> chats = <chatEntity>[].obs;
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    fetchChats();
-    fetchUserData();
   }
 
   void orderherafi() {
@@ -65,29 +59,5 @@ class homePageController extends GetxController {
   }
   void toChatBot() {
     Get.toNamed(AppRoutes.chatbot);
-  }
-  void fetchUserData()async{
-    final result=await FetchUserData(userId: FirebaseAuth.instance.currentUser!.uid);
-    result.fold(
-            (left){
-          Get.snackbar('خطا', 'لقد حدث خطا ما يرجى المحاولة مرة اخرى');
-        },
-            (right){
-          if(right==null){
-            Get.offAllNamed(AppRoutes.accountType);
-          }
-          else{
-            userEntity.value=right;
-          }
-        }
-    );
-  }
-  void fetchChats() async {
-    Either<Failure, List<chatEntity>> chats = await fetchChatsUseCase(userId: FirebaseAuth.instance.currentUser!.uid);
-    chats.fold((ifLeft) {
-      Get.snackbar('مشكلة', 'لقد حدثة مشكلة اثناء تحميل الرسائل');
-    }, (ifRight) {
-      this.chats.value=ifRight;
-    });
   }
 }
