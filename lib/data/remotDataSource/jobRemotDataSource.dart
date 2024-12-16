@@ -1,33 +1,51 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:herafi/domain/entites/job.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/jobModel.dart';
+import 'certificateRemotDataSource.dart';
 
 class JobRemoteDataSource {
-  final SupabaseClient supabaseClient = Supabase.instance.client;
+  final SupabaseClient supabaseClient=Supabase.instance.client;
 
-  Future<void> insertJobData({
-    required String id,
-    required DateTime createdAt,
-    required String category,
-    required String location,
-    required String description,
-    DateTime? startDate, // Nullable
-    double? cost,        // Nullable
-    DateTime? endDate,   // Nullable
-    required String status,
-  }) async {
-    final response = await supabaseClient.from('job').insert({
-      'id': id,
-      'created_at': createdAt.toIso8601String(),
-      'category': category,
-      'location': location,
-      'description': description,
-      'start_date': startDate?.toIso8601String(),
-      'cost': cost,
-      'end_date': endDate?.toIso8601String(),
-      'status': status,
-    });
+  Future<JobModel> getJobDetails(int id) async {
+    try {
+      final response = await supabaseClient
+          .from('jobs') // 'jobs' is the table name
+          .select()
+          .eq('id', id) // Filter by ID
+          .single()
+          .select();
 
-    if (response.error != null) {
-      throw Exception("Failed to insert job data: ${response.error!.message}");
+
+      final data = response as Map<String, dynamic>;
+      return JobModel.fromJson(data);
+    } catch (e) {
+      throw Exception('Failed to fetch job details: $e');
     }
+  }
+  Future createJob(JobModel job)async{
+    final fileName = 'certificates/${DateTime.now().millisecondsSinceEpoch}';
+    final ref = FirebaseStorage.instance.ref().child(fileName);
+    final uploadTask = await ref.putFile(File(job.image));
+    job.image=await uploadTask.ref.getDownloadURL();
+    await supabaseClient.from('jobs').insert(job.toJson());
+  }
+
+  Future<List<JobEntity>> fetchJobs(int page,String category) async {
+    final response = await supabaseClient
+        .from('jobs')
+        .select('*')
+        .or('visibility_all_types.eq.true,category-name.eq.$category')
+        .order('created-at', ascending: false)
+        .range((page - 1) * 15, page * 15 - 1)
+        .select();
+
+
+
+    return (response as List)
+        .map((json) => JobModel.fromJson(json))
+        .toList();
   }
 }

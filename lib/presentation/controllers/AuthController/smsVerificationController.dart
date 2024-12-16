@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:herafi/global/setOfMethods.dart';
 import 'package:herafi/main.dart';
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import '../../../domain/usecases/chatUseCases/fetchUserData.dart';
@@ -60,12 +61,7 @@ class smsVerificationController extends GetxController{
 
   }
   void verifyNumber()async{
-    Get.dialog(
-      Center(
-        child: progressIndicator(),
-      ),
-      barrierDismissible: false, // Prevents dismissing the dialog by tapping outside
-    );
+    globalMethods().showProgressDialog();
     try{
       PhoneAuthCredential credential =await PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCodeController.text);
 
@@ -75,15 +71,18 @@ class smsVerificationController extends GetxController{
       if(e.code=="invalid-verification-code"){
         errorMessage.value="رقم التأكيد غير صحيح يرجى المحاولة مرة اخرى";
         smsCodeController.clear();
+        goBack();
       }
       else{
         errorMessage.value="لقد حدث خطأ غير متوقع الرجاء المحاولة مرة اخرى";
         smsCodeController.clear();
+        goBack();
       }
     }
     catch(e){
       errorMessage.value="لقد حدث خطأ غير متوقع الرجاء المحاولة مرة اخرى";
       smsCodeController.clear();
+      goBack();
 
     }
   }

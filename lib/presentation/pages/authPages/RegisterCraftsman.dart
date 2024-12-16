@@ -5,6 +5,7 @@ import 'package:herafi/domain/entites/user.dart';
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../data/models/craftsmanModel.dart';
 import '../../../data/remotDataSource/craftsmanRemotDataSource.dart';
 import '../../../global/constants.dart';
 import '../../Widgets/progressIndicator.dart';
@@ -19,7 +20,6 @@ class RegisterCraftsman extends StatefulWidget {
 class _RegisterCraftsmanState extends State<RegisterCraftsman> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _locationController = TextEditingController();
   final _dobController = TextEditingController(); // For Date of Birth
   String? _selectedCategory;
   String? _selectedCity;
@@ -54,7 +54,6 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
           barrierDismissible: false, // Prevents dismissing the dialog by tapping outside
         );
         final String name = _nameController.text.trim();
-        final String location = _locationController.text.trim();
         final String dob = _dobController.text.trim();
 
         final CraftsmanRemoteDataSource dataSource = CraftsmanRemoteDataSource(
@@ -66,11 +65,11 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
           category: _selectedCategory!,
           yearsOfExperience: _yearsOfExperience,
           name: name,
-          location: location,
+          location: _selectedCity!,
           phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!,
           dateOfBirth: DateTime.parse(dob), // Pass DOB
         );
-        Get.find<crossData>().userEntity=UserEntity(name: name, id: FirebaseAuth.instance.currentUser!.uid, image: '', createdAt: DateTime.now(), phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!, userType: "craftsman", location: location, dateOfBirth: DateTime.parse(dob));
+        Get.find<crossData>().userEntity=CraftsmanModel(name: name, id: FirebaseAuth.instance.currentUser!.uid, image: '', createdAt: DateTime.now(), phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!, userType: "craftsman", location: _selectedCity!, dateOfBirth: DateTime.parse(dob), category: _selectedCategory!, yearsOfExp: _yearsOfExperience);
         Get.offAllNamed('/home'); // Navigate to home after success
       } catch (e) {
         Get.snackbar('Error', 'An error occurred: $e');
@@ -229,7 +228,6 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
   @override
   void dispose() {
     _nameController.dispose();
-    _locationController.dispose();
     _dobController.dispose(); // Dispose the DOB controller
     super.dispose();
   }

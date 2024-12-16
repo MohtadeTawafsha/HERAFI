@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:herafi/global/alers.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../global/setOfMethods.dart';
 import '../../Widgets/progressIndicator.dart';
 import '../../routes/app_routes.dart';
 
@@ -30,22 +31,16 @@ class authPageController extends GetxController{
 
   void sendVerificationCode()async{
     final String phoneNumber='+970'+textFiledController.text;
-    Get.dialog(
-      Center(
-        child: progressIndicator(),
-      ),
-      barrierDismissible: false, // Prevents dismissing the dialog by tapping outside
-    );
+    globalMethods().showProgressDialog();
     try{
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: '+970'+textFiledController.text,
         verificationCompleted: (PhoneAuthCredential credential) {},
         verificationFailed: (FirebaseAuthException e){
-          print('failed');
+          Get.back();
           alerts().showErrorSnackBar(Get.context!, "لقد حدثة مشكلة ما تأكد من الرقم وحاول مرة اخرى");
         },
         codeSent: (String verificationId, int? resendToken) {
-          print('done');
           Get.back();
           Get.toNamed(AppRoutes.smsVerification,arguments: {"verificationId":verificationId,"phoneNumber":phoneNumber});
         },
@@ -55,6 +50,7 @@ class authPageController extends GetxController{
 
     }
     catch(e){
+
     }
 
   }

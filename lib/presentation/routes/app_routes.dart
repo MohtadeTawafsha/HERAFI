@@ -16,13 +16,15 @@ import '../bindings/chatsBinding/chatbot_binding.dart';
 import '../bindings/chatsBinding/chatsBinding.dart';
 import '../bindings/homePageBinding.dart';
 import '../bindings/introductionPageBinding.dart';
+import '../bindings/selectPointOnMapScreenBinding.dart';
+import '../pages/MapFeature/selectPointOnMapScreen.dart';
 import '../pages/certificatePage.dart';
 import '../pages/account_screen.dart';
 import '../pages/authPages/RegisterCraftsman.dart';
 import '../pages/authPages/accountType.dart';
 import '../pages/availability_screen.dart';
 import '../pages/edit_profile_screen.dart';
-import '../pages/homePage.dart';
+import '../pages/homePages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
 import '../pages/orderProcessPage/Chatbot.dart';
 import '../pages/orderProcessPage/chatPage.dart';
@@ -150,6 +152,12 @@ class AppRoutes {
     GetPage(
       name: registerCustomer,
       page: () => RegisterCustomer(),
+    ),
+    GetPage(
+        name: selectPointOnMap,
+        page: () => selectPointOnMapScreen(),
+        binding: selectPointOnMapScreenBinding(),
+        transition: Transition.downToUp
     ),
 
   ];

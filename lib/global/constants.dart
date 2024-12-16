@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:latlong2/latlong.dart';
 class constants {
   static String appName = "حرفي";
+  static LatLng mapInitialLocation = LatLng(32.06502, 35.02554);
   static final List<String> categories = [
     'السباكة',
     'النجارة',
@@ -64,5 +68,11 @@ class constants {
     "الناصرة",
     "الرلمة",
   ];
+  static Widget marker = GestureDetector(
+      child: Icon(
+        Icons.location_on_outlined,
+        color: Colors.green,
+        size: 40.spMin,
+      ));
 
 }

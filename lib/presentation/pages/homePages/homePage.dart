@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:herafi/presentation/bindings/jobsBinding/createJobBinding.dart';
 import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
+import 'package:herafi/presentation/pages/JobPages/createJobPage.dart';
 import 'package:herafi/presentation/pages/account_screen.dart';
 import 'package:herafi/presentation/pages/trakingPage.dart';
-import '../Widgets/itemInBottomNavigationBar.dart';
+import '../../Widgets/itemInBottomNavigationBar.dart';
+import '../../bindings/homeBinding/craftsmanHomeBinding.dart';
+import 'homePageCraftsman.dart';
 
 class homePage extends StatelessWidget {
   const homePage({super.key});
@@ -25,12 +29,30 @@ class homePage extends StatelessWidget {
   }
 
   Widget getSelectedPage(homePageController controller) {
-    switch (controller.index.value) {
-      case 4:
-        return AccountScreen();
-      case 3:return trackingPage();
-      default:
-        return HomePage(controller);
+    if(Get.find<crossData>().userEntity.isCraftsman()){
+      switch (controller.index.value) {
+        case 4:
+          return AccountScreen();
+        case 3:return trackingPage();
+        default:{
+          craftsmanHomeBinding().dependencies();
+          return craftsmanHomePage();
+        }
+      }
+    }
+    else{
+      switch (controller.index.value) {
+        case 4:
+          return AccountScreen();
+        case 3:return trackingPage();
+        case 2:
+          {
+            createJobBinding().dependencies();
+            return createJobPage();
+          };
+        default:
+          return HomePage(controller);
+      }
     }
   }
   Widget HomePage(homePageController controller){

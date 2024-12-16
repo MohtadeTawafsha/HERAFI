@@ -5,6 +5,8 @@ import 'package:herafi/domain/repositories/userRepository.dart';
 
 import '../../core/status/error/Failure.dart';
 import '../../domain/entites/user.dart';
+import '../models/craftsmanModel.dart';
+import '../models/customerModel.dart';
 
 class userRepositoryImp extends UserRepository{
   final userRemotDataSource dataSource=userRemotDataSource();
@@ -12,13 +14,18 @@ class userRepositoryImp extends UserRepository{
 
   Future<Either<Failure,UserEntity?>> fetchUserData({required String userId})async{
     try{
-      final result=await dataSource.fetchUserData(userId: userId);
-      if(result.isEmpty){
-        return Right(null);
+
+      final customerModel;
+      final data=await dataSource.fetchUserData(userId: userId);
+      if(data==null)return Right(null);
+      if(data['user_type']=="craftsman"){
+        customerModel = CraftsmanModel.fromJson(data);
       }
       else{
-        return Right(UserModel.fromJson(result.first));
+        customerModel = CustomerModel.fromJson(data);
       }
+
+      return Right(customerModel);
 
 
     }

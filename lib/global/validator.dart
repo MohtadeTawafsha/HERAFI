@@ -12,6 +12,12 @@ class Validator {
     }
     return null;
   }
+  String? notEmpty(String? text) {
+    if (text == null || text.isEmpty) {
+      return 'لا يمكن أن يكون حقل فارغًا';
+    }
+    return null;
+  }
 
   String? validUserName(String? userName, BuildContext context) {
     if (userName == null || userName.isEmpty) {

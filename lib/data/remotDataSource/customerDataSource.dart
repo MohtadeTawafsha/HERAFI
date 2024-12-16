@@ -41,7 +41,7 @@ class CustomerRemoteDataSource {
       'id': uid,
       'name': name,
       'phone_number': phoneNumber,
-      'user_type': 'craftsman',
+      'user_type': 'customer',
       'location': location,
       'date_of_birth': dateOfBirth.toIso8601String(), // Save DOB
     });

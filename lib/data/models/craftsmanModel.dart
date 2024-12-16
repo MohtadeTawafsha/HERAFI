@@ -17,16 +17,16 @@ class CraftsmanModel extends CraftsmanEntity {
   /// Convert JSON to CraftsmanModel
   factory CraftsmanModel.fromJson(Map<String, dynamic> json) {
     return CraftsmanModel(
-      category: json['category'],
-      yearsOfExp: json['years_of_experience'],
+      category: json['category']??"",
+      yearsOfExp: int.parse(json['years_of_experience']??"0"),
       name: json['name'],
       id: json['id'],
       image: json['image'] ?? '',
       createdAt: DateTime.parse(json['created_at']),
       phoneNumber: json['phone_number'],
       userType: json['user_type'],
-      location: json['location'],
-      dateOfBirth: DateTime.parse(json['date_of_birth']), // Parse DOB
+      location: json['location']??"",
+      dateOfBirth: DateTime.parse(json['date_of_birth']??DateTime.now().toIso8601String()), // Parse DOB
     );
   }
 

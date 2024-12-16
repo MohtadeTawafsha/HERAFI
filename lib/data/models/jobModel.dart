@@ -1,47 +1,60 @@
-import 'package:herafi/domain/entites/job.dart';
+import '../../domain/entites/job.dart';
 
 class JobModel extends JobEntity {
   JobModel({
-    required super.id,
-    required super.createdAt,
-    required super.category,
-    required super.location,
-    required super.description,
-    super.startDate, // Nullable
-    super.cost,      // Nullable
-    super.endDate,   // Nullable
-    required super.status,
-  });
+    required int id,
+    required String city,
+    required String description,
+    required DateTime createdAt,
+    required String status,
+    required String title,
+    required String image,
+    required String mapLatitude,
+    required String mapLongitude,
+    required String categoryName,
+    required bool visibilityAllTypes,
+  }) : super(
+    id: id,
+    city: city,
+    description: description,
+    createdAt: createdAt,
+    status: status,
+    title: title,
+    image: image,
+    mapLatitude: mapLatitude,
+    mapLongitude: mapLongitude,
+    categoryName: categoryName,
+    visibilityAllTypes: visibilityAllTypes,
+  );
 
   factory JobModel.fromJson(Map<String, dynamic> json) {
     return JobModel(
-      id: json['id'].toString(),
-      createdAt: DateTime.parse(json['created_at']),
-      location: json['location'],
-      category: json['category'],
+      id: json['id'],
+      city: json['city'],
       description: json['description'],
-      startDate: json['start_date'] != null
-          ? DateTime.parse(json['start_date'])
-          : null,
-      cost: json['cost'] != null ? (json['cost'] as num).toDouble() : null,
-      endDate: json['end_date'] != null
-          ? DateTime.parse(json['end_date'])
-          : null,
+      createdAt: DateTime.parse(json['created-at']),
       status: json['status'],
+      title: json['title'],
+      image: json['image'],
+      mapLatitude: json['map_latitude'],
+      mapLongitude: json['map_longitude'],
+      categoryName: json['category-name'],
+      visibilityAllTypes: json['visibility_all_types'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'created_at': createdAt.toIso8601String(),
-      'category': category,
-      'location': location,
+      'city': city,
       'description': description,
-      'start_date': startDate?.toIso8601String(),
-      'cost': cost,
-      'end_date': endDate?.toIso8601String(),
+      'created-at': createdAt.toIso8601String(),
       'status': status,
+      'title': title,
+      'image': image,
+      'map_latitude': mapLatitude,
+      'map_longitude': mapLongitude,
+      'category-name': categoryName,
+      'visibility_all_types': visibilityAllTypes,
     };
   }
 }
