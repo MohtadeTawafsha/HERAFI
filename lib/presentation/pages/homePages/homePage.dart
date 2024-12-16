@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:herafi/presentation/bindings/chatsBinding/chatsBinding.dart';
 import 'package:herafi/presentation/bindings/jobsBinding/createJobBinding.dart';
 import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/pages/JobPages/createJobPage.dart';
 import 'package:herafi/presentation/pages/account_screen.dart';
+import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
 import 'package:herafi/presentation/pages/trakingPage.dart';
 import '../../Widgets/itemInBottomNavigationBar.dart';
 import '../../bindings/homeBinding/craftsmanHomeBinding.dart';
@@ -33,7 +35,11 @@ class homePage extends StatelessWidget {
       switch (controller.index.value) {
         case 4:
           return AccountScreen();
-        case 3:return trackingPage();
+        case 1:
+          {
+            chatsPageBinding().dependencies();
+            return chatsPage();
+          }
         default:{
           craftsmanHomeBinding().dependencies();
           return craftsmanHomePage();
@@ -44,7 +50,11 @@ class homePage extends StatelessWidget {
       switch (controller.index.value) {
         case 4:
           return AccountScreen();
-        case 3:return trackingPage();
+        case 1:
+          {
+            chatsPageBinding().dependencies();
+           return chatsPage();
+          }
         case 2:
           {
             createJobBinding().dependencies();
@@ -82,16 +92,17 @@ class homePage extends StatelessWidget {
               icon: Icons.home_outlined,
               index: 0,
             ),
+
             itemInBottomNavigationBar(
-              icon: Icons.shopping_cart_outlined,
+              icon: Icons.message,
               index: 1,
             ),
             itemInBottomNavigationBar(
-              icon: Icons.add,
+              icon: Icons.post_add,
               index: 2,
             ),
             itemInBottomNavigationBar(
-              icon: Icons.task,
+              icon: Icons.check_box,
               index: 3,
             ),
             itemInBottomNavigationBar(
@@ -120,15 +131,15 @@ class homePage extends StatelessWidget {
               index: 0,
             ),
             itemInBottomNavigationBar(
-              icon: Icons.shopping_cart_outlined,
+              icon: Icons.message,
               index: 1,
             ),
             itemInBottomNavigationBar(
-              icon: Icons.manage_search,
+              icon: Icons.shopping_cart_outlined,
               index: 2,
             ),
             itemInBottomNavigationBar(
-              icon: Icons.task,
+              icon: Icons.manage_search,
               index: 3,
             ),
             itemInBottomNavigationBar(

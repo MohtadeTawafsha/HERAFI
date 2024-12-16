@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import '../../global/constants.dart';
-import '../controllers/trackingPageController.dart';
+import '../controllers/MapController/trackingPageController.dart';
 import '../themes/colors.dart';
 
 

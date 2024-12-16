@@ -1,9 +1,10 @@
+import 'package:herafi/data/models/chatModel.dart';
 import 'package:herafi/domain/entites/user.dart';
 
 import 'Message.dart';
 
 class chatEntity{
-  final String documentId;
+  String documentId;
   final UserEntity user;
   final Message? lastMessage;
   final int missedMessagesCountByMe;
@@ -16,4 +17,7 @@ class chatEntity{
     required this.missedMessagesCountByOther,
     required this.documentId
 });
+  chatModel toModel(){
+    return chatModel(user: user, lastMessage: lastMessage, missedMessagesCountByMe: missedMessagesCountByMe, missedMessagesCountByOther: missedMessagesCountByOther, documentId: documentId);
+  }
 }

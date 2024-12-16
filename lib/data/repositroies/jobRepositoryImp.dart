@@ -38,4 +38,13 @@ class JobRepositoryImpl implements JobRepository {
       return Left(DatabaseFailure(e.toString()));
     }
   }
+  @override
+  Future<Either<Failure, List<JobEntity>>> searchJobs(String query, int page,String category) async {
+    try {
+      final jobs = await remoteDataSource.searchJobs(query, page,category);
+      return Right(jobs);
+    } catch (e) {
+      return Left(DatabaseFailure('Error searching for jobs'));
+    }
+  }
 }

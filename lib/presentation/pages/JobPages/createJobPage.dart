@@ -5,7 +5,10 @@ import 'package:get/get.dart';
 import 'package:herafi/global/constants.dart';
 import 'package:herafi/global/setOfMethods.dart';
 import 'package:herafi/global/validator.dart';
+import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/controllers/jobsControllers/createJopController.dart';
+
+import '../../../domain/entites/customer.dart';
 
 class createJobPage extends StatelessWidget {
   const createJobPage({super.key});

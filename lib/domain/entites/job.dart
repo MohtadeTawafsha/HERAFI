@@ -1,4 +1,6 @@
 import 'package:herafi/data/models/jobModel.dart';
+import 'package:herafi/domain/entites/customer.dart';
+import 'package:latlong2/latlong.dart';
 
 class JobEntity {
   final int id;
@@ -12,6 +14,7 @@ class JobEntity {
   final String mapLongitude;
   final String categoryName;
   final bool visibilityAllTypes;
+  final CustomerEntity customer;
   JobEntity({
     required this.id,
     required this.city,
@@ -24,6 +27,7 @@ class JobEntity {
     required this.mapLongitude,
     required this.categoryName,
     required this.visibilityAllTypes,
+    required this.customer
   });
   JobModel toModel() {
     return JobModel(
@@ -38,7 +42,18 @@ class JobEntity {
       mapLongitude: mapLongitude,
       categoryName: categoryName,
       visibilityAllTypes: visibilityAllTypes,
+      customer: customer
     );
   }
-
+  String getDateFormat(){
+    String date="";
+    date+=(createdAt.month.toString()+"/");
+    date+=(createdAt.day.toString()+"/");
+    date+=(createdAt.year.toString());
+    return date;
+  }
+  LatLng getLocationPoint(){
+    print(LatLng(double.parse(mapLatitude), double.parse(mapLongitude)));
+    return LatLng(double.parse(mapLatitude), double.parse(mapLongitude));
+  }
 }

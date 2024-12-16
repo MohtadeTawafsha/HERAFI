@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:herafi/presentation/bindings/MapBinding/showPointOnMap.dart';
 import 'package:herafi/presentation/bindings/chatsBinding/chatPageBinding.dart';
+import 'package:herafi/presentation/bindings/jobsBinding/craftsmanSearch.dart';
 import 'package:herafi/presentation/bindings/orderHistoryPageBinding.dart';
 import 'package:herafi/presentation/bindings/profilePageBinding.dart';
 import 'package:herafi/presentation/bindings/settingPageBinding.dart';
@@ -16,8 +18,10 @@ import '../bindings/chatsBinding/chatbot_binding.dart';
 import '../bindings/chatsBinding/chatsBinding.dart';
 import '../bindings/homePageBinding.dart';
 import '../bindings/introductionPageBinding.dart';
-import '../bindings/selectPointOnMapScreenBinding.dart';
+import '../bindings/MapBinding/selectPointOnMapScreenBinding.dart';
+import '../pages/JobPages/searchForJobPage.dart';
 import '../pages/MapFeature/selectPointOnMapScreen.dart';
+import '../pages/MapFeature/showPointOnMap.dart';
 import '../pages/certificatePage.dart';
 import '../pages/account_screen.dart';
 import '../pages/authPages/RegisterCraftsman.dart';
@@ -60,6 +64,8 @@ class AppRoutes {
   static const String registerCraftsman = '/RegisterCraftsman';
   static const String accountType = '/accountType';
   static const String createJob = '/createJob';
+  static const String ShowPointOnMap = '/showPointOnMap';
+  static const String CraftsmanSearchPage = '/craftsmanSearchPage';
 
   static List<GetPage> pages = [
     GetPage(
@@ -157,6 +163,19 @@ class AppRoutes {
         name: selectPointOnMap,
         page: () => selectPointOnMapScreen(),
         binding: selectPointOnMapScreenBinding(),
+        transition: Transition.downToUp
+    ),
+    GetPage(
+        name:ShowPointOnMap,
+        page: () => showPointOnMap(),
+        binding: showPointOnMapBinding(),
+        transition: Transition.downToUp
+    ),
+
+    GetPage(
+        name:CraftsmanSearchPage,
+        page: () => craftsmanSearchPage(),
+        binding: craftsmanSearchBinding(),
         transition: Transition.downToUp
     ),
 

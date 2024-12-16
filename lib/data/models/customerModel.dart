@@ -22,7 +22,7 @@ class CustomerModel extends CustomerEntity {
       createdAt: DateTime.parse(json['created_at']),
       phoneNumber: json['phone_number'],
       userType: json['user_type'],
-      location: json['location'],
+      location: json['location']??"",
       dateOfBirth: DateTime.parse(json['date_of_birth']), // Parse DOB
     );
   }

@@ -14,9 +14,9 @@ class ChatRepositoryImpl implements ChatRepository {
   ChatRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<Either<Failure, void>> sendMessage(Message message) async {
+  Future<Either<Failure, void>> sendMessage(Message message,String chatId) async {
     try {
-      await remoteDataSource.sendMessage(message);
+      await remoteDataSource.sendMessage(message,chatId);
       return Right(null);
     } catch (e) {
       return Left(DatabaseFailure('Failed to send message'));
@@ -101,6 +101,15 @@ class ChatRepositoryImpl implements ChatRepository {
       }
     }
     return Map();
+
+  }
+  Future<Either<Failure,chatEntity>> createChat(chatEntity chat)async{
+    try{
+      return Right(await remoteDataSource.createChat(chat));
+    }
+    catch(e){
+      return Left(DatabaseFailure(e.toString()));
+    }
 
   }
 }

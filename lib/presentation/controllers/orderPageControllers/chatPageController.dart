@@ -4,10 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import '../../../domain/entites/Message.dart';
 import '../../../domain/entites/chat.dart';
 import '../../../domain/usecases/chatUseCases/GetMessagesUseCase.dart';
 import '../../../domain/usecases/chatUseCases/SendMessageUseCase.dart';
+import '../../../domain/usecases/chatUseCases/createChatUseCase.dart';
 import '../../../domain/usecases/chatUseCases/getStreamMessagesUseCase.dart';
 import '../../../global/setOfMethods.dart';
 import '../../Widgets/showImage.dart';
@@ -16,21 +18,27 @@ class chatPageController extends GetxController{
   final SendMessageUseCase sendMessageUseCase;
   final GetMessagesUseCase getMessagesUseCase;
   final getStreamMessagesUseCase GetStreamMessagesUseCase;
-  final chatEntity chat;
-  chatPageController(this.sendMessageUseCase, this.getMessagesUseCase,this.chat,this.GetStreamMessagesUseCase);
+  final createChatUseCase createChat;
+  chatEntity chat;
+  bool isItNewChat=false;
+  chatPageController(this.sendMessageUseCase, this.getMessagesUseCase,this.chat,this.GetStreamMessagesUseCase,this.createChat){
+    isItNewChat=chat.documentId.isEmpty;
+  }
 
   var isLoading = true.obs;
   RxBool isFinishedFetchingMessages=RxBool(false);
   final int index=0;
   var messages = <Message>[].obs;
   var messageController = TextEditingController();
-  final ScrollController scrollController = ScrollController();String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  final ScrollController scrollController = ScrollController();
+  String currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void onInit() {
     super.onInit();
-    GetStreamMessages();
     scrollController.addListener(_scrollListener);
+    if(isItNewChat) return;
+    GetStreamMessages();
   }
 
   Future<void> loadMessages() async {
@@ -48,6 +56,18 @@ class chatPageController extends GetxController{
   }
 
   Future<void> sendMessage({String? outerMessage,String? resource}) async {
+    bool isNewChatCopy=isItNewChat;
+    if(isItNewChat){
+      final result=await createChat(chat: chat);
+      if(result.isLeft()){
+        Get.snackbar('خطأ', 'لقد حدث خطأ في ارساال الرسالة');
+        return;
+      }
+      result.fold((ifLeft){}, (ifRight){
+        chat=ifRight;
+        isItNewChat=false;
+      });
+    }
     if (messageController.text.isNotEmpty || resource!=null) {
       final message = Message(
         senderId: currentUserId,
@@ -56,7 +76,7 @@ class chatPageController extends GetxController{
         resource: resource
       );
 
-      final result = await sendMessageUseCase.execute(message);
+      final result = await sendMessageUseCase.execute(message,chat.documentId);
       result.fold(
             (failure) {
           Get.snackbar('خطأ', 'فشل في إرسال الرسالة');
@@ -65,6 +85,10 @@ class chatPageController extends GetxController{
           messageController.clear();
         },
       );
+    }
+    if(isNewChatCopy){
+      Get.find<crossData>().chats.add(chat);
+      onInit();
     }
   }
   void GetStreamMessages()async{
@@ -92,10 +116,10 @@ class chatPageController extends GetxController{
 
     isLoading.value=false;
   }
-
   void _scrollListener()async{
     if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
       if(!isFinishedFetchingMessages.value){
+        if(isItNewChat)return;
         loadMessages();
       }
     }
@@ -127,4 +151,5 @@ class chatPageController extends GetxController{
   void handleImageTap(String imageSource){
     Get.to(imageViewWithInteractiveView(title: 'صورة', image: imageSource,));
   }
+
 }

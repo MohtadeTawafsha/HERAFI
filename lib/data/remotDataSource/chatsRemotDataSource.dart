@@ -65,17 +65,23 @@ class chatsRemotDataSource{
     return result;
   }
 
-  Future sendMessage(Message message)async{
+  Future sendMessage(Message message,String chatId)async{
     if(message.resource!=null){
       message.resource=await uplaodImage(message.resource!,'messageChannel');
     }
-    await firestore.collection('chats').doc('chatId').collection('messages').add(message.toJson());
+    await firestore.collection('chats').doc(chatId).collection('messages').add(message.toJson());
   }
 
   Future<String> uplaodImage(String resource,String channel)async{
-    final result=await FirebaseStorage.instance.ref().child(channel).child('images/${FirebaseAuth.instance.currentUser?.uid}/${DateTime.now()}');
+    final result=await FirebaseStorage.instance.ref().child(channel).child('messages/${FirebaseAuth.instance.currentUser?.uid}/${DateTime.now()}');
     await result.putFile(File(resource),SettableMetadata(contentType: "image/jpeg"));
     String url=await result.getDownloadURL();
     return url;
+  }
+  Future<chatEntity> createChat(chatEntity chat)async{
+    DocumentReference documentReference=await FirebaseFirestore.instance.collection('chats').add(chat.toModel().toJson());
+    chat.documentId=documentReference.id;
+    return chat;
+
   }
 }

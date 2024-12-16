@@ -16,9 +16,10 @@ class CraftsmanModel extends CraftsmanEntity {
 
   /// Convert JSON to CraftsmanModel
   factory CraftsmanModel.fromJson(Map<String, dynamic> json) {
+    print("year"+json['years_of_experience'].toString());
     return CraftsmanModel(
-      category: json['category']??"",
-      yearsOfExp: int.parse(json['years_of_experience']??"0"),
+      category: json['craftsman']['category']??"",
+      yearsOfExp: json['craftsman']['years_of_experience'],
       name: json['name'],
       id: json['id'],
       image: json['image'] ?? '',

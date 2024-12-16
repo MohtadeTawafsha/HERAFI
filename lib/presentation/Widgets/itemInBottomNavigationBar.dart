@@ -20,7 +20,7 @@ class itemInBottomNavigationBar extends StatelessWidget {
               ? MainAxisAlignment.start
               : MainAxisAlignment.center,
           children: [
-            Icon(icon,color: controller.index==index?Colors.white:Colors.grey.shade400,),
+            Icon(icon,color: controller.index==index?Colors.white:Theme.of(context).primaryColor,),
           ],
         ),
       );

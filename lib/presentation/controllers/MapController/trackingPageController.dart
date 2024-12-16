@@ -9,7 +9,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
 import 'package:geolocator/geolocator.dart' as geoLocator;
-import '../routes/app_routes.dart';
+import '../../routes/app_routes.dart';
 
 
 class trackingPageController extends GetxController{

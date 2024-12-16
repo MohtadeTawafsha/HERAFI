@@ -1,4 +1,7 @@
+import 'package:herafi/domain/entites/customer.dart';
+
 import '../../domain/entites/job.dart';
+import 'customerModel.dart';
 
 class JobModel extends JobEntity {
   JobModel({
@@ -13,6 +16,7 @@ class JobModel extends JobEntity {
     required String mapLongitude,
     required String categoryName,
     required bool visibilityAllTypes,
+    required CustomerEntity customer,
   }) : super(
     id: id,
     city: city,
@@ -25,9 +29,13 @@ class JobModel extends JobEntity {
     mapLongitude: mapLongitude,
     categoryName: categoryName,
     visibilityAllTypes: visibilityAllTypes,
+    customer: customer
   );
 
   factory JobModel.fromJson(Map<String, dynamic> json) {
+    Map<String,dynamic> customerData=json['customer'];
+    customerData={...customerData,...json["customer"]['users']};
+    customerData.remove('users');
     return JobModel(
       id: json['id'],
       city: json['city'],
@@ -40,11 +48,13 @@ class JobModel extends JobEntity {
       mapLongitude: json['map_longitude'],
       categoryName: json['category-name'],
       visibilityAllTypes: json['visibility_all_types'],
+      customer: CustomerModel.fromJson(customerData),//in case we added new attribute in future
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'customer_id':customer.id,
       'city': city,
       'description': description,
       'created-at': createdAt.toIso8601String(),

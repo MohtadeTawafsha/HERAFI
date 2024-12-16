@@ -8,7 +8,7 @@ class SendMessageUseCase {
 
   SendMessageUseCase(this.repository);
 
-  Future<Either<Failure, void>> execute(Message message) async {
-    return await repository.sendMessage(message);
+  Future<Either<Failure, void>> execute(Message message,String chatId) async {
+    return await repository.sendMessage(message,chatId);
   }
 }

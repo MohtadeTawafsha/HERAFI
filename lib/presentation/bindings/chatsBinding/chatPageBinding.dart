@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:herafi/data/remotDataSource/chatsRemotDataSource.dart';
+import 'package:herafi/domain/usecases/chatUseCases/createChatUseCase.dart';
 import 'package:herafi/domain/usecases/chatUseCases/getStreamMessagesUseCase.dart';
 import 'package:herafi/presentation/controllers/orderPageControllers/chatPageController.dart';
 
@@ -17,11 +18,13 @@ class chatPageBinding extends Bindings {
     Get.put(SendMessageUseCase(Get.find<ChatRepositoryImpl>()));
     Get.put(GetMessagesUseCase(Get.find<ChatRepositoryImpl>()));
     Get.put(getStreamMessagesUseCase(Get.find<ChatRepositoryImpl>()));
+    Get.put(createChatUseCase(Get.find<ChatRepositoryImpl>()));
     Get.put(chatPageController(
       Get.find<SendMessageUseCase>(),
       Get.find<GetMessagesUseCase>(),
       Get.arguments,
-      Get.find<getStreamMessagesUseCase>()
+      Get.find<getStreamMessagesUseCase>(),
+      Get.find<createChatUseCase>(),
     ));
   }
 }

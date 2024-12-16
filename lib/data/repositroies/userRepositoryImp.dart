@@ -17,6 +17,7 @@ class userRepositoryImp extends UserRepository{
 
       final customerModel;
       final data=await dataSource.fetchUserData(userId: userId);
+      print(data);
       if(data==null)return Right(null);
       if(data['user_type']=="craftsman"){
         customerModel = CraftsmanModel.fromJson(data);

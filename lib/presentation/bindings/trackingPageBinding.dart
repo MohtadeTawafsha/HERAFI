@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../controllers/trackingPageController.dart';
+import '../controllers/MapController/trackingPageController.dart';
 
 
 class trackingPageBinding extends Bindings {

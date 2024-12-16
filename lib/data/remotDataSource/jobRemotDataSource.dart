@@ -13,7 +13,7 @@ class JobRemoteDataSource {
     try {
       final response = await supabaseClient
           .from('jobs') // 'jobs' is the table name
-          .select()
+          .select("*, users(*),customer(*)")
           .eq('id', id) // Filter by ID
           .single()
           .select();
@@ -36,12 +36,25 @@ class JobRemoteDataSource {
   Future<List<JobEntity>> fetchJobs(int page,String category) async {
     final response = await supabaseClient
         .from('jobs')
-        .select('*')
+        .select('*, customer(*, users(*))') // Fetch customer and its related user
         .or('visibility_all_types.eq.true,category-name.eq.$category')
         .order('created-at', ascending: false)
-        .range((page - 1) * 15, page * 15 - 1)
-        .select();
+        .range((page - 1) * 15, page * 15 - 1);
 
+
+
+
+    return (response as List).map((json) => JobModel.fromJson(json)).toList();
+  }
+  Future<List<JobEntity>> searchJobs(String query, int page,String category) async {
+    final response = await supabaseClient
+        .from('jobs')
+        .select('*, customer(*, users(*))')
+        .or('visibility_all_types.eq.true,category-name.eq.$category')
+        .or('title.ilike.%$query%,description.ilike.%$query%')
+        .order('created-at', ascending: false)
+        .range((page - 1) * 15, page * 15 - 1)
+        ;
 
 
     return (response as List)

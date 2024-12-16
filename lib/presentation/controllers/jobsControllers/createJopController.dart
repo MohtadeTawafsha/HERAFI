@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:herafi/data/models/customerModel.dart';
+import 'package:herafi/domain/entites/customer.dart';
 import 'package:herafi/domain/entites/job.dart';
+import 'package:herafi/domain/entites/user.dart';
 import 'package:herafi/global/alers.dart';
+import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../domain/usecases/Job/createJobUseCase.dart';
@@ -57,8 +61,10 @@ class createJobController extends GetxController{
 
   void submitJob()async{
     globalMethods().showProgressDialog();
+    CustomerEntity customer=Get.find<crossData>().userEntity as CustomerEntity;
+
     if (firstStepKey.currentState!.validate() && selectedImagePath.isNotEmpty && thirdStepKey.currentState!.validate()){
-      final result=await createJob(JobEntity(id: 0, city: selectedCity.value, description: descriptionController.text, createdAt: DateTime.now(), status: 'define', title: titleController.text, image: selectedImagePath.value, mapLatitude: location[0].toString(), mapLongitude: location[0].toString(), categoryName: selectedService.value, visibilityAllTypes: visiableToAllTypes.value));
+      final result=await createJob(JobEntity(id: 0, city: selectedCity.value, description: descriptionController.text, createdAt: DateTime.now(), status: 'define', title: titleController.text, image: selectedImagePath.value, mapLatitude: location[0].toString(), mapLongitude: location[1].toString(), categoryName: selectedService.value, visibilityAllTypes: visiableToAllTypes.value, customer: customer));
       Get.back();
       result.fold(
               (ifLeft){
