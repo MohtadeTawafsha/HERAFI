@@ -65,7 +65,7 @@ class _AccountScreenState extends State<AccountScreen> {
           ListTile(
             leading: Icon(Icons.person),
             title: Text(_userName),
-            subtitle: Text('View my profile'),
+            // subtitle: Text('View my profile'),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
               Navigator.push(

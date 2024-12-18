@@ -27,6 +27,7 @@ import '../pages/account_screen.dart';
 import '../pages/authPages/RegisterCraftsman.dart';
 import '../pages/authPages/accountType.dart';
 import '../pages/availability_screen.dart';
+import '../pages/customer_profile_page.dart';
 import '../pages/edit_profile_screen.dart';
 import '../pages/homePages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
@@ -66,6 +67,8 @@ class AppRoutes {
   static const String createJob = '/createJob';
   static const String ShowPointOnMap = '/showPointOnMap';
   static const String CraftsmanSearchPage = '/craftsmanSearchPage';
+  static const String customerProfile = '/customerProfile'; // Add this route
+
 
   static List<GetPage> pages = [
     GetPage(
@@ -177,6 +180,11 @@ class AppRoutes {
         page: () => craftsmanSearchPage(),
         binding: craftsmanSearchBinding(),
         transition: Transition.downToUp
+    ),
+   GetPage(
+      name: customerProfile,
+      page: () => CustomerProfilePage(customerId: '',),
+      transition: Transition.fadeIn,
     ),
 
   ];
