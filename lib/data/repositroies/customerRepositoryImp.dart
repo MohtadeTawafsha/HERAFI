@@ -28,8 +28,14 @@ class CustomerRepositoryImpl extends CustomerRepository {
   @override
   Future<Either<Failure, CustomerEntity>> fetchCustomerById(String customerId) async {
     try {
+      // Fetch customer details from Supabase
       final data = await dataSource.fetchCustomerDetails(customerId);
-      final customerModel = CustomerModel.fromJson(data!);
+
+      if (data == null) {
+        return Left(ServerFailure("Customer not found"));
+      }
+
+      final customerModel = CustomerModel.fromJson(data);
       return Right(customerModel);
     } catch (error) {
       return Left(ServerFailure(error.toString()));

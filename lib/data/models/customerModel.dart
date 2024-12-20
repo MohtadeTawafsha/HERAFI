@@ -1,4 +1,3 @@
-import 'package:herafi/domain/entites/craftsman.dart';
 import 'package:herafi/domain/entites/customer.dart';
 
 class CustomerModel extends CustomerEntity {
@@ -10,20 +9,24 @@ class CustomerModel extends CustomerEntity {
     required super.phoneNumber,
     required super.userType,
     required super.location,
-    required super.dateOfBirth, // Include DOB
+    required super.dateOfBirth,
   });
 
-  /// Convert JSON to CraftsmanModel
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
+    final userData = json['users'] ?? {};
     return CustomerModel(
-      name: json['name'],
-      id: json['id'],
-      image: json['image'] ?? '',
-      createdAt: DateTime.parse(json['created_at']),
-      phoneNumber: json['phone_number'],
-      userType: json['user_type'],
-      location: json['location']??"",
-      dateOfBirth: DateTime.parse(json['date_of_birth']), // Parse DOB
+      name: userData['name'] ?? "No Name",
+      id: json['id'] ?? "",
+      image: userData['image'] ?? "",
+      createdAt: userData['created_at'] != null
+          ? DateTime.parse(userData['created_at'])
+          : DateTime.now(),
+      phoneNumber: userData['phone_number'] ?? "N/A",
+      userType: userData['user_type'] ?? "customer",
+      location: userData['location'] ?? "Unknown",
+      dateOfBirth: userData['date_of_birth'] != null
+          ? DateTime.parse(userData['date_of_birth'])
+          : DateTime.now(),
     );
   }
 
