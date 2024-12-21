@@ -116,9 +116,9 @@ class AppRoutes {
     ),
 
     GetPage(
-      name: chatpage,
-      page: () => chatPage(),
-      binding: chatPageBinding()
+        name: chatpage,
+        page: () => chatPage(),
+        binding: chatPageBinding()
     ),GetPage(
         name: chatspage,
         page: () => chatsPage(),
@@ -181,7 +181,7 @@ class AppRoutes {
         binding: craftsmanSearchBinding(),
         transition: Transition.downToUp
     ),
-   GetPage(
+    GetPage(
       name: customerProfile,
       page: () => CustomerProfilePage(customerId: '',),
       transition: Transition.fadeIn,

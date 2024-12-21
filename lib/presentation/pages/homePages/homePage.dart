@@ -11,6 +11,8 @@ import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
 import 'package:herafi/presentation/pages/trakingPage.dart';
 import '../../Widgets/itemInBottomNavigationBar.dart';
 import '../../bindings/homeBinding/craftsmanHomeBinding.dart';
+import '../project/CraftsmanNotificationsPage.dart';
+import '../project/NotificationsPage.dart';
 import 'homePageCraftsman.dart';
 
 class homePage extends StatelessWidget {
@@ -40,6 +42,10 @@ class homePage extends StatelessWidget {
             chatsPageBinding().dependencies();
             return chatsPage();
           }
+        case 2:
+          {
+            return CraftsmanNotificationsPage();
+          }
         default:{
           craftsmanHomeBinding().dependencies();
           return craftsmanHomePage();
@@ -54,6 +60,10 @@ class homePage extends StatelessWidget {
           {
             chatsPageBinding().dependencies();
            return chatsPage();
+          }
+        case 3:
+          {
+            return NotificationsPage();
           }
         case 2:
           {

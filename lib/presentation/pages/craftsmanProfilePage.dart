@@ -247,13 +247,13 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
               Row(
                 children: [
                   Icon(
-                    isAvailable ? Icons.circle : Icons.cancel,
-                    color: isAvailable ? Colors.green : Colors.red,
+                    isAvailable ? Icons.cancel : Icons.circle,
+                    color: isAvailable ? Colors.red : Colors.green,
                     size: 12,
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    isAvailable ? 'I’m available to work' : 'I’m not available',
+                    isAvailable ?  'I’m not available' : 'I’m available to work',
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -378,27 +378,114 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
       ),
       itemCount: works.length,
       itemBuilder: (context, index) {
-        return Card(
-          child: Column(
-            children: [
-              Expanded(
-                child: Image.network(
-                  works[index].image ?? '',
-                  fit: BoxFit.cover,
-                  width: double.infinity,
+        return GestureDetector(
+          onTap: () {
+            _showWorkDetailsDialog(context, works[index]);
+          },
+          child: Card(
+            child: Column(
+              children: [
+                Expanded(
+                  child: Image.network(
+                    works[index].image ?? '',
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  works[index].title ?? '',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    works[index].title ?? '',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
     );
   }
+  void _showWorkDetailsDialog(BuildContext context, WorkEntity work) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8),
+                    image: work.image != null
+                        ? DecorationImage(
+                      image: NetworkImage(work.image!),
+                      fit: BoxFit.cover,
+                    )
+                        : null,
+                  ),
+                  child: work.image == null
+                      ? const Center(
+                    child: Text(
+                      "No Image Available",
+                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                    ),
+                  )
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Title:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.black, // لون النص
+                  ),
+                ),
+                Text(
+                  work.title ?? '',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black, // لون النص
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "Description:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.black, // لون النص
+                  ),
+                ),
+                Text(
+                  work.description ?? '',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black, // لون النص
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'Close',
+                style: TextStyle(color: Colors.black), // لون النص
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }

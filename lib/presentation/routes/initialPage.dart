@@ -16,7 +16,7 @@ class initialPage{
 
     ///check if change happen
 
-    
+
     if((user==null)==isLogIn && connectivity==result){
       result=connectivity;
       isLogIn=(user==null);
@@ -30,14 +30,14 @@ class initialPage{
 
     if(!connectivity.name.contains('none')){
       if(user!=null){
-           bool hasData=await Get.find<crossData>().fetchUserData();
-           if(hasData){
-             await Get.find<crossData>().fetchChats();
-             Get.offAllNamed(AppRoutes.home);
-           }
-           else{
-             Get.offAllNamed(AppRoutes.accountType);
-           }
+        bool hasData=await Get.find<crossData>().fetchUserData();
+        if(hasData){
+          await Get.find<crossData>().fetchChats();
+          Get.offAllNamed(AppRoutes.home);
+        }
+        else{
+          Get.offAllNamed(AppRoutes.accountType);
+        }
       }
       else{
         Get.offAllNamed(AppRoutes.introduction);

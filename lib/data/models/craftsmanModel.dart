@@ -14,23 +14,20 @@ class CraftsmanModel extends CraftsmanEntity {
     required super.dateOfBirth, // Include DOB
   });
 
-  /// Convert JSON to CraftsmanModel
   factory CraftsmanModel.fromJson(Map<String, dynamic> json) {
-    print("year"+json['years_of_experience'].toString());
     return CraftsmanModel(
-      category: json['craftsman']['category']??"",
-      yearsOfExp: json['craftsman']['years_of_experience'],
+      category: json['category'],
+      yearsOfExp: json['years_of_experience'],
       name: json['name'],
       id: json['id'],
       image: json['image'] ?? '',
       createdAt: DateTime.parse(json['created_at']),
       phoneNumber: json['phone_number'],
       userType: json['user_type'],
-      location: json['location']??"",
-      dateOfBirth: DateTime.parse(json['date_of_birth']??DateTime.now().toIso8601String()), // Parse DOB
+      location: json['location'],
+      dateOfBirth: DateTime.parse(json['date_of_birth']), // Parse DOB
     );
   }
-
   /// Convert CraftsmanModel to JSON
   Map<String, dynamic> toJson() {
     return {

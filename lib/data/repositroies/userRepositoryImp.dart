@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:herafi/data/models/userModel.dart';
 import 'package:herafi/data/remotDataSource/userDataSource.dart';
 import 'package:herafi/domain/repositories/userRepository.dart';
 
