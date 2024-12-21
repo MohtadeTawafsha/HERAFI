@@ -29,14 +29,14 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
   List<WorkEntity> works = [];
   bool isLoading = true;
 
-  bool isFollowing = false;
-  bool isLoadingFollow = false;
+  bool isFollowing = false; 
+  bool isLoadingFollow = false; 
 
   @override
   void initState() {
     super.initState();
     _fetchData();
-    _checkFollowingStatus();
+    _checkFollowingStatus(); 
   }
 
   Future<void> _checkFollowingStatus() async {
@@ -135,7 +135,7 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
           .single();
       craftsman = CraftsmanModel.fromJson({
         ...craftsmanResponse,
-        ...userResponse,
+        ...userResponse, 
       });
 
       // Fetch certificates
@@ -181,39 +181,39 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
     return isLoading
         ? const Scaffold(body: Center(child: CircularProgressIndicator()))
         : DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Craftsman Profile'),
-        ),
-        body: Column(
-          children: [
-            _buildCraftsmanInfoSection(isCraftsmanViewingOwnProfile),
-            const Divider(),
-            TabBar(
-              indicatorColor: Colors.white,
-              tabs: const [
-                Tab(text: 'certificates'),
-                Tab(text: 'Works'),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
+            length: 2,
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text('Craftsman Profile'),
+              ),
+              body: Column(
                 children: [
-                  _buildDiplomaSection(),
-                  _buildPortfolioSection(),
+                  _buildCraftsmanInfoSection(isCraftsmanViewingOwnProfile),
+                  const Divider(),
+                  TabBar(
+                    indicatorColor: Colors.white,
+                    tabs: const [
+                      Tab(text: 'certificates'),
+                      Tab(text: 'Works'),
+                    ],
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        _buildDiplomaSection(),
+                        _buildPortfolioSection(),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 
   Widget _buildCraftsmanInfoSection(bool isCraftsmanViewingOwnProfile) {
     final isAvailable =
-    availability.any((entry) => entry.available && entry.availabilityType == 'simple');
+        availability.any((entry) => entry.available && entry.availabilityType == 'simple');
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -247,13 +247,13 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
               Row(
                 children: [
                   Icon(
-                    isAvailable ? Icons.cancel : Icons.circle,
-                    color: isAvailable ? Colors.red : Colors.green,
+                    isAvailable ? Icons.circle : Icons.cancel,
+                    color: isAvailable ? Colors.green : Colors.red,
                     size: 12,
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    isAvailable ?  'I’m not available' : 'I’m available to work',
+                    isAvailable ? 'I’m available to work' : 'I’m not available',
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -266,13 +266,13 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
                   ),
                   child: isLoadingFollow
                       ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
                       : Text(isFollowing ? 'Unfollow' : 'Follow'),
                 ),
               IconButton(
@@ -346,146 +346,59 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
     return certificates.isEmpty
         ? const Center(child: Text('No Diplomas available.'))
         : GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 1,
-      ),
-      itemCount: certificates.length,
-      itemBuilder: (context, index) {
-        return Card(
-          child: Image.network(
-            certificates[index].image ?? '',
-            fit: BoxFit.cover,
-          ),
-        );
-      },
-    );
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 1,
+            ),
+            itemCount: certificates.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: Image.network(
+                  certificates[index].image ?? '',
+                  fit: BoxFit.cover,
+                ),
+              );
+            },
+          );
   }
 
   Widget _buildPortfolioSection() {
     return works.isEmpty
         ? const Center(child: Text('No Portfolio items available.'))
         : GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 1,
-      ),
-      itemCount: works.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            _showWorkDetailsDialog(context, works[index]);
-          },
-          child: Card(
-            child: Column(
-              children: [
-                Expanded(
-                  child: Image.network(
-                    works[index].image ?? '',
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    works[index].title ?? '',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 1,
             ),
-          ),
-        );
-      },
-    );
-  }
-  void _showWorkDetailsDialog(BuildContext context, WorkEntity work) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          contentPadding: const EdgeInsets.all(16.0),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(8),
-                    image: work.image != null
-                        ? DecorationImage(
-                      image: NetworkImage(work.image!),
-                      fit: BoxFit.cover,
-                    )
-                        : null,
-                  ),
-                  child: work.image == null
-                      ? const Center(
-                    child: Text(
-                      "No Image Available",
-                      style: TextStyle(fontSize: 16, color: Colors.black54),
+            itemCount: works.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Image.network(
+                        works[index].image ?? '',
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
                     ),
-                  )
-                      : null,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        works[index].title ?? '',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  "Title:",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.black, // لون النص
-                  ),
-                ),
-                Text(
-                  work.title ?? '',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black, // لون النص
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  "Description:",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.black, // لون النص
-                  ),
-                ),
-                Text(
-                  work.description ?? '',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black, // لون النص
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Close',
-                style: TextStyle(color: Colors.black), // لون النص
-              ),
-            ),
-          ],
-        );
-      },
-    );
+              );
+            },
+          );
   }
-
-
 }
