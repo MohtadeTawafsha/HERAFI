@@ -8,6 +8,8 @@ import 'availability_screen.dart';
 import 'edit_profile_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'states/RateCraftsmanScreen.dart';
+
 class AccountScreen extends StatefulWidget {
   @override
   _AccountScreenState createState() => _AccountScreenState();
@@ -137,6 +139,17 @@ class _AccountScreenState extends State<AccountScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => CraftsmanListPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.people),
+            title: Text('Raiting'),
+            trailing: Icon(Icons.arrow_forward),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RateCraftsmanScreen(craftsmanId: "jA1t5UPThWRLKJZOs89irszOlYo1"!)),
               );
             },
           ),

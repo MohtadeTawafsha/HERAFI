@@ -1,5 +1,5 @@
 class AvailabilityEntity {
-  final int id;
+  final int? id; // اجعل الحقل اختيارياً
   final String craftsmanId;
   final String availabilityType;
   final String? dayOfWeek;
@@ -7,7 +7,7 @@ class AvailabilityEntity {
   final String? unavailabilityReason;
 
   const AvailabilityEntity({
-    required this.id,
+    this.id, // الحقل اختيارياً
     required this.craftsmanId,
     required this.availabilityType,
     this.dayOfWeek,

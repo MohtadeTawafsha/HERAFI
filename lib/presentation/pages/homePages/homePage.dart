@@ -7,6 +7,7 @@ import 'package:herafi/presentation/controllers/AuthController/homePageControlle
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/pages/JobPages/createJobPage.dart';
 import 'package:herafi/presentation/pages/account_screen.dart';
+import 'package:herafi/presentation/pages/homePages/homepagecutomer.dart';
 import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
 import 'package:herafi/presentation/pages/trakingPage.dart';
 import '../../Widgets/itemInBottomNavigationBar.dart';
@@ -71,21 +72,11 @@ class homePage extends StatelessWidget {
             return createJobPage();
           };
         default:
-          return HomePage(controller);
+          return CustomerHomePage();
       }
     }
   }
-  Widget HomePage(homePageController controller){
-    return SafeArea(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-        ],
-      ),
-    );
-  }
+
   Widget bottomNavigationBarForCustomer(homePageController controller) {
     return Builder(builder: (context) {
       return Container(

@@ -43,12 +43,12 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
       final availabilityResult = await availabilityRepository.fetchAvailability(craftsmanId);
 
       availabilityResult.fold(
-        (failure) {
+            (failure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error loading availability: ${failure.message}')),
           );
         },
-        (availabilityList) {
+            (availabilityList) {
           if (availabilityList.isNotEmpty) {
             final data = availabilityList.first;
 
@@ -97,12 +97,12 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
       final availabilityResult = await availabilityRepository.fetchAvailability(craftsmanId);
 
       availabilityResult.fold(
-        (failure) {
+            (failure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error fetching availability: ${failure.message}')),
           );
         },
-        (availabilityList) async {
+            (availabilityList) async {
           if (availabilityList.isNotEmpty) {
             // Update existing record
             final existingRecord = availabilityList.first;
@@ -133,7 +133,7 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
             // Insert new record
             if (isSimpleStatus) {
               final newAvailability = AvailabilityEntity(
-                id: 0,
+                id: null, // اجعل id فارغاً
                 craftsmanId: craftsmanId,
                 availabilityType: 'simple',
                 dayOfWeek: null,
@@ -144,7 +144,7 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
             } else {
               final selectedDaysString = selectedDays.join(',');
               final newAvailability = AvailabilityEntity(
-                id: 0,
+                id: null, // اجعل id فارغاً
                 craftsmanId: craftsmanId,
                 availabilityType: 'schedule',
                 dayOfWeek: selectedDaysString,
@@ -191,111 +191,111 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Simple Status
+            RadioListTile(
+              title: const Text("Simple status", style: TextStyle(fontSize: 18)),
+              value: true,
+              groupValue: isSimpleStatus,
+              onChanged: (bool? value) {
+                setState(() {
+                  isSimpleStatus = value ?? true;
+                });
+              },
+            ),
+            if (isSimpleStatus) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Simple Status
-                  RadioListTile(
-                    title: const Text("Simple status", style: TextStyle(fontSize: 18)),
-                    value: true,
-                    groupValue: isSimpleStatus,
-                    onChanged: (bool? value) {
+                  const Text("Available", style: TextStyle(fontSize: 18)),
+                  Switch(
+                    value: isAvailable,
+                    onChanged: (bool value) {
                       setState(() {
-                        isSimpleStatus = value ?? true;
+                        isAvailable = value;
                       });
                     },
-                  ),
-                  if (isSimpleStatus) ...[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Available", style: TextStyle(fontSize: 18)),
-                        Switch(
-                          value: isAvailable,
-                          onChanged: (bool value) {
-                            setState(() {
-                              isAvailable = value;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    if (!isAvailable)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: TextField(
-                          onChanged: (value) {
-                            setState(() {
-                              unavailabilityReason = value;
-                            });
-                          },
-                          decoration: const InputDecoration(
-                            labelText: "Reason for unavailability",
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                  ],
-
-                  const SizedBox(height: 20),
-
-                  // Schedule Status
-                  RadioListTile(
-                    title: const Text("Schedule status", style: TextStyle(fontSize: 18)),
-                    value: false,
-                    groupValue: isSimpleStatus,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isSimpleStatus = value ?? false;
-                      });
-                    },
-                  ),
-                  if (!isSimpleStatus)
-                    Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      children: [
-                        'Sunday',
-                        'Monday',
-                        'Tuesday',
-                        'Wednesday',
-                        'Thursday',
-                        'Friday',
-                        'Saturday'
-                      ].map((day) {
-                        final isSelected = selectedDays.contains(day);
-                        return GestureDetector(
-                          onTap: () => toggleDay(day),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isSelected ? Colors.green : Colors.grey[300],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              day,
-                              style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.black,
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-
-                  const Spacer(),
-
-                  // Save Button
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: saveAvailability,
-                      child: const Text("Save"),
-                    ),
                   ),
                 ],
               ),
+              if (!isAvailable)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        unavailabilityReason = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: "Reason for unavailability",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+            ],
+
+            const SizedBox(height: 20),
+
+            // Schedule Status
+            RadioListTile(
+              title: const Text("Schedule status", style: TextStyle(fontSize: 18)),
+              value: false,
+              groupValue: isSimpleStatus,
+              onChanged: (bool? value) {
+                setState(() {
+                  isSimpleStatus = value ?? false;
+                });
+              },
             ),
+            if (!isSimpleStatus)
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: [
+                  'Sunday',
+                  'Monday',
+                  'Tuesday',
+                  'Wednesday',
+                  'Thursday',
+                  'Friday',
+                  'Saturday'
+                ].map((day) {
+                  final isSelected = selectedDays.contains(day);
+                  return GestureDetector(
+                    onTap: () => toggleDay(day),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.green : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        day,
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+
+            const Spacer(),
+
+            // Save Button
+            Center(
+              child: ElevatedButton(
+                onPressed: saveAvailability,
+                child: const Text("Save"),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

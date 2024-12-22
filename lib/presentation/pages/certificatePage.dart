@@ -26,6 +26,7 @@ class _CertificateScreenState extends State<CertificateScreen> {
 
   List<CertificateEntity> certificates = [];
   final ImagePicker picker = ImagePicker();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -35,20 +36,33 @@ class _CertificateScreenState extends State<CertificateScreen> {
 
   /// Load certificates from the repository
   Future<void> _loadCertificates() async {
+    setState(() {
+      isLoading = true; // عرض مؤشر التحميل
+    });
+
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('User not authenticated')));
+      setState(() {
+        isLoading = false; // إخفاء التحميل
+      });
       return;
     }
 
     final result = await repository.fetchCertificates(user.uid);
     result.fold(
-          (failure) => ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(failure.message))),
-          (data) => setState(() {
-        certificates = data;
-      }),
+          (failure) {
+        // تجاهل طباعة الأخطاء إلى الكونسول
+        setState(() {
+          isLoading = false; // إخفاء التحميل
+          certificates = []; // قائمة فارغة
+        });
+      },
+          (data) {
+        setState(() {
+          certificates = data; // تحديث الشهادات إذا وجدت
+          isLoading = false; // إخفاء التحميل
+        });
+      },
     );
   }
 
@@ -70,6 +84,10 @@ class _CertificateScreenState extends State<CertificateScreen> {
 
   /// Upload a certificate and update the UI
   Future<void> _uploadCertificate(File file) async {
+    setState(() {
+      isLoading = true; // عرض مؤشر التحميل
+    });
+
     final certificate = CertificateEntity(
       id: 0, // ID is auto-generated
       createdAt: DateTime.now(),
@@ -77,14 +95,36 @@ class _CertificateScreenState extends State<CertificateScreen> {
       image: null, // Will be updated after upload
     );
 
-    await repository.insertCertificateWithImage(certificate, file);
-    _loadCertificates();
+    final result = await repository.insertCertificateWithImage(certificate, file);
+    result.fold(
+          (failure) {
+        setState(() {
+          isLoading = false; // إخفاء التحميل
+        });
+      },
+          (_) {
+        _loadCertificates(); // تحديث الشهادات بعد الإدخال
+      },
+    );
   }
 
   /// Delete a certificate
   Future<void> _deleteCertificate(int id) async {
-    await repository.deleteCertificate(id);
-    _loadCertificates();
+    setState(() {
+      isLoading = true; // عرض مؤشر التحميل
+    });
+
+    final result = await repository.deleteCertificate(id);
+    result.fold(
+          (failure) {
+        setState(() {
+          isLoading = false; // إخفاء التحميل
+        });
+      },
+          (_) {
+        _loadCertificates(); // تحديث الشهادات بعد الحذف
+      },
+    );
   }
 
   /// View the photo in full-screen
@@ -101,10 +141,17 @@ class _CertificateScreenState extends State<CertificateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Certificates'),
+        title: const Text('Certificates'),
       ),
-      body: certificates.isEmpty
-          ? Center(child: Text("No certificates uploaded yet"))
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator()) // عرض مؤشر التحميل
+          : certificates.isEmpty
+          ? const Center(
+        child: Text(
+          "No certificates uploaded yet", // عرض رسالة عند عدم وجود شهادات
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ),
+      )
           : ListView.builder(
         itemCount: certificates.length,
         itemBuilder: (context, index) {
@@ -120,59 +167,55 @@ class _CertificateScreenState extends State<CertificateScreen> {
                 fit: BoxFit.cover,
               ),
             )
-                : Icon(Icons.image, size: 50),
+                : const Icon(Icons.image, size: 50),
             title: Text('Certificate #${cert.id}'),
             subtitle: Text(cert.createdAt.toString()),
             trailing: IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
+              icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: () => _deleteCertificate(cert.id),
             ),
           );
         },
       ),
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
-        color: Colors.grey[900], // Background color for BottomAppBar
+        color: Colors.grey[900],
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              // "Take Photo" button with blue background
               ElevatedButton.icon(
                 onPressed: _addCertificateFromCamera,
-                icon: Icon(Icons.camera_alt),
-                label: Text("Take Photo"),
+                icon: const Icon(Icons.camera_alt),
+                label: const Text("Take Photo"),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Colors.black, // Text and icon color
+                  backgroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
-              // "Upload Photo" button with green background
               ElevatedButton.icon(
                 onPressed: _addCertificateFromGallery,
-                icon: Icon(Icons.photo_library),
-                label: Text("Upload Photo"),
+                icon: const Icon(Icons.photo_library),
+                label: const Text("Upload Photo"),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Colors.black, // Text and icon color
+                  backgroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
           ),
         ),
       ),
-
     );
   }
 }
-
