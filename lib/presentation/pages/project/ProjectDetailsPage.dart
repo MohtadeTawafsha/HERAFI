@@ -16,7 +16,6 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
   final SupabaseClient supabaseClient = Supabase.instance.client;
   Map<String, dynamic>? projectDetails;
   bool isLoading = true;
-
   @override
   void initState() {
     super.initState();
@@ -48,24 +47,28 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
     }
   }
 
-  Future<void> approveProject() async {
+  Future<void> updateProjectState(String newState) async {
     try {
       await supabaseClient
           .from('projects')
-          .update({'state': 'تم الموافقة'})
+          .update({'state': newState})
           .eq('id', widget.projectId);
+
+      setState(() {
+        projectDetails?['state'] = newState;
+      });
 
       Get.snackbar(
         'نجاح',
-        'تمت الموافقة على المشروع بنجاح',
+        'تم تحديث حالة المشروع إلى: $newState',
         backgroundColor: Colors.green,
         colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
       );
-      Navigator.pop(context); // العودة إلى صفحة الإشعارات
     } catch (error) {
       Get.snackbar(
         'خطأ',
-        'حدث خطأ أثناء الموافقة على المشروع: ${error.toString()}',
+        'فشل في تحديث الحالة: ${error.toString()}',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -107,13 +110,18 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage> {
               'تاريخ النهاية: ${projectDetails?['end_date'] ?? 'غير متوفر'}',
               style: const TextStyle(fontSize: 16),
             ),
+            const SizedBox(height: 10),
+            Text(
+              'حالة المشروع الحالية: ${projectDetails?['state'] ?? 'غير متوفر'}',
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 20),
-
-            // زر الموافقة
             Center(
               child: ElevatedButton(
-                onPressed: approveProject,
-                child: const Text('موافقة'),
+                onPressed: () {
+                  updateProjectState('تم الموافقة');
+                },
+                child: const Text('الموافقة على المشروع'),
               ),
             ),
           ],

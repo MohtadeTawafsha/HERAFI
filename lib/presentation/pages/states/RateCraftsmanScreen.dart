@@ -34,14 +34,11 @@ class _RateCraftsmanScreenState extends State<RateCraftsmanScreen> {
 
   Future<void> _fetchCraftsmanData() async {
     try {
-      setState(() => isLoading = true);
-
-      // جلب بيانات المستخدم
       final userResponse = await supabaseClient
           .from('users')
           .select('name, image')
           .eq('id', widget.craftsmanId)
-          .single();
+          .maybeSingle();
 
       if (userResponse != null) {
         setState(() {
@@ -54,14 +51,14 @@ class _RateCraftsmanScreenState extends State<RateCraftsmanScreen> {
         });
       }
     } catch (e) {
-      print("Error fetching craftsman data: $e");
       setState(() {
         craftsmanName = "Error loading name";
       });
-    } finally {
-      setState(() => isLoading = false);
     }
   }
+
+
+
 
   Future<void> _fetchProjectId() async {
     try {

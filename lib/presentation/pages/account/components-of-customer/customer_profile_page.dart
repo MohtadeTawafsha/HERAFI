@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../data/remotDataSource/customerDataSource.dart';
-import '../../data/repositroies/customerRepositoryImp.dart';
-import '../../data/repositroies/jobRepositoryImp.dart';
-import '../../domain/entites/customer.dart';
-import '../../domain/entites/job.dart';
+import '../../../../data/remotDataSource/customerDataSource.dart';
+import '../../../../data/repositroies/customerRepositoryImp.dart';
+import '../../../../data/repositroies/jobRepositoryImp.dart';
+import '../../../../domain/entites/customer.dart';
+import '../../../../domain/entites/job.dart';
 
 class CustomerProfilePage extends StatefulWidget {
   final String customerId;

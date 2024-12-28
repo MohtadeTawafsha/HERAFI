@@ -1,4 +1,6 @@
-import '../../domain/entites/ProjectEntity.dart';
+import 'package:herafi/domain/entites/ProjectEntity.dart';
+
+import '../../domain/entites/ProjectStepEntity.dart';
 
 class ProjectModel extends ProjectEntity {
   ProjectModel({
@@ -10,9 +12,9 @@ class ProjectModel extends ProjectEntity {
     super.customerId,
     super.craftsmanId,
     super.state = 'تم الإرسال للعميل',
+    super.steps, // جديد
   });
 
-  /// Factory method to create a `ProjectModel` from JSON
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
     return ProjectModel(
       id: json['id'],
@@ -27,10 +29,20 @@ class ProjectModel extends ProjectEntity {
       customerId: json['customer_id'],
       craftsmanId: json['craftsman_id'],
       state: json['state'] ?? 'تم الإرسال للعميل',
+      steps: json['steps'] != null
+          ? (json['steps'] as List)
+          .map((step) => ProjectStepEntity(
+        stepNumber: step['step_number'],
+        title: step['title'],
+        price: step['price'].toDouble(),
+        duration: step['duration'], // String
+        isPaid: step['is_paid'],
+      ))
+          .toList()
+          : null, // جديد
     );
   }
 
-  /// Convert `ProjectModel` to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -41,6 +53,15 @@ class ProjectModel extends ProjectEntity {
       'customer_id': customerId,
       'craftsman_id': craftsmanId,
       'state': state,
+      'steps': steps
+          ?.map((step) => {
+        'step_number': step.stepNumber,
+        'title': step.title,
+        'price': step.price,
+        'duration': step.duration, // String
+        'is_paid': step.isPaid,
+      })
+          .toList(),
     };
   }
 }

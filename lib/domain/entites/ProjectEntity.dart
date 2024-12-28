@@ -1,12 +1,15 @@
+import 'package:herafi/domain/entites/ProjectStepEntity.dart';
+
 class ProjectEntity {
-  final int id; // الرقم التعريفي للمشروع
-  final String title; // عنوان المشروع
-  final double? price; // سعر المشروع
-  final DateTime? startDate; // تاريخ البدء
-  final DateTime? endDate; // تاريخ الانتهاء
-  final String? customerId; // معرف العميل
-  final String? craftsmanId; // معرف الحرفي
-  final String state; // حالة المشروع
+  final int id;
+  final String title;
+  final double? price;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final String? customerId;
+  final String? craftsmanId;
+  late final String state;
+  final List<ProjectStepEntity>? steps; // جديد: قائمة بالخطوات
 
   ProjectEntity({
     required this.id,
@@ -17,5 +20,6 @@ class ProjectEntity {
     this.customerId,
     this.craftsmanId,
     this.state = 'تم الإرسال للعميل',
+    this.steps, // جديد
   });
 }

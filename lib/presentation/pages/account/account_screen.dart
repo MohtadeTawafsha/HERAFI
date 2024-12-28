@@ -1,14 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:herafi/presentation/pages/CraftsmanProfilePage.dart';
-import 'package:herafi/presentation/pages/certificatePage.dart';
-import 'package:herafi/presentation/pages/portfolio_screen.dart';
 import 'package:herafi/presentation/pages/CraftsmanListPage.dart';
-import 'availability_screen.dart';
-import 'edit_profile_screen.dart';
+import 'package:herafi/presentation/pages/account/components-of-craftsman/availability-Page.dart';
+import 'package:herafi/presentation/pages/account/components-of-craftsman/certificate-Page.dart';
+import 'package:herafi/presentation/pages/account/components-of-craftsman/craftsman-profile-Page.dart';
+import 'package:herafi/presentation/pages/account/components-of-craftsman/work_Page.dart';
+import 'package:herafi/presentation/pages/account/components-of-customer/customer_profile_page.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'states/RateCraftsmanScreen.dart';
+import '../states/RateCraftsmanScreen.dart';
+import 'components-of-craftsman/edit_profile_craftsman.dart';
+import 'components-of-customer/edit-profile-customer.dart';
 
 class AccountScreen extends StatefulWidget {
   @override
@@ -67,15 +70,26 @@ class _AccountScreenState extends State<AccountScreen> {
           ListTile(
             leading: Icon(Icons.person),
             title: Text(_userName),
-            // subtitle: Text('View my profile'),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => EditCraftsmanScreen()),
-              );
+              if (_userType == 'craftsman') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditCraftsmanScreen()),
+                );
+              } else if (_userType == 'customer') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditCustomerScreen()),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("نوع الحساب غير معروف.")),
+                );
+              }
             },
           ),
+
           Divider(),
           if (_userType == 'craftsman') ...[
             ListTile(
@@ -125,8 +139,11 @@ class _AccountScreenState extends State<AccountScreen> {
                   ),
                 );
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Profile feature is not available for customers.')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CustomerProfilePage(customerId: _userId!,),
+                  ),
                 );
               }
             },

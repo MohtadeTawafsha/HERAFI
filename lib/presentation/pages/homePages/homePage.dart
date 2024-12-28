@@ -6,7 +6,7 @@ import 'package:herafi/presentation/bindings/jobsBinding/createJobBinding.dart';
 import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/pages/JobPages/createJobPage.dart';
-import 'package:herafi/presentation/pages/account_screen.dart';
+import 'package:herafi/presentation/pages/account/account_screen.dart';
 import 'package:herafi/presentation/pages/homePages/homepagecutomer.dart';
 import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
 import 'package:herafi/presentation/pages/trakingPage.dart';

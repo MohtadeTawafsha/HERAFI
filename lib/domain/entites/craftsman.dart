@@ -1,12 +1,16 @@
 import 'package:herafi/domain/entites/user.dart';
 
 class CraftsmanEntity extends UserEntity {
-  final String category;
-  final int yearsOfExp;
+  String category;
+  int yearsOfExp;
+  String? mapLatitude; // قابلة للتعديل
+  String? mapLongitude; // قابلة للتعديل
 
   CraftsmanEntity({
     required this.category,
     required this.yearsOfExp,
+    this.mapLatitude,
+    this.mapLongitude,
     required super.name,
     required super.id,
     required super.image,
@@ -14,6 +18,6 @@ class CraftsmanEntity extends UserEntity {
     required super.phoneNumber,
     required super.userType,
     required super.location,
-    required super.dateOfBirth, // Pass date_of_birth from UserEntity
+    required super.dateOfBirth,
   });
 }

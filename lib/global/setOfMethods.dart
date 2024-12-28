@@ -29,7 +29,7 @@ class globalMethods{
             ),
             ListTile(
               trailing: Icon(Icons.camera),
-              title: Text('استخدك الكاميرا'),
+              title: Text('استخدم الكاميرا'),
               onTap: ()async{
                 String? x= await _pickImage(source:ImageSource.camera,width: width,height: height);
                 Navigator.of(context).pop(x);

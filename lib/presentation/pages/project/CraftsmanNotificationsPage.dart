@@ -28,7 +28,7 @@ class _CraftsmanNotificationsPageState
     try {
       final response = await supabaseClient
           .from('projects')
-          .select('id, title, state')
+          .select('id, title, state, craftsman_id') // جلب craftsman_id
           .eq('state', 'تم الموافقة'); // عرض المشاريع الموافق عليها فقط
 
       setState(() {
@@ -66,7 +66,8 @@ class _CraftsmanNotificationsPageState
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Get.to(() => CraftsmanProjectDetailsPage(
-                projectId: project['id'],
+                projectId: project['id'], // تمرير projectId
+                craftsmanId: project['craftsman_id'] ?? '', // تمرير craftsmanId
               ));
             },
           );

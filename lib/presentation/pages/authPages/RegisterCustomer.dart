@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -22,22 +23,74 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   final _dobController = TextEditingController();
   final _locationController = TextEditingController();
   String? _selectedCity;
+  double? _latitude; // خط العرض
+  double? _longitude; // خط الطول
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final SupabaseClient supabaseClient = Supabase.instance.client;
+  Future<void> _getLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('خدمة تحديد الموقع غير مفعّلة.')),
+        );
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('تم رفض صلاحيات تحديد الموقع.')),
+          );
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم رفض صلاحيات الموقع بشكل دائم.')),
+        );
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      setState(() {
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('تم تحديد الموقع: $_latitude, $_longitude')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('حدث خطأ أثناء تحديد الموقع: $e')),
+      );
+    }
+  }
 
   Future<void> _registerCustomer() async {
     if (_formKey.currentState!.validate()) {
       try {
         Get.dialog(
-          Center(
-            child: progressIndicator(),
-          ),
+          Center(child: progressIndicator()),
           barrierDismissible: false, // Prevents dismissing the dialog by tapping outside
         );
+
         final String name = _nameController.text.trim();
-        final String location = _locationController.text.trim();
         final String dob = _dobController.text.trim();
+
+        if (_latitude == null || _longitude == null) {
+          Get.back();
+          Get.snackbar('Error', 'يرجى تحديد الموقع قبل التسجيل.');
+          return;
+        }
 
         final CustomerRemoteDataSource dataSource = CustomerRemoteDataSource(
           supabaseClient,
@@ -46,11 +99,23 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
 
         await dataSource.saveCustomerDetails(
           name: name,
-          location: location,
+          location: _selectedCity!,
           phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!,
           dateOfBirth: DateTime.parse(dob), // Pass DOB
+          mapLatitude: _latitude.toString(), // تخزين خط العرض
+          mapLongitude: _longitude.toString(), // تخزين خط الطول
         );
-        Get.find<crossData>().userEntity=UserEntity(name: name, id: FirebaseAuth.instance.currentUser!.uid, image: '', createdAt: DateTime.now(), phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!, userType: "customer", location: location, dateOfBirth: DateTime.parse(dob));
+
+        Get.find<crossData>().userEntity = UserEntity(
+          name: name,
+          id: FirebaseAuth.instance.currentUser!.uid,
+          image: '',
+          createdAt: DateTime.now(),
+          phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!,
+          userType: "customer",
+          location: _selectedCity!,
+          dateOfBirth: DateTime.parse(dob),
+        );
 
         Get.offAllNamed('/home'); // Navigate to home after success
       } catch (e) {
@@ -58,6 +123,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +202,11 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                     return null;
                   },
                 ),
+                ElevatedButton(
+                  onPressed: _getLocation,
+                  child: const Text('تحديد الموقع'),
+                ),
+
 
                 const SizedBox(height: 20),
 

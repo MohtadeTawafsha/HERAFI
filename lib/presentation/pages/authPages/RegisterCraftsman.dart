@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:herafi/domain/entites/user.dart';
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:geolocator/geolocator.dart'; // مكتبة تحديد الموقع
 
 import '../../../data/models/craftsmanModel.dart';
 import '../../../data/remotDataSource/craftsmanRemotDataSource.dart';
@@ -25,6 +26,9 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
   String? _selectedCity;
   int _yearsOfExperience = 0;
 
+  double? _latitude; // خط العرض
+  double? _longitude; // خط الطول
+
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final SupabaseClient supabaseClient = Supabase.instance.client;
 
@@ -42,6 +46,57 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
         _yearsOfExperience--;
       }
     });
+  }
+
+  Future<void> _getLocation() async {
+    try {
+      // التحقق من صلاحيات الموقع
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('خدمة تحديد الموقع غير مفعّلة.')),
+        );
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('تم رفض صلاحيات تحديد الموقع.')),
+          );
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم رفض صلاحيات الموقع بشكل دائم.')),
+        );
+        return;
+      }
+
+      // الحصول على الموقع الحالي
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      setState(() {
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('تم تحديد الموقع: $_latitude, $_longitude'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('حدث خطأ أثناء تحديد الموقع: $e')),
+      );
+    }
   }
 
   Future<void> _registerCraftsman() async {
@@ -67,9 +122,25 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
           name: name,
           location: _selectedCity!,
           phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!,
-          dateOfBirth: DateTime.parse(dob), // Pass DOB
+          dateOfBirth: DateTime.parse(dob),
+          mapLatitude: _latitude?.toString(), // خط العرض
+          mapLongitude: _longitude?.toString(), // خط الطول
         );
-        Get.find<crossData>().userEntity=CraftsmanModel(name: name, id: FirebaseAuth.instance.currentUser!.uid, image: '', createdAt: DateTime.now(), phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!, userType: "craftsman", location: _selectedCity!, dateOfBirth: DateTime.parse(dob), category: _selectedCategory!, yearsOfExp: _yearsOfExperience);
+
+
+        Get.find<crossData>().userEntity = CraftsmanModel(
+          name: name,
+          id: FirebaseAuth.instance.currentUser!.uid,
+          image: '',
+          createdAt: DateTime.now(),
+          phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!,
+          userType: "craftsman",
+          location: _selectedCity!,
+          dateOfBirth: DateTime.parse(dob),
+          category: _selectedCategory!,
+          yearsOfExp: _yearsOfExperience,
+        );
+
         Get.offAllNamed('/home'); // Navigate to home after success
       } catch (e) {
         Get.snackbar('Error', 'An error occurred: $e');
@@ -203,6 +274,14 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                     }
                     return null;
                   },
+                ),
+
+                const SizedBox(height: 20),
+
+                // Button to Get Location
+                ElevatedButton(
+                  onPressed: _getLocation,
+                  child: const Text('تحديد الموقع'),
                 ),
 
                 const SizedBox(height: 20),

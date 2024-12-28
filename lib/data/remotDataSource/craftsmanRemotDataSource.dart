@@ -8,29 +8,26 @@ class CraftsmanRemoteDataSource {
   CraftsmanRemoteDataSource(this.client, this.firebaseAuth);
 
   /// Fetch craftsman details by ID
-Future<Map<String, dynamic>?> fetchCraftsmanDetails(String id) async {
-  // Fetch data from both `users` and `craftsman` tables
-  final response = await client
-      .from('craftsman')
-      .select('*, users(*)') // Join craftsman and associated user data
-      .eq('id', id)
-      .maybeSingle();
+  Future<Map<String, dynamic>?> fetchCraftsmanDetails(String id) async {
+    final response = await client
+        .from('craftsman')
+        .select('*, users(*)') // Join craftsman with user data
+        .eq('id', id)
+        .maybeSingle();
 
-  if (response == null) {
-    throw Exception('No craftsman details found for ID: $id');
+    if (response == null) {
+      throw Exception('No craftsman details found for ID: $id');
+    }
+
+    final Map<String, dynamic> combinedData = {
+      'id': response['id'],
+      'category': response['category'],
+      'years_of_experience': response['years_of_experience'],
+      ...response['users'], // Include user data (latitude, longitude, etc.)
+    };
+
+    return combinedData;
   }
-
-  // Combine the craftsman data and user data for convenience
-  final Map<String, dynamic> combinedData = {
-    'id': response['id'],
-    'category': response['category'],
-    'years_of_experience': response['years_of_experience'],
-    ...response['users'], // Spread the user data into this map
-  };
-
-  return combinedData;
-}
-
 
   /// Save craftsman details
   Future<void> saveCraftsmanDetails({
@@ -40,6 +37,8 @@ Future<Map<String, dynamic>?> fetchCraftsmanDetails(String id) async {
     required String location,
     required String phoneNumber,
     required DateTime dateOfBirth,
+    String? mapLatitude, // Store latitude in users table
+    String? mapLongitude, // Store longitude in users table
   }) async {
     final user = firebaseAuth.currentUser;
     if (user == null) {
@@ -47,7 +46,7 @@ Future<Map<String, dynamic>?> fetchCraftsmanDetails(String id) async {
     }
     final String uid = user.uid;
 
-    // Insert user data into `users` table
+    // Update user details in users table
     await client.from('users').upsert({
       'id': uid,
       'name': name,
@@ -55,9 +54,11 @@ Future<Map<String, dynamic>?> fetchCraftsmanDetails(String id) async {
       'user_type': 'craftsman',
       'location': location,
       'date_of_birth': dateOfBirth.toIso8601String(),
+      'map_latitude': mapLatitude,
+      'map_longitude': mapLongitude,
     });
 
-    // Insert craftsman data into `craftsman` table
+    // Insert craftsman details in craftsman table
     await client.from('craftsman').upsert({
       'id': uid,
       'category': category,
@@ -74,12 +75,16 @@ Future<Map<String, dynamic>?> fetchCraftsmanDetails(String id) async {
     required int yearsOfExperience,
     required String category,
     required String image,
+    String? mapLatitude, // دعم خطوط الطول
+    String? mapLongitude, // دعم خطوط العرض
   }) async {
     await client.from('users').update({
       'name': name,
       'location': location,
       'date_of_birth': dateOfBirth.toIso8601String(),
       'image': image,
+      if (mapLatitude != null) 'map_latitude': mapLatitude, // تحديث خط العرض
+      if (mapLongitude != null) 'map_longitude': mapLongitude, // تحديث خط الطول
     }).eq('id', id);
 
     await client.from('craftsman').update({
@@ -87,4 +92,5 @@ Future<Map<String, dynamic>?> fetchCraftsmanDetails(String id) async {
       'category': category,
     }).eq('id', id);
   }
+
 }

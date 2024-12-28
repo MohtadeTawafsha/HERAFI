@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:herafi/presentation/pages/account/components-of-craftsman/craftsman-profile-Page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CustomerHomePage extends StatefulWidget {
@@ -9,7 +10,6 @@ class CustomerHomePage extends StatefulWidget {
 }
 
 class _CustomerHomePageState extends State<CustomerHomePage> {
-  bool showAllServices = false;
   bool showCraftsmen = false;
   String selectedCategory = '';
   String searchQuery = '';
@@ -17,7 +17,6 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
 
   final SupabaseClient supabase = Supabase.instance.client;
 
-  // قائمة الخدمات
   final List<Map<String, String>> services = [
     {'name': 'السباكة', 'icon': 'lib/core/utils/images/سباكة.png'},
     {'name': 'النجارة', 'icon': 'lib/core/utils/images/نجارة.png'},
@@ -80,233 +79,133 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
       appBar: AppBar(
         backgroundColor: Colors.black87,
         elevation: 0,
-        title: Text(
-          showCraftsmen ? selectedCategory : 'Customer Home Page',
-          style: const TextStyle(
+        title: const Text(
+          'Services and Craftsmen',
+          style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        leading: showCraftsmen || showAllServices
+        leading: showCraftsmen
             ? IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             setState(() {
-              if (showCraftsmen) {
-                showCraftsmen = false;
-                selectedCategory = '';
-              } else if (showAllServices) {
-                showAllServices = false;
-              }
-              searchQuery = '';
-              searchController.clear();
+              showCraftsmen = false;
+              selectedCategory = '';
             });
           },
         )
             : null,
       ),
-      body: showCraftsmen
-          ? _buildCraftsmenList()
-          : showAllServices
-          ? _buildAllServicesView()
-          : _buildHomePage(),
-    );
-  }
-
-  Widget _buildHomePage() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
         children: [
           // Search Bar
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.grey[800],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: const [
-                Icon(Icons.search, color: Colors.white),
-                SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search craftsman by name or category',
-                      hintStyle: TextStyle(color: Colors.white54),
-                      border: InputBorder.none,
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.search, color: Colors.white),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: searchController,
+                      decoration: const InputDecoration(
+                        hintText: 'Search for services or craftsmen',
+                        hintStyle: TextStyle(
+                          color: Colors.white54,
+                          fontSize: 16,
+                        ),
+
+                        border: InputBorder.none,
+                      ),
+                      style: const TextStyle(color: Colors.white),
+                      onChanged: (value) {
+                        setState(() {
+                          searchQuery = value;
+                        });
+                      },
                     ),
-                    style: TextStyle(color: Colors.white),
                   ),
-                ),
-              ],
+                  if (searchQuery.isNotEmpty)
+                    IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.white54),
+                      onPressed: () {
+                        setState(() {
+                          searchQuery = '';
+                          searchController.clear();
+                        });
+                      },
+                    ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 24),
-          // Services Section
-          _buildSectionTitle('Services', () {
-            setState(() {
-              showAllServices = true;
-            });
-          }),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 120,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: services.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showCraftsmen = true;
-                      selectedCategory = services[index]['name']!;
-                    });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 12.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[800],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset(
-                              services[index]['icon']!,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          services[index]['name']!,
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.white70),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+          Expanded(
+            child: showCraftsmen
+                ? _buildCraftsmenList()
+                : _buildServicesAndCraftsmenView(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAllServicesView() {
-    // تصفية الخدمات بناءً على نص البحث
+  Widget _buildServicesAndCraftsmenView() {
     final filteredServices = services
         .where((service) =>
         service['name']!.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
 
-    return Column(
-      children: [
-        // Search Bar for services
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.grey[800],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.search, color: Colors.white),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  controller: searchController,
-                  decoration: const InputDecoration(
-                    hintText: 'Search for services',
-                    hintStyle: TextStyle(color: Colors.white54),
-                    border: InputBorder.none,
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  onChanged: (value) {
-                    setState(() {
-                      searchQuery = value; // تحديث نص البحث
-                    });
-                  },
-                ),
-              ),
-              if (searchQuery.isNotEmpty) // زر لإزالة النص عند وجود نص
-                IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.white54),
-                  onPressed: () {
-                    setState(() {
-                      searchQuery = '';
-                      searchController.clear(); // إعادة تعيين النص
-                    });
-                  },
-                ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-        // GridView لعرض الخدمات المصفاة
-        Expanded(
-          child: filteredServices.isNotEmpty
-              ? GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: filteredServices.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              showCraftsmen = true;
+              selectedCategory = filteredServices[index]['name']!;
+            });
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[800],
+              borderRadius: BorderRadius.circular(12),
             ),
-            itemCount: filteredServices.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    showCraftsmen = true;
-                    selectedCategory = filteredServices[index]['name']!;
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[800],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        filteredServices[index]['icon']!,
-                        width: 60,
-                        height: 60,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        filteredServices[index]['name']!,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  filteredServices[index]['icon']!,
+                  width: 60,
+                  height: 60,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  filteredServices[index]['name']!,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
                   ),
                 ),
-              );
-            },
-          )
-              : const Center(
-            child: Text(
-              'No services found',
-              style: TextStyle(color: Colors.white),
+              ],
             ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -348,119 +247,105 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                 ? availability.first['available'] as bool
                 : false;
 
-            return Card(
-              color: Colors.grey[850],
-              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: user['image'] != null
-                              ? NetworkImage(user['image'])
-                              : null,
-                          child: user['image'] == null
-                              ? const Icon(Icons.person, color: Colors.white)
-                              : null,
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user['name'] ?? 'Unknown',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                user['location'] ?? 'Location unknown',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white54,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Icon(
-                          Icons.circle,
-                          color: !isAvailable ? Colors.green : Colors.red,
-                          size: 16,
-                        ),
-                      ],
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CraftsmanProfilePage(
+                      craftsmanId: craftsman['id'],
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        ...List.generate(5, (i) {
-                          return Icon(
-                            i < averageRating.round()
-                                ? Icons.star
-                                : Icons.star_border,
-                            color: Colors.amber,
+                  ),
+                );
+              },
+              child: Card(
+                color: Colors.grey[850],
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundImage: user['image'] != null
+                                ? NetworkImage(user['image'])
+                                : null,
+                            child: user['image'] == null
+                                ? const Icon(Icons.person, color: Colors.white)
+                                : null,
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  user['name'] ?? 'Unknown',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  user['location'] ?? 'Location unknown',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(
+                            Icons.circle,
+                            color: isAvailable ? Colors.green : Colors.red,
                             size: 16,
-                          );
-                        }),
-                        const SizedBox(width: 8),
-                        Text(
-                          averageRating.toStringAsFixed(1),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Years of Experience: ${craftsman['years_of_experience']}',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          ...List.generate(5, (i) {
+                            return Icon(
+                              i < averageRating.round()
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: Colors.amber,
+                              size: 16,
+                            );
+                          }),
+                          const SizedBox(width: 8),
+                          Text(
+                            averageRating.toStringAsFixed(1),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Years of Experience: ${craftsman['years_of_experience']}',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
           },
         );
       },
-    );
-  }
-
-  Widget _buildSectionTitle(String title, VoidCallback onTap) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        GestureDetector(
-          onTap: onTap,
-          child: const Text(
-            'See all',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white54,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

@@ -12,7 +12,7 @@ class AvailabilityScreen extends StatefulWidget {
 
 class _AvailabilityScreenState extends State<AvailabilityScreen> {
   bool isSimpleStatus = true; // Default status
-  bool isAvailable = true; // For Simple Status
+  bool isAvailable = false; // For Simple Status
   String unavailabilityReason = ''; // Reason for Not Available
   List<String> selectedDays = []; // For Schedule Status
   bool isLoading = false; // Loading Indicator

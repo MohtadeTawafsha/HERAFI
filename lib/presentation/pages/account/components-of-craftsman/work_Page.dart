@@ -7,8 +7,8 @@ import 'package:herafi/data/remotDataSource/WorksRemoteDataSource.dart';
 import 'package:herafi/data/repositroies/WorksRepositoryImpl.dart';
 import 'package:herafi/domain/entites/work.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'AddWorkPage .dart';
-import 'WorkDetailsPage.dart';
+import '../../AddWorkPage .dart';
+import '../../WorkDetailsPage.dart';
 
 class WorkPage extends StatefulWidget {
   @override

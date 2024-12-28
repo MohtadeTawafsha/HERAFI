@@ -1,113 +1,171 @@
 import 'package:dartz/dartz.dart';
 import 'package:herafi/core/status/error/Failure.dart';
-import 'package:herafi/data/models/projectModel.dart';
-import 'package:herafi/data/remotDataSource/projectRemoteDataSource.dart';
-import 'package:herafi/domain/repositories/projectRepository.dart';
+import 'package:herafi/data/models/ProjectModel.dart'; // استخدم ProjectModel
+import 'package:herafi/domain/entites/ProjectEntity.dart';
+import 'package:herafi/domain/entites/ProjectStepEntity.dart';
+import 'package:herafi/global/project_states.dart';
+import '../../domain/repositories/ProjectRepository.dart';
+import '../remotDataSource/ProjectRemoteDataSource.dart';
 
-import '../../domain/entites/ProjectEntity.dart';
+class ProjectRepositoryImpl implements ProjectRepository {
+  final ProjectRemoteDataSource remoteDataSource;
 
-class ProjectRepositoryImpl extends ProjectRepository {
-  final ProjectRemoteDataSource dataSource;
-
-  ProjectRepositoryImpl(this.dataSource);
+  ProjectRepositoryImpl(this.remoteDataSource);
 
   @override
   Future<Either<Failure, void>> insertProject(ProjectEntity project) async {
     try {
-      await dataSource.saveProjectDetails(
+      await remoteDataSource.insertProject(
+        customerId: project.customerId!,
+        craftsmanId: project.craftsmanId!,
         title: project.title,
-        price: project.price ?? 0.0, // استخدام قيمة افتراضية إذا كانت null
-        startDate: project.startDate ?? DateTime.now(),
-        endDate: project.endDate ?? DateTime.now(),
-        customerId: project.customerId ?? 'Unknown', // قيمة افتراضية
-        craftsmanId: project.craftsmanId?? 'Unknown',
+        price: project.price,
+        startDate: project.startDate,
+        endDate: project.endDate,
         state: project.state,
       );
       return const Right(null);
-    } catch (error, stacktrace) {
-      // تسجيل التفاصيل لمزيد من التشخيص
-      print('Error in insertProject: $error');
-      print(stacktrace);
-      return Left(ServerFailure(error.toString()));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> updateProject(ProjectEntity project) async {
     try {
-      await dataSource.updateProjectDetails(
+      await remoteDataSource.updateProject(
         projectId: project.id,
         title: project.title,
-        price: project.price ?? 0.0,
-        startDate: project.startDate ?? DateTime.now(),
-        endDate: project.endDate ?? DateTime.now(),
+        price: project.price,
+        startDate: project.startDate,
+        endDate: project.endDate,
         state: project.state,
       );
       return const Right(null);
-    } catch (error, stacktrace) {
-      print('Error in updateProject: $error');
-      print(stacktrace);
-      return Left(ServerFailure(error.toString()));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, void>> deleteProject(int projectId) async {
     try {
-      await dataSource.deleteProject(projectId);
+      await remoteDataSource.deleteProject(projectId);
       return const Right(null);
-    } catch (error, stacktrace) {
-      print('Error in deleteProject: $error');
-      print(stacktrace);
-      return Left(ServerFailure(error.toString()));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, ProjectEntity>> fetchProjectById(int projectId) async {
     try {
-      final data = await dataSource.fetchProjectDetails(projectId);
+      final data = await remoteDataSource.fetchProjectDetails(projectId);
+      if (data == null) return Left(ServerFailure("Project not found"));
 
-      if (data == null) {
-        return Left(ServerFailure("Project not found"));
-      }
-
-      try {
-        final projectModel = ProjectModel.fromJson(data);
-        return Right(projectModel);
-      } catch (e) {
-        // إذا كان هناك مشكلة في التحويل إلى النموذج
-        return Left(ServerFailure("Error parsing project data: ${e.toString()}"));
-      }
-    } catch (error, stacktrace) {
-      print('Error in fetchProjectById: $error');
-      print(stacktrace);
-      return Left(ServerFailure(error.toString()));
+      // استخدم ProjectModel لتحليل البيانات من JSON
+      final project = ProjectModel.fromJson(data);
+      return Right(project);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
   Future<Either<Failure, List<ProjectEntity>>> fetchAllProjects() async {
     try {
-      final data = await dataSource.fetchAllProjects();
+      final data = await remoteDataSource.fetchAllProjects();
 
-      // التحقق من استجابة البيانات
-      if (data.isEmpty) {
-        return const Right([]); // إعادة قائمة فارغة إذا لم يتم العثور على مشاريع
-      }
-
-      try {
-        final projectList =
-        data.map((project) => ProjectModel.fromJson(project)).toList();
-        return Right(projectList);
-      } catch (e) {
-        // إذا كان هناك مشكلة في التحويل إلى النموذج
-        return Left(ServerFailure("Error parsing project list: ${e.toString()}"));
-      }
-    } catch (error, stacktrace) {
-      print('Error in fetchAllProjects: $error');
-      print(stacktrace);
-      return Left(ServerFailure(error.toString()));
+      // استخدم ProjectModel لتحليل القائمة
+      final projects =
+      data.map((json) => ProjectModel.fromJson(json)).toList();
+      return Right(projects);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
+  @override
+  Future<Map<String, dynamic>> fetchUserDetails(String userId) async {
+    try {
+      final response = await remoteDataSource.fetchUserDetails(userId);
+      return response;
+    } catch (e) {
+      throw Exception('Failed to fetch user details: $e');
+    }
+  }
+
+  @override
+  Future<void> updateProjectState(int projectId, String newState) async {
+    try {
+      // تحقق من أن الحالة المختارة صحيحة
+      if (!projectStates.contains(newState)) {
+        throw Exception('الحالة المختارة غير صحيحة');
+      }
+
+      // تحديث الحالة في قاعدة البيانات
+      await remoteDataSource.updateProjectState(projectId, newState);
+    } catch (error) {
+      throw Exception('فشل في تحديث الحالة: $error');
+    }
+  }
+
+  @override
+  Future<List<ProjectStepEntity>> fetchProjectSteps(int projectId) async {
+    try {
+      // Fetch data from the remote data source
+      final List<dynamic> data = await remoteDataSource.fetchProjectSteps(projectId);
+
+      // Parse the data into ProjectStepEntity objects
+      final steps = data.map((dynamic json) {
+        // Ensure the JSON is properly typed
+        final Map<String, dynamic> step = json as Map<String, dynamic>;
+        return ProjectStepEntity(
+          stepNumber: step['step_number'] as int, // Ensure it's cast to int
+          title: step['title'] as String, // Ensure it's cast to String
+          price: (step['price'] as num).toDouble(), // Convert price to double safely
+          duration: step['duration'] as String, // Cast duration to String
+          isPaid: step['is_paid'] as bool, // Cast isPaid to bool
+        );
+      }).toList();
+
+      return steps;
+    } catch (e) {
+      // Catch and rethrow an exception with a meaningful error message
+      throw Exception('Failed to fetch project steps: $e');
+    }
+  }
+
+
+  @override
+  Future<void> insertProjectStep(int projectId, ProjectStepEntity step) async {
+    try {
+      await remoteDataSource.insertProjectStep(
+        projectId: projectId,
+        stepNumber: step.stepNumber,
+        title: step.title,
+        price: step.price,
+        duration: step.duration, // String
+      );
+    } catch (e) {
+      throw Exception('Failed to insert project step: $e');
+    }
+  }
+
+  @override
+  Future<ProjectEntity> fetchProjectByCustomerAndCraftsman(String customerId, String craftsmanId) async {
+    try {
+      final data = await remoteDataSource.fetchProjectByCustomerAndCraftsmann(customerId, craftsmanId);
+      if (data == null) throw Exception("Project not found");
+      return ProjectModel.fromJson(data);
+    } catch (e) {
+      throw Exception('Failed to fetch project by customer and craftsman: $e');
+    }
+  }
+
+  @override
+  Future<void> ensureProjectExists(String customerId, String craftsmanId) {
+    // TODO: implement ensureProjectExists
+    throw UnimplementedError();
+  }
+
 }

@@ -15,10 +15,8 @@ class chatPage extends StatelessWidget {
     final SupabaseClient supabaseClient = Supabase.instance.client;
 
     try {
-      // جلب بيانات المستخدم الحالي
+      // جلب بيانات المستخدم الحالي والطرف الآخر من `controller`
       final currentUserId = controller.currentUserId;
-
-      // تحديد الطرف الآخر في المحادثة
       final otherUser = controller.chat.user;
 
       // تحديد العميل والحرفي بناءً على نوع المستخدم
@@ -27,31 +25,24 @@ class chatPage extends StatelessWidget {
       final String craftsmanId =
       otherUser.userType == 'craftsman' ? otherUser.id : currentUserId;
 
-      // التحقق من وجود المشروع بالفعل مع تحديد نتيجة واحدة
+      // التحقق من وجود المشروع
       final existingProject = await supabaseClient
           .from('projects')
           .select('id')
           .eq('customer_id', customerId)
           .eq('craftsman_id', craftsmanId)
-          .limit(1) // تحديد صف واحد فقط
+          .limit(1)
           .maybeSingle();
 
-      if (existingProject != null) {
-        // إذا كان المشروع موجودًا، الانتقال مباشرة إلى صفحة ProjectPage
-        Get.to(() => ProjectPage(
-          customerId: customerId,
-          craftsmanId: craftsmanId,
-        ));
-        return;
+      if (existingProject == null) {
+        // إذا لم يكن المشروع موجودًا، يتم إضافته
+        await supabaseClient.from('projects').insert({
+          'customer_id': customerId,
+          'craftsman_id': craftsmanId,
+        });
       }
 
-      // إذا لم يكن المشروع موجودًا، إضافته
-      await supabaseClient.from('projects').insert({
-        'customer_id': customerId,
-        'craftsman_id': craftsmanId,
-      });
-
-      // فتح صفحة ProjectPage
+      // الانتقال إلى صفحة المشروع مع تمرير بيانات العميل والحرفي
       Get.to(() => ProjectPage(
         customerId: customerId,
         craftsmanId: craftsmanId,
@@ -65,6 +56,7 @@ class chatPage extends StatelessWidget {
       );
     }
   }
+
 
 
   @override

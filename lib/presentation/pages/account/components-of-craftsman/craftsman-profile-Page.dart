@@ -12,7 +12,7 @@ import 'package:herafi/domain/entites/user.dart';
 import 'package:herafi/domain/entites/work.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'CommentsPage.dart';
+import 'comments-Page.dart';
 
 
 class CraftsmanProfilePage extends StatefulWidget {
@@ -33,81 +33,12 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
   bool isLoading = true;
   double averageRating = 0.0;
   Map<int, int> starCounts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
-  bool isFollowing = false;
-  bool isLoadingFollow = false;
+
 
   @override
   void initState() {
     super.initState();
     _fetchData();
-    _checkFollowingStatus();
-  }
-
-  Future<void> _checkFollowingStatus() async {
-    final customerId = FirebaseAuth.instance.currentUser?.uid;
-    final craftsmanId = widget.craftsmanId;
-
-    if (customerId == null || craftsmanId == null) return;
-
-    try {
-      final response = await Supabase.instance.client
-          .from('friendship')
-          .select('id')
-          .eq('craftsman_id', craftsmanId)
-          .eq('customer_id', customerId)
-          .maybeSingle();
-
-      setState(() {
-        isFollowing = response != null;
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error checking follow status: $e')),
-      );
-    }
-  }
-
-  Future<void> _toggleFollow() async {
-    final customerId = FirebaseAuth.instance.currentUser?.uid;
-    final craftsmanId = widget.craftsmanId;
-
-    if (customerId == null || craftsmanId == null) return;
-
-    setState(() {
-      isLoadingFollow = true;
-    });
-
-    try {
-      if (isFollowing) {
-        await Supabase.instance.client
-            .from('friendship')
-            .delete()
-            .eq('craftsman_id', craftsmanId)
-            .eq('customer_id', customerId);
-
-        setState(() {
-          isFollowing = false;
-        });
-      } else {
-        await Supabase.instance.client.from('friendship').insert({
-          'craftsman_id': craftsmanId,
-          'customer_id': customerId,
-          'status': 1,
-        });
-
-        setState(() {
-          isFollowing = true;
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error toggling follow status: $e')),
-      );
-    } finally {
-      setState(() {
-        isLoadingFollow = false;
-      });
-    }
   }
 
   Future<void> _fetchData() async {
@@ -234,8 +165,8 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
             Expanded(
               child: TabBarView(
                 children: [
-                  _buildDiplomaSection(),
-                  _buildPortfolioSection(),
+                  _buildCertificatesSection(),
+                  _buildWorksSection(),
                 ],
               ),
             ),
@@ -519,9 +450,9 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
   }
 
 
-  Widget _buildDiplomaSection() {
+  Widget _buildCertificatesSection() {
     return certificates.isEmpty
-        ? const Center(child: Text('No Diplomas available.'))
+        ? const Center(child: Text('No Certificates available.'))
         : GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -542,9 +473,9 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
     );
   }
 
-  Widget _buildPortfolioSection() {
+  Widget _buildWorksSection() {
     return works.isEmpty
-        ? const Center(child: Text('No Portfolio items available.'))
+        ? const Center(child: Text('No Work items available.'))
         : GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -663,6 +594,4 @@ class _CraftsmanProfilePageState extends State<CraftsmanProfilePage> {
       },
     );
   }
-
-
 }
