@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:herafi/domain/entites/Message.dart';
 import 'package:herafi/domain/entites/job.dart';
+import 'package:herafi/presentation/Widgets/showImage.dart';
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/routes/app_routes.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../domain/entites/chat.dart';
+import '../pages/account/components-of-customer/customer_profile_page.dart';
 
 
 class craftsmanJobWidget extends StatefulWidget {
@@ -23,14 +25,14 @@ class _craftsmanJobWidgetState extends State<craftsmanJobWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black,
       margin: const EdgeInsets.symmetric(vertical: 4.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
+            onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (c)=>CustomerProfilePage(customerId: widget.job.customer.id))),
             title: Text(widget.job.customer.name),
-            subtitle: Text(widget.job.getDateFormat()+" - "+widget.job.city),
+            subtitle: Text(widget.job.getDateFormat()+" - "+widget.job.city,style: TextStyle(color: Colors.grey),),
             leading: CircleAvatar(
               backgroundImage: CachedNetworkImageProvider(widget.job.customer.getImage()),
             ),
@@ -56,7 +58,7 @@ class _craftsmanJobWidgetState extends State<craftsmanJobWidget> {
                         : 'عرض المزيد',style: Theme.of(context).textTheme!.bodySmall,),
                   ),
                 ),
-              CachedNetworkImage(imageUrl: widget.job.image),
+              GestureDetector(child: Container(width:double.infinity,child: CachedNetworkImage(imageUrl: widget.job.image,fit: BoxFit.fitWidth,)),onTap: (){handleImageTap(widget.job.image);},),
               SizedBox(height: 10,),
               Divider(color: Colors.grey.withOpacity(0.2),),
             ],
@@ -121,8 +123,11 @@ class _craftsmanJobWidgetState extends State<craftsmanJobWidget> {
   }
   void toggleShowMore() {
     setState(() {
-      print(232);
       showMore=!showMore;
     });
+  }
+
+  void handleImageTap(String imageSource){
+    Get.to(imageViewWithInteractiveView(title: 'صورة', image: imageSource,));
   }
 }

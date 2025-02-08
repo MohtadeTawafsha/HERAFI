@@ -1,18 +1,22 @@
 import 'package:get/get.dart';
 import 'package:herafi/presentation/bindings/MapBinding/showPointOnMap.dart';
+import 'package:herafi/presentation/bindings/Project/createProjectBinding.dart';
 import 'package:herafi/presentation/bindings/chatsBinding/chatPageBinding.dart';
 import 'package:herafi/presentation/bindings/jobsBinding/craftsmanSearch.dart';
 import 'package:herafi/presentation/bindings/orderHistoryPageBinding.dart';
 import 'package:herafi/presentation/bindings/profilePageBinding.dart';
 import 'package:herafi/presentation/bindings/settingPageBinding.dart';
 import 'package:herafi/presentation/bindings/smsVerificationBinding.dart';
+import 'package:herafi/presentation/bindings/trackingPageBinding.dart';
 import 'package:herafi/presentation/pages/authPages/PravicyPolicy.dart';
 import 'package:herafi/presentation/pages/authPages/RegisterCustomer.dart';
 import 'package:herafi/presentation/pages/authPages/authPage.dart';
 import 'package:herafi/presentation/pages/orderHistoryPage.dart';
 import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
 import 'package:herafi/presentation/pages/settingPage.dart';
+import 'package:herafi/presentation/pages/trakingPage.dart';
 
+import '../bindings/Project/viewProject.dart';
 import '../bindings/authBinding.dart';
 import '../bindings/chatsBinding/chatbot_binding.dart';
 import '../bindings/chatsBinding/chatsBinding.dart';
@@ -33,6 +37,8 @@ import '../pages/homePages/homePage.dart';
 import '../pages/authPages/introductionPage.dart';
 import '../pages/orderProcessPage/Chatbot.dart';
 import '../pages/orderProcessPage/chatPage.dart';
+import '../pages/project/ViewProject.dart';
+import '../pages/project/projectPage.dart';
 import '../pages/states/noInternetConnection.dart';
 import '../pages/profilePage.dart';
 import '../pages/authPages/smsVerificationPage.dart';
@@ -47,7 +53,7 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String setting = '/setting';
   static const String orderHistory = '/orderHistory';
-  static const String noInternetConnection='/noInternetConnection';
+  static const String noInternetConnection = '/noInternetConnection';
   static const String selectPointOnMap = '/selectPointOnMap';
   static const String waitingPage = '/waitingPage';
   static const String chatpage = '/chatPage';
@@ -68,14 +74,12 @@ class AppRoutes {
   static const String ShowPointOnMap = '/showPointOnMap';
   static const String CraftsmanSearchPage = '/craftsmanSearchPage';
   static const String customerProfile = '/customerProfile'; // Add this route
-
+  static const String createProject = '/createProject'; // Add this route
+  static const String ViewProject = '/ViewProject'; // Add this route
+  static const String tracking = '/tracking'; // Add this route
 
   static List<GetPage> pages = [
-    GetPage(
-        name: home,
-        page: () => homePage(),
-        binding: homePageBinding()
-    ),
+    GetPage(name: home, page: () => homePage(), binding: homePageBinding()),
     GetPage(
       name: introduction,
       page: () => introductionPage(),
@@ -114,22 +118,14 @@ class AppRoutes {
       name: waitingPage,
       page: () => WaitingPage(),
     ),
-
+    GetPage(name: chatpage, page: () => chatPage(), binding: chatPageBinding()),
     GetPage(
-        name: chatpage,
-        page: () => chatPage(),
-        binding: chatPageBinding()
-    ),GetPage(
-        name: chatspage,
-        page: () => chatsPage(),
-        binding: chatsPageBinding()
-    ),
+        name: chatspage, page: () => chatsPage(), binding: chatsPageBinding()),
     GetPage(
       name: chatbot,
       page: () => ChatbotPage(),
       binding: ChatbotBinding(),
     ),
-
     GetPage(
       name: privacyPolicy,
       page: () => PrivacyPolicy(),
@@ -137,16 +133,20 @@ class AppRoutes {
     GetPage(
       name: accountScreen,
       page: () => AccountScreen(),
-    ),GetPage(
+    ),
+    GetPage(
       name: diplomaScreen,
       page: () => CertificateScreen(),
-    ),GetPage(
+    ),
+    GetPage(
       name: editProfileScreen,
       page: () => EditCraftsmanScreen(),
-    ),GetPage(
+    ),
+    GetPage(
       name: ProfilePage,
       page: () => profilePage(),
-    ),GetPage(
+    ),
+    GetPage(
       name: availabilityScreen,
       page: () => AvailabilityScreen(),
     ),
@@ -166,26 +166,38 @@ class AppRoutes {
         name: selectPointOnMap,
         page: () => selectPointOnMapScreen(),
         binding: selectPointOnMapScreenBinding(),
-        transition: Transition.downToUp
-    ),
+        transition: Transition.downToUp),
     GetPage(
-        name:ShowPointOnMap,
+        name: ShowPointOnMap,
         page: () => showPointOnMap(),
         binding: showPointOnMapBinding(),
-        transition: Transition.downToUp
-    ),
-
+        transition: Transition.downToUp),
     GetPage(
-        name:CraftsmanSearchPage,
+        name: CraftsmanSearchPage,
         page: () => craftsmanSearchPage(),
         binding: craftsmanSearchBinding(),
-        transition: Transition.downToUp
-    ),
+        transition: Transition.downToUp),
     GetPage(
       name: customerProfile,
-      page: () => CustomerProfilePage(customerId: '',),
+      page: () => CustomerProfilePage(
+        customerId: '',
+      ),
       transition: Transition.fadeIn,
     ),
-
+    GetPage(
+      name: createProject,
+      page: () => CreateProject(),
+      binding: createProjectBinding(),
+    ),
+    GetPage(
+      name: ViewProject,
+      page: () => viewProject(),
+      binding: viewProjectBinding(),
+    ),
+    GetPage(
+      name: tracking,
+      page: () => trackingPage(),
+      binding: trackingPageBinding(),
+    ),
   ];
 }

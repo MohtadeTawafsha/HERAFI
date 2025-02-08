@@ -1,478 +1,214 @@
-// الكود الكامل المحدث لإدخال خطوات المشروع مع حل مشكلة NUMERIC(10, 2)
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:herafi/data/repositroies/ProjectRepositoryImpl.dart';
-import 'package:herafi/domain/entites/ProjectStepEntity.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:herafi/domain/entites/user.dart';
+import 'package:herafi/global/validator.dart';
+import 'package:herafi/presentation/Widgets/leadingAppBar.dart';
+import 'package:herafi/presentation/Widgets/progressIndicator.dart';
 
-import '../../../data/remotDataSource/ProjectRemoteDataSource.dart';
-import '../../../domain/entites/ProjectEntity.dart';
-import '../../../domain/repositories/ProjectRepository.dart';
-import '../../../global/project_states.dart';
+import '../../controllers/projects/createProject.dart';
 
-class ProjectPage extends StatefulWidget {
-  final String customerId;
-  final String craftsmanId;
-
-  const ProjectPage({
-    Key? key,
-    required this.customerId,
-    required this.craftsmanId,
-  }) : super(key: key);
-
-  @override
-  _ProjectPageState createState() => _ProjectPageState();
-}
-
-class _ProjectPageState extends State<ProjectPage> {
-  late final ProjectRepository projectRepository;
-  ProjectEntity? project;
-
-  // بيانات العميل والحرفي
-  Map<String, dynamic>? customerData;
-  Map<String, dynamic>? craftsmanData;
-
-  // الحقول الرئيسية
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController totalPriceController = TextEditingController();
-  DateTime? startDate;
-  DateTime? endDate;
-
-  // الحقول الخاصة بتقسيم المشروع إلى دفعات
-  bool isStepsEnabled = false;
-  List<Map<String, dynamic>> projectSteps = [];
-  final TextEditingController stepTitleController = TextEditingController();
-  final TextEditingController stepPriceController = TextEditingController();
-  final TextEditingController stepDurationController = TextEditingController();
-
-  bool isLoading = true;
-  bool isSaving = false;
-  String? successMessage;
-
-  @override
-  void initState() {
-    super.initState();
-    setupRepository();
-    fetchProjectData();
-  }
-
-  void setupRepository() {
-    if (!Get.isRegistered<ProjectRepository>()) {
-      final supabaseClient = Supabase.instance.client;
-      final projectRemoteDataSource = ProjectRemoteDataSource(supabaseClient);
-      Get.put<ProjectRepository>(
-        ProjectRepositoryImpl(projectRemoteDataSource),
-      );
-    }
-    projectRepository = Get.find<ProjectRepository>();
-  }
-
-  Future<void> fetchProjectData() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-
-      customerData = await projectRepository.fetchUserDetails(widget.customerId);
-      craftsmanData = await projectRepository.fetchUserDetails(widget.craftsmanId);
-
-      final result = await projectRepository.fetchProjectById(
-        int.parse(widget.customerId),
-      );
-
-      result.fold(
-            (failure) => showError('فشل في جلب بيانات المشروع: ${failure.message}'),
-            (fetchedProject) {
-          setState(() {
-            project = fetchedProject;
-            titleController.text = fetchedProject.title;
-            totalPriceController.text = fetchedProject.price?.toString() ?? '';
-            startDate = fetchedProject.startDate;
-            endDate = fetchedProject.endDate;
-          });
-        },
-      );
-    } catch (error) {
-      showError('حدث خطأ أثناء جلب البيانات: ${error.toString()}');
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  Future<bool> doesProjectExist(int projectId) async {
-    final response = await Supabase.instance.client
-        .from('projects')
-        .select('id')
-        .eq('id', projectId)
-        .maybeSingle();
-
-    return response != null;
-  }
-
-  double? parsePrice(String priceText) {
-    try {
-      double price = double.parse(priceText);
-      return double.parse(price.toStringAsFixed(2)); // تقليل عدد الأرقام العشرية إلى 2
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Future<void> saveProject() async {
-    if (titleController.text.isEmpty ||
-        totalPriceController.text.isEmpty ||
-        startDate == null ||
-        endDate == null ||
-        (isStepsEnabled && projectSteps.isEmpty)) {
-      showError('يرجى ملء جميع الحقول المطلوبة');
-      return;
-    }
-
-    final totalPrice = parsePrice(totalPriceController.text);
-    if (totalPrice == null) {
-      showError('يرجى إدخال سعر كلي صالح');
-      return;
-    }
-
-    setState(() {
-      isSaving = true;
-    });
-
-    try {
-      // إدخال المشروع
-      int projectId = project?.id ?? 0;
-      if (projectId == 0) {
-        final result = await projectRepository.insertProject(ProjectEntity(
-          id: 0,
-          title: titleController.text,
-          price: totalPrice,
-          startDate: startDate,
-          endDate: endDate,
-          customerId: widget.customerId,
-          craftsmanId: widget.craftsmanId,
-          state: projectStates[0],
-        ));
-
-        result.fold(
-              (failure) {
-            showError('فشل في إدخال المشروع: ${failure.message}');
-            return;
-          },
-              (_) async {
-            // الحصول على المشروع الجديد لتحديد project_id
-            final newProject = await projectRepository.fetchProjectByCustomerAndCraftsman(
-                widget.customerId, widget.craftsmanId);
-            projectId = newProject.id;
-          },
-        );
-      }
-
-      // إدخال الخطوات
-      if (isStepsEnabled && projectSteps.isNotEmpty) {
-        for (var step in projectSteps) {
-          final stepPrice = parsePrice(step['price'].toString());
-          if (stepPrice == null) {
-            showError('يرجى إدخال سعر صالح للخطوة: ${step['title']}');
-            continue;
-          }
-
-          await projectRepository.insertProjectStep(
-            projectId,
-            ProjectStepEntity(
-              stepNumber: projectSteps.indexOf(step) + 1,
-              title: step['title'],
-              price: stepPrice,
-              duration: step['duration'],
-            ),
-          );
-        }
-      }
-
-      await updateProjectState(projectStates[1]);
-      setState(() {
-        successMessage = 'بانتظار موافقة العميل ${customerData?['name']}';
-      });
-      Future.delayed(const Duration(seconds: 5), () {
-        setState(() {
-          successMessage = null;
-        });
-      });
-    } catch (error) {
-      showError('حدث خطأ أثناء حفظ المشروع: ${error.toString()}');
-    } finally {
-      setState(() {
-        isSaving = false;
-      });
-    }
-  }
-
-  Future<void> updateProjectState(String newState) async {
-    if (project == null) return;
-
-    try {
-      await projectRepository.updateProjectState(project!.id, newState);
-      setState(() {
-        project!.state = newState;
-      });
-    } catch (error) {
-      showError('فشل في تحديث حالة المشروع: ${error.toString()}');
-    }
-  }
-
-  void showError(String message) {
-    Get.snackbar(
-      'خطأ',
-      message,
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-    );
-  }
-
-  Future<void> pickDate(BuildContext context, bool isStartDate) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now().subtract(const Duration(days: 365)),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
-    );
-
-    if (picked != null) {
-      setState(() {
-        if (isStartDate) {
-          startDate = picked;
-        } else {
-          endDate = picked;
-        }
-      });
-    }
-  }
+class CreateProject extends StatelessWidget {
+  const CreateProject({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final createProjectController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Project'),
+        title: Text('انشاء مشروع'),
+        leading: leadingAppBar(),
       ),
-      body: Stack(
-        children: [
-          if (isLoading)
-            const Center(child: CircularProgressIndicator())
-          else
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildUserInfoSection(' العميل', customerData),
-                    const SizedBox(height: 16),
-                    buildUserInfoSection(' الحرفي', craftsmanData),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: titleController,
-                      decoration: const InputDecoration(
-                        labelText: 'عنوان المشروع',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: totalPriceController,
-                      decoration: const InputDecoration(
-                        labelText: 'السعر الكلي',
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        const Text('تاريخ البداية: '),
-                        const SizedBox(width: 10),
-                        Text(
-                          startDate != null
-                              ? '${startDate!.day}/${startDate!.month}/${startDate!.year}'
-                              : 'لم يتم التحديد',
-                        ),
-                        ElevatedButton(
-                          onPressed: () => pickDate(context, true),
-                          child: const Text('اختر التاريخ'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        const Text('تاريخ النهاية: '),
-                        const SizedBox(width: 10),
-                        Text(
-                          endDate != null
-                              ? '${endDate!.day}/${endDate!.month}/${endDate!.year}'
-                              : 'لم يتم التحديد',
-                        ),
-                        ElevatedButton(
-                          onPressed: () => pickDate(context, false),
-                          child: const Text('اختر التاريخ'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    CheckboxListTile(
-                      title: const Text("تقسيم المشروع إلى دفعات؟"),
-                      value: isStepsEnabled,
-                      onChanged: (value) {
-                        setState(() {
-                          isStepsEnabled = value!;
-                          if (!isStepsEnabled) {
-                            projectSteps.clear();
-                          }
-                        });
-                      },
-                    ),
-                    if (isStepsEnabled)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextField(
-                            controller: stepTitleController,
-                            decoration: const InputDecoration(
-                              labelText: 'عنوان الخطوة',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          TextField(
-                            controller: stepPriceController,
-                            decoration: const InputDecoration(
-                              labelText: 'سعر الخطوة',
-                              border: OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.number,
-                          ),
-                          const SizedBox(height: 16),
-                          TextField(
-                            controller: stepDurationController,
-                            decoration: const InputDecoration(
-                              labelText: 'مدة التنفيذ',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (stepTitleController.text.isNotEmpty &&
-                                  stepPriceController.text.isNotEmpty &&
-                                  stepDurationController.text.isNotEmpty) {
-                                final stepPrice = parsePrice(stepPriceController.text);
-                                if (stepPrice == null) {
-                                  showError('يرجى إدخال سعر صالح للخطوة');
-                                  return;
-                                }
-
-                                setState(() {
-                                  projectSteps.add({
-                                    'title': stepTitleController.text,
-                                    'price': stepPrice,
-                                    'duration': stepDurationController.text,
-                                  });
-                                  stepTitleController.clear();
-                                  stepPriceController.clear();
-                                  stepDurationController.clear();
-                                });
-                              } else {
-                                showError('يرجى ملء جميع الحقول الخاصة بالخطوة');
-                              }
-                            },
-                            child: const Text('إضافة الخطوة'),
-                          ),
-                          const SizedBox(height: 16),
-                          if (projectSteps.isNotEmpty)
-                            ...projectSteps.map((step) => ListTile(
-                              title: Text(step['title']),
-                              subtitle: Text(
-                                  'السعر: ${step['price']} | المدة: ${step['duration']}'),
-                            )),
-                        ],
-                      ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: isSaving ? null : saveProject,
-                      child: isSaving
-                          ? const CircularProgressIndicator()
-                          : const Text('حفظ'),
-                    ),
-                  ],
-                ),
-              ),
+      body: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(16),
+        child: Column(
+          spacing: 10,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('المستفيد'),
+            userWidget(controller.customer),
+            SizedBox(
+              height: 6,
             ),
-          if (successMessage != null)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                color: Colors.green,
-                child: Text(
-                  successMessage!,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+            Text("الحرفي"),
+            userWidget(controller.craftsman),
+            SizedBox(
+              height: 6,
             ),
-        ],
+            projectDetails(controller),
+            SizedBox(
+              height: 6,
+            ),
+            lunchButton(controller)
+          ],
+        ),
       ),
     );
   }
-
-  Widget buildUserInfoSection(String title, Map<String, dynamic>? data) {
-    if (data == null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          const Text('جاري التحميل...', style: TextStyle(color: Colors.grey)),
-        ],
-      );
-    }
-
+  Widget userWidget(UserEntity user) {
+    return ListTileTheme(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        tileColor: Colors.grey.withOpacity(0.3),
+        leading: CircleAvatar(
+          radius: 50,
+          backgroundImage: CachedNetworkImageProvider(user.getImage()),
+        ),
+        title: Text(
+          user.name,
+          style: TextStyle(color: Colors.white),
+        ),
+        subtitle: Text(
+          user.phoneNumber,
+          style: TextStyle(color: Colors.grey),
+        ),
+      ),
+    );
+  }
+  Widget projectDetails(createProjectController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage: data['image'] != null
-                  ? NetworkImage(data['image'])
-                  : const AssetImage('assets/images/default_avatar.png')
-              as ImageProvider,
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        Text('تفاصيل المشروع'),
+        Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(10)),
+          width: double.infinity,
+          child: Form(
+            key: controller.key,
+            child: Column(
+              spacing: 20,
               children: [
-                Text(
-                  data['name'] ?? 'غير معروف',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                SizedBox(height: 1),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('عنوان المشروع'),
+                    TextFormField(
+                      style: TextStyle(fontSize: 15),
+                      validator: Validator().notEmpty,
+                      controller: controller.title,
+                      decoration: InputDecoration(
+                        errorStyle: TextStyle(fontSize: 0),
+                          fillColor: Colors.grey,
+                          constraints:
+                              BoxConstraints(maxHeight: 40, maxWidth: 150),
+                          contentPadding: EdgeInsets.all(5),
+                          filled: true,
+                          label: Text('العنوان'),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey))),
+                    )
+                  ],
                 ),
-                Text(
-                  data['phone_number'] ?? 'غير معروف',
-                  style: const TextStyle(color: Colors.grey),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('السعر'),
+                    TextFormField(
+                      style: TextStyle(fontSize: 15),
+                      validator: Validator().notEmpty,
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(
+                              r'^\d*\.?\d*'), // Allows digits and at most one decimal point
+                        ),
+                      ],
+                      controller: controller.price,
+                      decoration: InputDecoration(
+                          errorStyle: TextStyle(fontSize: 0),
+                          fillColor: Colors.grey,
+                          constraints:
+                              BoxConstraints(maxHeight: 40, maxWidth: 150),
+                          contentPadding: EdgeInsets.all(5),
+                          filled: true,
+                          label: Text('السعر'),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey))),
+                    )
+                  ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('تاريخ بداية العمل'),
+                    TextFormField(
+                      style: TextStyle(fontSize: 15),
+                      validator: Validator().notEmpty,
+                      controller: controller.startDate,
+                      readOnly: true,
+                      onTap: () => datePicker(controller.startDate),
+                      decoration: InputDecoration(
+                          errorStyle: TextStyle(fontSize: 0),
+                          fillColor: Colors.grey,
+                          constraints:
+                              BoxConstraints(maxHeight: 40, maxWidth: 150),
+                          contentPadding: EdgeInsets.all(5),
+                          filled: true,
+                          label: Text('التاريخ'),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey))),
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('تاريخ نهاية العمل'),
+                    TextFormField(
+                      style: TextStyle(fontSize: 15),
+                      validator: Validator().notEmpty,
+                      controller: controller.endDate,
+                      readOnly: true,
+                      onTap: () => datePicker(controller.endDate),
+                      decoration: InputDecoration(
+                          errorStyle: TextStyle(fontSize: 0),
+                          fillColor: Colors.grey,
+                          constraints:
+                              BoxConstraints(maxHeight: 40, maxWidth: 150),
+                          contentPadding: EdgeInsets.all(5),
+                          filled: true,
+                          label: Text('التاريخ'),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey))),
+                    )
+                  ],
+                ),
+                SizedBox(height: 4),
               ],
             ),
-          ],
-        ),
+          ),
+        )
       ],
     );
   }
+  void datePicker(TextEditingController controller) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: Get.context!,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000), // Minimum date
+      lastDate: DateTime(2100), // Maximum date
+    );
+    if (pickedDate == null) return;
+    controller.text = pickedDate!.toLocal().toString().split(' ')[0];
+  }
+  Widget lunchButton(createProjectController controller){
+    return SizedBox(
+      width: double.infinity,
+      child: Obx(
+        () {
+          return TextButton(
+            onPressed: controller.handleCreateProject,
+            child: controller.isButtonLoading.value?progressIndicator(indicatorColor: Colors.black,):Text('انشاء'),
+          );
+        }
+      ),
+    );
+  }
+
 }

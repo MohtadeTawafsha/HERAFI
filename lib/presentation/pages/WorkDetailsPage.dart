@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:herafi/domain/entites/work.dart';
@@ -56,7 +57,7 @@ class _WorkDetailsPageState extends State<WorkDetailsPage> {
 
     if (downloadUrl == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error uploading image.')),
+        SnackBar(content: Text('خطأ أثناء رفع الصورة.')),
       );
       setState(() => isLoading = false);
       return;
@@ -73,14 +74,14 @@ class _WorkDetailsPageState extends State<WorkDetailsPage> {
 
     final result = await worksRepository.updateWork(updatedWork);
     result.fold(
-      (failure) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating work: ${failure.message}')),
+          (failure) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('خطأ أثناء تحديث العمل: ${failure.message}')),
       ),
-      (_) {
+          (_) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Work updated successfully!')),
+          SnackBar(content: Text('تم تحديث العمل بنجاح!')),
         );
-        Navigator.of(context).pop(updatedWork); // إرجاع العمل المحدث
+        Navigator.of(context).pop(updatedWork);
       },
     );
 
@@ -92,14 +93,14 @@ class _WorkDetailsPageState extends State<WorkDetailsPage> {
 
     final result = await worksRepository.deleteWork(widget.work.id);
     result.fold(
-      (failure) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting work: ${failure.message}')),
+          (failure) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('خطأ أثناء حذف العمل: ${failure.message}')),
       ),
-      (_) {
+          (_) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Work deleted successfully!')),
+          SnackBar(content: Text('تم حذف العمل بنجاح!')),
         );
-        Navigator.of(context).pop(null); // حذف العمل وإغلاق الصفحة
+        Navigator.of(context).pop(null);
       },
     );
 
@@ -109,7 +110,7 @@ class _WorkDetailsPageState extends State<WorkDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Edit Work')),
+      appBar: AppBar(title: Text('تعديل العمل')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -119,7 +120,7 @@ class _WorkDetailsPageState extends State<WorkDetailsPage> {
                 onTap: () async {
                   final picker = ImagePicker();
                   final pickedFile =
-                      await picker.pickImage(source: ImageSource.gallery);
+                  await picker.pickImage(source: ImageSource.gallery);
                   if (pickedFile != null) {
                     setState(() {
                       imagePath = pickedFile.path;
@@ -134,61 +135,63 @@ class _WorkDetailsPageState extends State<WorkDetailsPage> {
                     borderRadius: BorderRadius.circular(8),
                     image: imagePath != null
                         ? DecorationImage(
-                            image: imagePath!.startsWith('http')
-                                ? NetworkImage(imagePath!)
-                                : FileImage(File(imagePath!)),
-                            fit: BoxFit.cover,
-                          )
+                      image: imagePath!.startsWith('http')
+                          ? CachedNetworkImageProvider(imagePath!)
+                          : FileImage(File(imagePath!)),
+                      fit: BoxFit.cover,
+                    )
                         : null,
                   ),
                   child: imagePath == null
                       ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add_a_photo,
-                                  size: 40, color: Colors.black54),
-                              SizedBox(height: 8),
-                              Text(
-                                "Add Image",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add_a_photo,
+                            size: 40, color: Colors.black54),
+                        SizedBox(height: 8),
+                        Text(
+                          "إضافة صورة",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
                           ),
-                        )
+                        ),
+                      ],
+                    ),
+                  )
                       : null,
                 ),
               ),
               SizedBox(height: 16),
               TextField(
                 controller: titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: InputDecoration(labelText: 'العنوان'),
               ),
               SizedBox(height: 16),
               TextField(
                 controller: descriptionController,
                 maxLines: 3,
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: InputDecoration(labelText: 'الوصف'),
               ),
               SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
+                  TextButton(
                     onPressed: isLoading ? null : _updateWork,
                     child: isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Save'),
+                        ? CircularProgressIndicator()
+                        : Text('حفظ'),
                   ),
-                  ElevatedButton(
-                    onPressed: isLoading ? null : _deleteWork,
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    child: isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Delete'),
+                  Visibility(
+                    visible:  !isLoading,
+                    child: TextButton(
+                      onPressed: _deleteWork,
+                      child: isLoading
+                          ? CircularProgressIndicator()
+                          : Text('حذف'),
+                    ),
                   ),
                 ],
               ),

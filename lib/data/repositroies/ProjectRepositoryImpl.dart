@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:herafi/core/status/error/Failure.dart';
+import 'package:herafi/core/status/success/success.dart';
 import 'package:herafi/data/models/ProjectModel.dart'; // استخدم ProjectModel
 import 'package:herafi/domain/entites/ProjectEntity.dart';
 import 'package:herafi/domain/entites/ProjectStepEntity.dart';
@@ -8,42 +9,42 @@ import '../../domain/repositories/ProjectRepository.dart';
 import '../remotDataSource/ProjectRemoteDataSource.dart';
 
 class ProjectRepositoryImpl implements ProjectRepository {
-  final ProjectRemoteDataSource remoteDataSource;
+  final ProjectRemoteDataSource remoteDataSource=ProjectRemoteDataSource();
 
-  ProjectRepositoryImpl(this.remoteDataSource);
+  ProjectRepositoryImpl();
 
   @override
-  Future<Either<Failure, void>> insertProject(ProjectEntity project) async {
+  Future<Either<Failure, success>> insertProject(ProjectEntity project) async {
     try {
-      await remoteDataSource.insertProject(
-        customerId: project.customerId!,
-        craftsmanId: project.craftsmanId!,
-        title: project.title,
-        price: project.price,
-        startDate: project.startDate,
-        endDate: project.endDate,
-        state: project.state,
-      );
-      return const Right(null);
+      await remoteDataSource.insertProject(project: project);
+      return const Right(DatabaseAddingSuccessfully(''));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
+  @override
+  Future<Either<Failure, List<ProjectEntity>>> getProjects() async {
+    try {
+      final result = await remoteDataSource.fetchProjects();
+      return Right(result.map((item){
+        return ProjectModel.fromJson(item);
+      }).toList());
+    } catch (e) {
+      print(e.toString());
+      return Left(ServerFailure('')); // Handle failures appropriately
+    }
+  }
 
   @override
-  Future<Either<Failure, void>> updateProject(ProjectEntity project) async {
+  Future<Either<Failure,success>> updateProject(ProjectEntity project) async {
     try {
-      await remoteDataSource.updateProject(
-        projectId: project.id,
-        title: project.title,
-        price: project.price,
-        startDate: project.startDate,
-        endDate: project.endDate,
-        state: project.state,
-      );
-      return const Right(null);
+
+      // Call remoteDataSource to perform the update
+      await remoteDataSource.updateProject( product: project);
+
+      return Right(DatabaseAddingSuccessfully(''));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DatabaseFailure(''));
     }
   }
 
@@ -134,32 +135,22 @@ class ProjectRepositoryImpl implements ProjectRepository {
       throw Exception('Failed to fetch project steps: $e');
     }
   }
+  Future<ProjectEntity?> fetchProjectByCustomerAndCraftsman(
+      String customerId, String craftsmanId) async {
+    print('Fetching project with customerId: $customerId and craftsmanId: $craftsmanId');
 
+    final response = await remoteDataSource.fetchProjectByCustomerAndCraftsmann(
+      customerId,
+      craftsmanId,
+    );
 
-  @override
-  Future<void> insertProjectStep(int projectId, ProjectStepEntity step) async {
-    try {
-      await remoteDataSource.insertProjectStep(
-        projectId: projectId,
-        stepNumber: step.stepNumber,
-        title: step.title,
-        price: step.price,
-        duration: step.duration, // String
-      );
-    } catch (e) {
-      throw Exception('Failed to insert project step: $e');
+    if (response == null) {
+      print('No project found for the specified customer and craftsman.');
+      return null; // No project found
     }
-  }
 
-  @override
-  Future<ProjectEntity> fetchProjectByCustomerAndCraftsman(String customerId, String craftsmanId) async {
-    try {
-      final data = await remoteDataSource.fetchProjectByCustomerAndCraftsmann(customerId, craftsmanId);
-      if (data == null) throw Exception("Project not found");
-      return ProjectModel.fromJson(data);
-    } catch (e) {
-      throw Exception('Failed to fetch project by customer and craftsman: $e');
-    }
+    print('Project found: ${response.toString()}');
+    return ProjectModel.fromJson(response); // Convert response to entity
   }
 
   @override
@@ -167,5 +158,6 @@ class ProjectRepositoryImpl implements ProjectRepository {
     // TODO: implement ensureProjectExists
     throw UnimplementedError();
   }
+
 
 }

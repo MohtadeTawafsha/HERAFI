@@ -83,7 +83,13 @@ class ChatRepositoryImpl implements ChatRepository {
       
       x.docs.forEach((doc){
         Map userData=_getFreindUser(users,doc.data()['users'],userId);
-        chats.add(chatModel.fromJson({...doc.data(),...userData,"documentId":doc.id}));
+        try{
+          chats.add(chatModel.fromJson({...doc.data(),...userData,"documentId":doc.id}));
+        }
+        catch(e){
+          ///empty cache on purpose!!!;
+          ///because if a user delete his info the process will continue!
+        }
       });
       
       return Right(chats);

@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddWorkPage extends StatelessWidget {
+class AddWorkPage extends StatefulWidget {
   final TextEditingController titleController;
   final TextEditingController descriptionController;
-  final String? imagePath;
+  String? imagePath;
   final Function(String) onImagePicked;
   final VoidCallback onAddWork;
 
@@ -18,9 +18,14 @@ class AddWorkPage extends StatelessWidget {
   });
 
   @override
+  State<AddWorkPage> createState() => _AddWorkPageState();
+}
+
+class _AddWorkPageState extends State<AddWorkPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Work')),
+      appBar: AppBar(title: Text('إضافة عمل')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -29,11 +34,14 @@ class AddWorkPage extends StatelessWidget {
               GestureDetector(
                 onTap: () async {
                   final picker = ImagePicker();
-                  final pickedFile =
-                  await picker.pickImage(source: ImageSource.gallery);
+                  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
                   if (pickedFile != null) {
-                    onImagePicked(pickedFile.path);
+                    widget.onImagePicked(pickedFile.path);
+                    widget.imagePath=pickedFile.path;
                   }
+                  setState(() {
+
+                  });
                 },
                 child: Container(
                   height: 150,
@@ -41,14 +49,14 @@ class AddWorkPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(8),
-                    image: imagePath != null
+                    image: widget.imagePath != null
                         ? DecorationImage(
-                      image: FileImage(File(imagePath!)),
+                      image: FileImage(File(widget.imagePath!)),
                       fit: BoxFit.cover,
                     )
                         : null,
                   ),
-                  child: imagePath == null
+                  child: widget.imagePath == null
                       ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -57,7 +65,7 @@ class AddWorkPage extends StatelessWidget {
                             size: 40, color: Colors.black54),
                         SizedBox(height: 8),
                         Text(
-                          "Add Image",
+                          "إضافة صورة",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black54,
@@ -71,19 +79,19 @@ class AddWorkPage extends StatelessWidget {
               ),
               SizedBox(height: 16),
               TextField(
-                controller: titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                controller: widget.titleController,
+                decoration: InputDecoration(labelText: 'العنوان'),
               ),
               SizedBox(height: 16),
               TextField(
-                controller: descriptionController,
+                controller: widget.descriptionController,
                 maxLines: 3,
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: InputDecoration(labelText: 'الوصف'),
               ),
               SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: onAddWork,
-                child: Text('Add'),
+              TextButton(
+                onPressed: widget.onAddWork,
+                child: Text('حفظ'),
               ),
             ],
           ),

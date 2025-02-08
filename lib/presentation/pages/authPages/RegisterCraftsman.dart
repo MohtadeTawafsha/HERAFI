@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:herafi/domain/entites/user.dart';
+import 'package:herafi/presentation/Widgets/leadingAppBar.dart';
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:geolocator/geolocator.dart'; // مكتبة تحديد الموقع
@@ -21,13 +22,12 @@ class RegisterCraftsman extends StatefulWidget {
 class _RegisterCraftsmanState extends State<RegisterCraftsman> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _dobController = TextEditingController(); // For Date of Birth
+  final _dobController = TextEditingController();
   String? _selectedCategory;
   String? _selectedCity;
   int _yearsOfExperience = 0;
 
-  double? _latitude; // خط العرض
-  double? _longitude; // خط الطول
+
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final SupabaseClient supabaseClient = Supabase.instance.client;
@@ -48,56 +48,6 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
     });
   }
 
-  Future<void> _getLocation() async {
-    try {
-      // التحقق من صلاحيات الموقع
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('خدمة تحديد الموقع غير مفعّلة.')),
-        );
-        return;
-      }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم رفض صلاحيات تحديد الموقع.')),
-          );
-          return;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم رفض صلاحيات الموقع بشكل دائم.')),
-        );
-        return;
-      }
-
-      // الحصول على الموقع الحالي
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      setState(() {
-        _latitude = position.latitude;
-        _longitude = position.longitude;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('تم تحديد الموقع: $_latitude, $_longitude'),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('حدث خطأ أثناء تحديد الموقع: $e')),
-      );
-    }
-  }
 
   Future<void> _registerCraftsman() async {
     if (_formKey.currentState!.validate()) {
@@ -123,8 +73,7 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
           location: _selectedCity!,
           phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!,
           dateOfBirth: DateTime.parse(dob),
-          mapLatitude: _latitude?.toString(), // خط العرض
-          mapLongitude: _longitude?.toString(), // خط الطول
+
         );
 
 
@@ -155,7 +104,7 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('تسجيل حساب الحرفي'),
-          backgroundColor: Colors.blue,
+          leading: leadingAppBar(),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -175,7 +124,10 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                   },
                 ),
                 // Date of Birth Field
+
+                const SizedBox(height: 16),
                 TextFormField(
+
                   controller: _dobController,
                   decoration: const InputDecoration(labelText: 'تاريخ الميلاد'),
                   readOnly: true,
@@ -200,13 +152,22 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                   },
                 ),
 
+                const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(labelText: 'الموقع'),
+                  decoration: InputDecoration(
+                    labelText: 'الموقع',
+                    labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.white, // Label color
+                    ),
+                    border: InputBorder.none, // Remove the default border
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Add padding
+                  ),
+                  dropdownColor: Theme.of(context).focusColor,
                   value: _selectedCity,
                   items: constants.palestinianCities.map((String category) {
                     return DropdownMenuItem<String>(
                       value: category,
-                      child: Text(category),
+                      child: Text(category,style: Theme.of(context).textTheme!.bodyMedium!.copyWith(color:_selectedCity==category?Colors.white: Colors.black)),
                     );
                   }).toList(),
                   onChanged: (newValue) {
@@ -221,9 +182,7 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                     return null;
                   },
                 ),
-
-                const SizedBox(height: 10),
-
+                const SizedBox(height: 16),
                 // Years of Experience Field
                 Row(
                   children: [
@@ -250,17 +209,24 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 10),
 
                 // Category Dropdown
                 DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(labelText: 'التخصص'),
+                  decoration: InputDecoration(
+                    labelText: 'الفئة',
+                    labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.white, // Label color
+                    ),
+                    border: InputBorder.none, // Remove the default border
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Add padding
+                  ),
+                  dropdownColor: Theme.of(context).focusColor,
                   value: _selectedCategory,
                   items: constants.categories.map((String category) {
                     return DropdownMenuItem<String>(
                       value: category,
-                      child: Text(category),
+                      child: Text(category,style: Theme.of(context).textTheme!.bodyMedium!.copyWith(color:_selectedCategory==category?Colors.white: Colors.black)),
                     );
                   }).toList(),
                   onChanged: (newValue) {
@@ -278,23 +244,12 @@ class _RegisterCraftsmanState extends State<RegisterCraftsman> {
 
                 const SizedBox(height: 20),
 
-                // Button to Get Location
-                ElevatedButton(
-                  onPressed: _getLocation,
-                  child: const Text('تحديد الموقع'),
-                ),
-
                 const SizedBox(height: 20),
 
                 // Register Button
-                ElevatedButton(
+                TextButton(
                   onPressed: _registerCraftsman,
                   child: const Text('تسجيل'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    textStyle: const TextStyle(fontSize: 16),
-                  ),
                 ),
               ],
             ),

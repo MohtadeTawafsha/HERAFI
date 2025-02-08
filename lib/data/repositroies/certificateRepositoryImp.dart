@@ -11,8 +11,7 @@ class CertificateRepositoryImpl implements CertificateRepository {
   CertificateRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<Either<Failure, void>> insertCertificateWithImage(
-      CertificateEntity certificate, File image) async {
+  Future<Either<Failure, void>> insertCertificateWithImage(CertificateEntity certificate, File image) async {
     try {
       await remoteDataSource.insertCertificateWithImage(certificate, image);
       return const Right(null);

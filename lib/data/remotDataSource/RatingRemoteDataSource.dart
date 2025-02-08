@@ -17,6 +17,21 @@ class RatingRemoteDataSource {
         .select()
         .eq('craftsman_id', craftsmanId);
 
-    return (response as List).map((data) => RatingModel.fromJson(data)).toList();
+    return (response as List<dynamic>)
+        .map((data) => RatingModel.fromJson(data as Map<String, dynamic>))
+        .toList();
   }
+
+  // جلب التقييمات حسب الـ customer_id
+  Future<List<RatingModel>> fetchRatingsByCustomer(String customerId) async {
+    final response = await supabaseClient
+        .from('ratings')
+        .select()
+        .eq('customer_id', customerId);
+
+    return (response as List<dynamic>)
+        .map((data) => RatingModel.fromJson(data as Map<String, dynamic>))
+        .toList();
+  }
+
 }

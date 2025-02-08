@@ -16,8 +16,8 @@ class CertificateRemoteDataSource {
     try {
       final fileName = 'certificates/${DateTime.now().millisecondsSinceEpoch}';
       final ref = firebaseStorage.ref().child(fileName);
-      final uploadTask = await ref.putFile(image);
-      return await uploadTask.ref.getDownloadURL();
+       await ref.putFile(image);
+      return await ref.getDownloadURL();
     } catch (e) {
       throw Exception('Failed to upload image to Firebase Storage: $e');
     }

@@ -8,6 +8,10 @@ class liveLocationMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Lottie.asset('lib/core/utils/animations/liveLocation.json',width: 200,height: 200,);
+    return Lottie.asset(
+      'lib/core/utils/animations/liveLocation.json',
+      width: 200,
+      height: 200,
+    );
   }
 }

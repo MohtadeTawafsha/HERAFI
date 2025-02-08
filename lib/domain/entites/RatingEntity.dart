@@ -25,7 +25,6 @@ class RatingEntity {
     required this.createdAt,
   });
 
-  // تحويل RatingEntity إلى RatingModel
   RatingModel toModel() {
     return RatingModel(
       id: id,

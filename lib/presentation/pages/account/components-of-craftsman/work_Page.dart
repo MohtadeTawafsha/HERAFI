@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,7 +39,7 @@ class _WorkPageState extends State<WorkPage> {
     final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
     if (craftsmanId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: User not logged in.')),
+        SnackBar(content: Text('Error: User is not logged in.')),
       );
       setState(() => isLoading = false);
       return;
@@ -57,28 +58,8 @@ class _WorkPageState extends State<WorkPage> {
     setState(() => isLoading = false);
   }
 
-  Future<String?> _uploadImageToFirebase(String imagePath) async {
-    try {
-      final file = File(imagePath);
-      final fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      final ref = FirebaseStorage.instance.ref().child('works/$fileName');
-      final uploadTask = await ref.putFile(file);
-      return await ref.getDownloadURL();
-    } catch (e) {
-      print('Error uploading image: $e');
-      return null;
-    }
-  }
-
-  Future<void> _addWork() async {
-    final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
-
-    if (craftsmanId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: User not logged in.')),
-      );
-      return;
-    }
+  Future<void> _saveWork() async {
+    final craftsmanId = FirebaseAuth.instance.currentUser!.uid;
 
     if (imagePath != null &&
         titleController.text.isNotEmpty &&
@@ -92,7 +73,7 @@ class _WorkPageState extends State<WorkPage> {
       }
 
       final newWork = WorkEntity(
-        id: 0, // يتم إنشاؤه تلقائيًا في قاعدة البيانات
+        id: 0,
         craftsmanId: craftsmanId,
         image: downloadUrl,
         title: titleController.text,
@@ -106,8 +87,8 @@ class _WorkPageState extends State<WorkPage> {
           SnackBar(content: Text('Error adding work: ${failure.message}')),
         ),
         (_) {
-          _fetchWorks(); // تحديث البيانات مباشرة
-          Navigator.of(context).pop(); // العودة للشاشة السابقة
+          _fetchWorks();
+          Navigator.of(context).pop();
         },
       );
 
@@ -118,8 +99,35 @@ class _WorkPageState extends State<WorkPage> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill all fields.')),
+        SnackBar(content: Text('Please fill in all fields.')),
       );
+    }
+  }
+
+  Future<String?> _uploadImageToFirebase(String imagePath) async {
+    try {
+      final file = File(imagePath);
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('works')
+          .child('${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      await ref.putFile(file);
+      final imageUrl = await ref.getDownloadURL();
+      return imageUrl;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
+
+  void _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        imagePath = pickedFile.path;
+      });
     }
   }
 
@@ -137,21 +145,22 @@ class _WorkPageState extends State<WorkPage> {
             });
           },
           onAddWork: () {
-            _addWork();
-            Navigator.pop(context); // العودة للشاشة السابقة
+            _saveWork();
           },
         ),
       ),
     );
   }
 
-  void _navigateToWorkDetails(WorkEntity work) {
-    Navigator.push(
+  void _navigateToWorkDetails(WorkEntity work) async {
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => WorkDetailsPage(work: work),
       ),
     );
+
+    _fetchWorks();
   }
 
   Widget buildWorksGrid() {
@@ -168,12 +177,12 @@ class _WorkPageState extends State<WorkPage> {
           onTap: () => _navigateToWorkDetails(work),
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: NetworkImage(work.image),
-                fit: BoxFit.cover,
-              ),
-            ),
+                borderRadius: BorderRadius.circular(8),
+                image: DecorationImage(
+                  fit: BoxFit.fill,
+                    image: CachedNetworkImageProvider(
+                  work.image,
+                ))),
           ),
         );
       },
@@ -183,7 +192,7 @@ class _WorkPageState extends State<WorkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Portfolio')),
+      appBar: AppBar(title: Text('الاعمال')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

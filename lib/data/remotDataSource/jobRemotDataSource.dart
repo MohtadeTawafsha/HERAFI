@@ -61,4 +61,14 @@ class JobRemoteDataSource {
         .map((json) => JobModel.fromJson(json))
         .toList();
   }
+  Future fetchJobForCustomer(String customerId)async{
+    final result=  await supabaseClient
+        .from('jobs')
+        .select('*, customer(*, users(*))')
+        .or('customer_id.eq.$customerId')
+        .order('created-at', ascending: false);
+    return (result as List)
+        .map((json) => JobModel.fromJson(json))
+        .toList();
+  }
 }

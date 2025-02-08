@@ -75,11 +75,22 @@ final ThemeData themeData = ThemeData(
             color: ThemeColors.textColor),
       ),
     ),
-
+    dropdownMenuTheme: DropdownMenuThemeData(
+      textStyle:  TextStyle(
+          color: Colors.white,
+          fontSize: 16.sp,
+          fontWeight: FontWeight.bold),
+      menuStyle: MenuStyle(
+        backgroundColor: MaterialStateProperty.all(ThemeColors.hintColor),
+      ),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       hintStyle: TextStyle(color: ThemeColors.textColor, fontSize: 13.sp),
       labelStyle: TextStyle(color: ThemeColors.textColor, fontSize: 13.sp),
       enabledBorder: commonBorder(),
       focusedBorder: commonBorder(),
       errorBorder: commonBorder(),
-    ));
+    ),
+
+
+);

@@ -13,7 +13,7 @@ class craftsmanHomeController extends GetxController{
   craftsmanHomeController(this.fetchJobsUseCase);
   final RxList<JobEntity> jobs = <JobEntity>[].obs;
   final RxBool isLoading = false.obs;
-  UserEntity userEntity= Get.find<crossData>().userEntity;
+  UserEntity userEntity= Get.find<crossData>().userEntity!;
   final ScrollController scrollController = ScrollController();
   int currentPage = 1;
   bool isFinished=false;

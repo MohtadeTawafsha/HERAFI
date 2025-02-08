@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:herafi/presentation/pages/account/components-of-craftsman/craftsman-profile-Page.dart';
+import 'package:herafi/presentation/routes/app_routes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../themes/colors.dart';
+import '../CraftsmansearchPage.dart';
 
 class CustomerHomePage extends StatefulWidget {
   const CustomerHomePage({Key? key}) : super(key: key);
@@ -33,19 +38,18 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     {'name': 'الصيانة المنزلية', 'icon': 'lib/core/utils/images/الصيانة المنزلية.png'},
     {'name': 'التجميل', 'icon': 'lib/core/utils/images/تجميل.png'},
     {'name': 'تنظيف المنازل', 'icon': 'lib/core/utils/images/تنظيف المنازل.png'},
-    {'name': 'تصليح الأجهزة الإلكترونية', 'icon': 'lib/core/utils/images/تصليح الأجهزة الإلكترونية.png'},
+    {'name': 'تصليح الأجهزة الإلكترونية', 'icon': 'lib/core/utils/images/circuit.png'},
     {'name': 'الطباعة والتغليف', 'icon': 'lib/core/utils/images/الطباعة والتغليف.png'},
     {'name': 'تصميم الديكور', 'icon': 'lib/core/utils/images/تصميم الديكور.png'},
-    {'name': 'الإصلاحات العامة', 'icon': 'lib/core/utils/images/الإصلاحات العامة.png'},
+    {'name': 'الإصلاحات العامة', 'icon': 'lib/core/utils/images/repair.png'},
     {'name': 'الطهي والتموين', 'icon': 'lib/core/utils/images/الطهي والتموين.png'},
-    {'name': 'النجدة والطوارئ', 'icon': 'lib/core/utils/images/النجدة والطوارئ.png'},
+    {'name': 'النجدة والطوارئ', 'icon': 'lib/core/utils/images/support.png'},
     {'name': 'الاستشارات الهندسية', 'icon': 'lib/core/utils/images/الاستشارات الهندسية.png'},
     {'name': 'الاستشارات القانونية', 'icon': 'lib/core/utils/images/الاستشارات القانونية.png'},
     {'name': 'التصوير', 'icon': 'lib/core/utils/images/التصوير.png'},
   ];
 
-  Future<List<Map<String, dynamic>>> fetchCraftsmenByCategory(
-      String category) async {
+  Future<List<Map<String, dynamic>>> fetchCraftsmenByCategory(String category) async {
     final response = await supabase
         .from('craftsman')
         .select(
@@ -75,79 +79,37 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black87,
       appBar: AppBar(
-        backgroundColor: Colors.black87,
         elevation: 0,
         title: const Text(
-          'Services and Craftsmen',
+          'الخدمات',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        leading: showCraftsmen
-            ? IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            setState(() {
-              showCraftsmen = false;
-              selectedCategory = '';
-            });
-          },
-        )
-            : null,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CraftsmanListPage()),
+              );
+            },
+          ),
+          // AI Icon
+          IconButton(
+            icon: const Icon(Icons.smart_toy_outlined, color: Colors.white),
+            onPressed: () {
+              Get.toNamed(AppRoutes.chatbot);
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.grey[800],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.search, color: Colors.white),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: searchController,
-                      decoration: const InputDecoration(
-                        hintText: 'Search for services or craftsmen',
-                        hintStyle: TextStyle(
-                          color: Colors.white54,
-                          fontSize: 16,
-                        ),
-
-                        border: InputBorder.none,
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                      onChanged: (value) {
-                        setState(() {
-                          searchQuery = value;
-                        });
-                      },
-                    ),
-                  ),
-                  if (searchQuery.isNotEmpty)
-                    IconButton(
-                      icon: const Icon(Icons.clear, color: Colors.white54),
-                      onPressed: () {
-                        setState(() {
-                          searchQuery = '';
-                          searchController.clear();
-                        });
-                      },
-                    ),
-                ],
-              ),
-            ),
-          ),
           Expanded(
             child: showCraftsmen
                 ? _buildCraftsmenList()
@@ -192,6 +154,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                   filteredServices[index]['icon']!,
                   width: 60,
                   height: 60,
+                  color: Colors.white,
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -224,126 +187,156 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
             ),
           );
         }
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        if (!snapshot.hasData) {
           return const Center(
             child: Text(
-              'No craftsmen found',
+              'لم يتم العثور على حرفيين',
               style: TextStyle(color: Colors.white),
             ),
           );
         }
 
         final craftsmen = snapshot.data!;
-        return ListView.builder(
-          itemCount: craftsmen.length,
-          itemBuilder: (context, index) {
-            final craftsman = craftsmen[index];
-            final user = craftsman['users'];
-            final ratings = craftsman['ratings'] as List<dynamic>;
-            final availability = craftsman['availability'] as List<dynamic>;
+        return Scaffold(
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                  onPressed: (){
+                    setState(() {
+                      showCraftsmen=false;
+                    });},
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: ThemeColors.goldColor,
+                    size: 25.sp,
+                  )),
+              craftsmen.isNotEmpty?Expanded(
+                child: ListView.builder(
+                  itemCount: craftsmen.length,
+                  itemBuilder: (context, index) {
+                    final craftsman = craftsmen[index];
+                    final user = craftsman['users'];
+                    final ratings = craftsman['ratings'] as List<dynamic>;
+                    final availability = craftsman['availability'] as List<dynamic>;
 
-            final averageRating = calculateAverageRating(ratings);
-            final isAvailable = availability.isNotEmpty
-                ? availability.first['available'] as bool
-                : false;
+                    final averageRating = calculateAverageRating(ratings);
+                    final isAvailable = availability.isNotEmpty
+                        ? availability.first['available'] as bool
+                        : false;
 
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CraftsmanProfilePage(
-                      craftsmanId: craftsman['id'],
-                    ),
-                  ),
-                );
-              },
-              child: Card(
-                color: Colors.grey[850],
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundImage: user['image'] != null
-                                ? NetworkImage(user['image'])
-                                : null,
-                            child: user['image'] == null
-                                ? const Icon(Icons.person, color: Colors.white)
-                                : null,
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  user['name'] ?? 'Unknown',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  user['location'] ?? 'Location unknown',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white54,
-                                  ),
-                                ),
-                              ],
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CraftsmanProfilePage(
+                              craftsmanId: craftsman['id'],
                             ),
                           ),
-                          Icon(
-                            Icons.circle,
-                            color: isAvailable ? Colors.green : Colors.red,
-                            size: 16,
+                        );
+                      },
+                      child: Card(
+                        color: Colors.grey[850],
+                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: user['image'] != null
+                                        ? NetworkImage(user['image'])
+                                        : null,
+                                    child: user['image'] == null
+                                        ? const Icon(Icons.person, color: Colors.white)
+                                        : null,
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          user['name'] ?? 'Unknown',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          user['location'] ?? 'Location unknown',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white54,
+                                          ),
+                                        ),
+                                        Text(
+                                          selectedCategory,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.white54,
+                                          ),)
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.circle,
+                                    color: isAvailable ? Colors.green : Colors.red,
+                                    size: 16,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  ...List.generate(5, (i) {
+                                    return Icon(
+                                      i < averageRating.round()
+                                          ? Icons.star
+                                          : Icons.star_border,
+                                      color: Colors.amber,
+                                      size: 16,
+                                    );
+                                  }),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    averageRating.toStringAsFixed(1),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Years of Experience: ${craftsman['years_of_experience']}',
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          ...List.generate(5, (i) {
-                            return Icon(
-                              i < averageRating.round()
-                                  ? Icons.star
-                                  : Icons.star_border,
-                              color: Colors.amber,
-                              size: 16,
-                            );
-                          }),
-                          const SizedBox(width: 8),
-                          Text(
-                            averageRating.toStringAsFixed(1),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Years of Experience: ${craftsman['years_of_experience']}',
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
                         ),
                       ),
-                    ],
-                  ),
+                    );
+                  },
+                ),
+              ):Center(
+                child: Text(
+                  'لم يتم العثور على حرفيين',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
-            );
-          },
+            ],
+          ),
         );
       },
     );

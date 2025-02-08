@@ -4,6 +4,6 @@ import '../../controllers/ChatbotController.dart';
 class ChatbotBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put<ChatbotController>(ChatbotController(),permanent: true);
+    Get.put<ChatbotController>(ChatbotController());
   }
 }

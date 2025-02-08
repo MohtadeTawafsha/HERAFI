@@ -36,6 +36,7 @@ class initialPage{
           Get.offAllNamed(AppRoutes.home);
         }
         else{
+          Get.find<crossData>().cleanData();
           Get.offAllNamed(AppRoutes.accountType);
         }
       }

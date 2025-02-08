@@ -4,10 +4,12 @@ import 'package:herafi/presentation/controllers/AuthController/homePageControlle
 import 'package:herafi/presentation/routes/app_routes.dart';
 
 import '../../../domain/entites/chat.dart';
+import '../crossDataContoller.dart';
 
 class chatsPageController extends GetxController{
   final homePageController HomePageController;
   final TextEditingController searchController=TextEditingController();
+  Rx<List<chatEntity>> chats = Get.find<crossData>().chats.obs;
 
   chatsPageController({required this.HomePageController});
 
@@ -17,6 +19,10 @@ class chatsPageController extends GetxController{
   }
   void toChatPage(chatEntity c){
     Get.toNamed(AppRoutes.chatpage,arguments: c);
+  }
+  Future handleRefreshIndicator()async{
+    await Get.find<crossData>().fetchChats();
+    chats.value=Get.find<crossData>().chats;
   }
 
 }

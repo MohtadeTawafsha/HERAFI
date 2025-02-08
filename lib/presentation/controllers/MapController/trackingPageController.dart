@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:flutter/material.dart';
+import 'package:herafi/domain/entites/ProjectEntity.dart';
 import 'package:herafi/presentation/Widgets/liveLocationMarker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
@@ -11,68 +13,51 @@ import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geoLocator;
 import '../../routes/app_routes.dart';
 
-
-class trackingPageController extends GetxController{
-
-  final GlobalKey<ScaffoldState> scaffoldKey=GlobalKey<ScaffoldState>();
-  MapController mapController=MapController();
-  RxList<Marker> markers=<Marker>[].obs;
+class trackingPageController extends GetxController {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  MapController mapController = MapController();
   late Rx<LocationData> userLocation;
-
-
+  ProjectEntity projectEntity = Get.arguments;
+  RxBool isLoading = true.obs;
   @override
   void onInit() {
     super.onInit();
     getUserLocation();
   }
-///one-one
-  void getUserLocation()async{
-    try{
-      var location=Location();
-      await location.requestPermission();
-      userLocation=(await location.getLocation()).obs;
-        markers.value.add(Marker(point: LatLng(userLocation.value.latitude!,userLocation.value.longitude!), child: liveLocationMarker(),width: 100,height: 100));
-         moveCameraToLocation(userLocation.value);
-      markers.refresh();
+
+  ///one-one
+  void getUserLocation() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('projects')
+          .doc(projectEntity.id.toString())
+          .get()
+          .then((value) {
+        userLocation = LocationData.fromMap(value.data()!).obs;
+      });
+      isLoading.value = false;
+      Future.delayed(const Duration(milliseconds: 200)).then((value) {
+        moveCameraToLocation(userLocation.value);
+      });
       getStreamLocation();
-    }
-    catch(e){
+    } catch (e) {
       print(e.toString());
     }
   }
-  void getStreamLocation(){
 
-    final geoLocator.LocationSettings locationSettings = geoLocator.LocationSettings(
-      accuracy: geoLocator.LocationAccuracy.high,
-      distanceFilter: 1,
-    );
+  void getStreamLocation() {
+    //get stream from firebase
+    FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectEntity.id.toString())
+        .snapshots()
+        .listen((event) {
+      print("new location");
+      userLocation.value = LocationData.fromMap(event.data()!);
+    });
+  }
 
-    geoLocator.Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-            (geoLocator.Position? position) {
-              if(position==null)return;
-              userLocation.value=LocationData.fromMap({"latitude":position!.latitude,"longitude":position.longitude});
-              markers.removeLast();
-              markers.value.add(Marker(point: LatLng(position.latitude,position.longitude), child: liveLocationMarker(),width: 100,height: 100));
-              moveCameraToLocation(userLocation.value);
-              markers.refresh();
-        });
-  }
-  void openDrawer(){
-    scaffoldKey.currentState!.openDrawer();
-  }
-  void closeDrawer(){
-    scaffoldKey.currentState!.closeDrawer();
-  }
-  void navigateProfilePage(){
-    Get.toNamed(AppRoutes.profile);
-  }
-  void navigateSettingPage(){
-    Get.toNamed(AppRoutes.setting);
-  }
-  void navigateOrderHistoryPage(){
-    Get.toNamed(AppRoutes.orderHistory);
-  }
-  void moveCameraToLocation(LocationData location){
-    mapController.move(LatLng(location.latitude!,location.longitude!), mapController.camera.zoom);
+  void moveCameraToLocation(LocationData location) {
+    mapController.move(LatLng(location.latitude!, location.longitude!), 13);
   }
 }
