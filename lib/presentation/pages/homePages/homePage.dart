@@ -1,19 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:herafi/data/remotDataSource/ratingRemoteDataSource.dart';
+import 'package:herafi/presentation/bindings/Project/GetProjectsBinding.dart';
 import 'package:herafi/presentation/bindings/chatsBinding/chatsBinding.dart';
 import 'package:herafi/presentation/bindings/jobsBinding/createJobBinding.dart';
 import 'package:herafi/presentation/controllers/AuthController/homePageController.dart';
 import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/pages/JobPages/createJobPage.dart';
 import 'package:herafi/presentation/pages/account/account_screen.dart';
-import 'package:herafi/presentation/pages/homePages/homepagecutomer.dart';
 import 'package:herafi/presentation/pages/orderProcessPage/chatsPage.dart';
-import 'package:herafi/presentation/pages/trakingPage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../data/remotDataSource/craftsmanRemotDataSource.dart';
+import '../../../data/remotDataSource/recommendationServise.dart';
 import '../../Widgets/itemInBottomNavigationBar.dart';
 import '../../bindings/homeBinding/craftsmanHomeBinding.dart';
-import '../project/CraftsmanNotificationsPage.dart';
-import '../project/NotificationsPage.dart';
+import '../project/viewProjects.dart';
+import 'RecommendationPage.dart';
+
 import 'homePageCraftsman.dart';
 
 class homePage extends StatelessWidget {
@@ -22,11 +27,10 @@ class homePage extends StatelessWidget {
   Widget build(BuildContext context){
     final crossData cross_Data=Get.find<crossData>();
     final homePageController controller = Get.find();
-    print(cross_Data.userEntity.userType);
     return Scaffold(
       key: controller.scaffoldKey,
       backgroundColor: Colors.transparent,
-      bottomNavigationBar: cross_Data.userEntity.isCraftsman()?bottomNavigationBarForCraftsman(controller):bottomNavigationBarForCustomer(controller),
+      bottomNavigationBar: cross_Data.userEntity!.isCraftsman()?bottomNavigationBarForCraftsman(controller):bottomNavigationBarForCustomer(controller),
         body: Obx(() {
           return getSelectedPage(controller);
         }),
@@ -34,9 +38,9 @@ class homePage extends StatelessWidget {
   }
 
   Widget getSelectedPage(homePageController controller) {
-    if(Get.find<crossData>().userEntity.isCraftsman()){
+    if(Get.find<crossData>().userEntity!.isCraftsman()){
       switch (controller.index.value) {
-        case 4:
+        case 3:
           return AccountScreen();
         case 1:
           {
@@ -45,7 +49,8 @@ class homePage extends StatelessWidget {
           }
         case 2:
           {
-            return CraftsmanNotificationsPage();
+            GetProjectsBinding().dependencies();
+            return ProjectsPage();
           }
         default:{
           craftsmanHomeBinding().dependencies();
@@ -64,7 +69,8 @@ class homePage extends StatelessWidget {
           }
         case 3:
           {
-            return NotificationsPage();
+            GetProjectsBinding().dependencies();
+            return ProjectsPage();
           }
         case 2:
           {
@@ -72,11 +78,16 @@ class homePage extends StatelessWidget {
             return createJobPage();
           };
         default:
-          return CustomerHomePage();
+          return RecommendationPage(
+            recommendationService: RecommendationService(
+              CraftsmanRemoteDataSource(Supabase.instance.client, FirebaseAuth.instance),
+              RatingRemoteDataSource(),
+            ),
+          );
+
       }
     }
   }
-
   Widget bottomNavigationBarForCustomer(homePageController controller) {
     return Builder(builder: (context) {
       return Container(
@@ -93,17 +104,16 @@ class homePage extends StatelessWidget {
               icon: Icons.home_outlined,
               index: 0,
             ),
-
             itemInBottomNavigationBar(
               icon: Icons.message,
               index: 1,
             ),
             itemInBottomNavigationBar(
-              icon: Icons.post_add,
+              icon: Icons.add,
               index: 2,
             ),
             itemInBottomNavigationBar(
-              icon: Icons.check_box,
+              icon: Icons.work,
               index: 3,
             ),
             itemInBottomNavigationBar(
@@ -136,16 +146,12 @@ class homePage extends StatelessWidget {
               index: 1,
             ),
             itemInBottomNavigationBar(
-              icon: Icons.shopping_cart_outlined,
+              icon: Icons.work,
               index: 2,
             ),
             itemInBottomNavigationBar(
-              icon: Icons.manage_search,
-              index: 3,
-            ),
-            itemInBottomNavigationBar(
               icon: Icons.person,
-              index: 4,
+              index: 3,
             ),
           ],
         ),

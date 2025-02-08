@@ -29,6 +29,25 @@ class CraftsmanRemoteDataSource {
     return combinedData;
   }
 
+  /// Fetch all craftsmen
+  Future<List<Map<String, dynamic>>> fetchAllCraftsmen() async {
+    final response = await client
+        .from('craftsman')
+        .select('*, users(*)'); // Join craftsman with user data
+
+    if (response.isEmpty) {
+      throw Exception('No craftsmen found');
+    }
+
+    return response.map<Map<String, dynamic>>((craftsman) => {
+      'id': craftsman['id'],
+      'category': craftsman['category'],
+      'years_of_experience': craftsman['years_of_experience'],
+      ...craftsman['users'],
+    }).toList();
+  }
+
+
   /// Save craftsman details
   Future<void> saveCraftsmanDetails({
     required String category,
@@ -37,8 +56,7 @@ class CraftsmanRemoteDataSource {
     required String location,
     required String phoneNumber,
     required DateTime dateOfBirth,
-    String? mapLatitude, // Store latitude in users table
-    String? mapLongitude, // Store longitude in users table
+
   }) async {
     final user = firebaseAuth.currentUser;
     if (user == null) {
@@ -54,8 +72,6 @@ class CraftsmanRemoteDataSource {
       'user_type': 'craftsman',
       'location': location,
       'date_of_birth': dateOfBirth.toIso8601String(),
-      'map_latitude': mapLatitude,
-      'map_longitude': mapLongitude,
     });
 
     // Insert craftsman details in craftsman table
@@ -75,16 +91,14 @@ class CraftsmanRemoteDataSource {
     required int yearsOfExperience,
     required String category,
     required String image,
-    String? mapLatitude, // دعم خطوط الطول
-    String? mapLongitude, // دعم خطوط العرض
+
   }) async {
     await client.from('users').update({
       'name': name,
       'location': location,
       'date_of_birth': dateOfBirth.toIso8601String(),
       'image': image,
-      if (mapLatitude != null) 'map_latitude': mapLatitude, // تحديث خط العرض
-      if (mapLongitude != null) 'map_longitude': mapLongitude, // تحديث خط الطول
+
     }).eq('id', id);
 
     await client.from('craftsman').update({

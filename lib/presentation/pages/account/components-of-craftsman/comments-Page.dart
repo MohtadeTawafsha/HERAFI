@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:herafi/presentation/Widgets/leadingAppBar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommentsPage extends StatelessWidget {
@@ -10,8 +11,8 @@ class CommentsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Comments'),
-        backgroundColor: Colors.teal,
+        title: const Text('التقييم'),
+        leading: leadingAppBar(),
       ),
       body: FutureBuilder(
         future: Supabase.instance.client
@@ -64,10 +65,7 @@ class CommentsPage extends StatelessWidget {
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                color: Colors.black87,
+                color:Colors.grey.shade700,
                 child: ExpansionTile(
                   tilePadding: const EdgeInsets.all(16),
                   collapsedIconColor: Colors.white,

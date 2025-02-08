@@ -15,7 +15,7 @@ class craftsmanSearchController extends GetxController {
   final TextEditingController searchController = TextEditingController();
   final RxList<JobEntity> jobs = <JobEntity>[].obs;
   final RxBool isLoading = false.obs;
-  final UserEntity userEntity=Get.find<crossData>().userEntity;
+  final UserEntity userEntity=Get.find<crossData>().userEntity!;
   final ScrollController scrollController = ScrollController();
   int currentPage = 1;
   String lastQuery = '';

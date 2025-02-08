@@ -1,3 +1,5 @@
+import '../../domain/entites/RatingEntity.dart';
+
 class RatingModel {
   final int id;
   final String craftsmanId;
@@ -35,6 +37,21 @@ class RatingModel {
       createdAt: DateTime.parse(json['created_at']),
     );
   }
+
+  Future<dynamic> toEntity() async {
+    return RatingEntity(
+      id: id,
+      craftsmanId: craftsmanId,
+      customerId: customerId,
+      projectId: projectId,
+      workPerfection: workPerfection,
+      behavior: behavior,
+      respectDeadlines: respectDeadlines,
+      comment: comment,
+      createdAt: createdAt,
+    );
+  }
+
 
   // تحويل RatingModel إلى JSON
   Map<String, dynamic> toJson() {

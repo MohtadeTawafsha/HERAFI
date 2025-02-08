@@ -28,7 +28,6 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
     _loadAvailabilityData();
   }
 
-  /// Load existing availability data
   Future<void> _loadAvailabilityData() async {
     final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
     if (craftsmanId == null) {
@@ -45,7 +44,7 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
       availabilityResult.fold(
             (failure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error loading availability: ${failure.message}')),
+            SnackBar(content: Text('خطأ في تحميل التوافر: ${failure.message}')),
           );
         },
             (availabilityList) {
@@ -69,7 +68,7 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Unexpected error: $e')),
+        SnackBar(content: Text('خطأ غير متوقع: $e')),
       );
     } finally {
       setState(() {
@@ -78,13 +77,12 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
     }
   }
 
-  /// Save availability data
   Future<void> saveAvailability() async {
     final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
 
     if (craftsmanId == null || craftsmanId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: User not logged in.')),
+        const SnackBar(content: Text('خطأ: المستخدم غير مسجل الدخول.')),
       );
       return;
     }
@@ -99,12 +97,11 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
       availabilityResult.fold(
             (failure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error fetching availability: ${failure.message}')),
+            SnackBar(content: Text('خطأ في جلب التوافر: ${failure.message}')),
           );
         },
             (availabilityList) async {
           if (availabilityList.isNotEmpty) {
-            // Update existing record
             final existingRecord = availabilityList.first;
 
             if (isSimpleStatus) {
@@ -130,10 +127,9 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
               await availabilityRepository.updateAvailability(updatedAvailability);
             }
           } else {
-            // Insert new record
             if (isSimpleStatus) {
               final newAvailability = AvailabilityEntity(
-                id: null, // اجعل id فارغاً
+                id: null,
                 craftsmanId: craftsmanId,
                 availabilityType: 'simple',
                 dayOfWeek: null,
@@ -144,7 +140,7 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
             } else {
               final selectedDaysString = selectedDays.join(',');
               final newAvailability = AvailabilityEntity(
-                id: null, // اجعل id فارغاً
+                id: null,
                 craftsmanId: craftsmanId,
                 availabilityType: 'schedule',
                 dayOfWeek: selectedDaysString,
@@ -158,11 +154,11 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Availability saved successfully!')),
+        const SnackBar(content: Text('تم حفظ التوافر بنجاح!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving availability: $e')),
+        SnackBar(content: Text('خطأ في حفظ التوافر: $e')),
       );
     } finally {
       setState(() {
@@ -171,7 +167,6 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
     }
   }
 
-  /// Toggle selected days for schedule status
   void toggleDay(String day) {
     setState(() {
       if (selectedDays.contains(day)) {
@@ -186,7 +181,7 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Availability"),
+        title: const Text("التوافر"),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -195,9 +190,8 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Simple Status
             RadioListTile(
-              title: const Text("Simple status", style: TextStyle(fontSize: 18)),
+              title: const Text("الحالة البسيطة", style: TextStyle(fontSize: 18)),
               value: true,
               groupValue: isSimpleStatus,
               onChanged: (bool? value) {
@@ -210,8 +204,9 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Available", style: TextStyle(fontSize: 18)),
+                  const Text("متاح", style: TextStyle(fontSize: 18)),
                   Switch(
+                    activeColor: Theme.of(context).focusColor,
                     value: isAvailable,
                     onChanged: (bool value) {
                       setState(() {
@@ -231,18 +226,15 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                       });
                     },
                     decoration: const InputDecoration(
-                      labelText: "Reason for unavailability",
+                      labelText: "سبب عدم التوفر",
                       border: OutlineInputBorder(),
                     ),
                   ),
                 ),
             ],
-
             const SizedBox(height: 20),
-
-            // Schedule Status
             RadioListTile(
-              title: const Text("Schedule status", style: TextStyle(fontSize: 18)),
+              title: const Text("الحالة المجدولة", style: TextStyle(fontSize: 18)),
               value: false,
               groupValue: isSimpleStatus,
               onChanged: (bool? value) {
@@ -256,13 +248,13 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                 spacing: 8.0,
                 runSpacing: 8.0,
                 children: [
-                  'Sunday',
-                  'Monday',
-                  'Tuesday',
-                  'Wednesday',
-                  'Thursday',
-                  'Friday',
-                  'Saturday'
+                  'الأحد',
+                  'الإثنين',
+                  'الثلاثاء',
+                  'الأربعاء',
+                  'الخميس',
+                  'الجمعة',
+                  'السبت'
                 ].map((day) {
                   final isSelected = selectedDays.contains(day);
                   return GestureDetector(
@@ -270,27 +262,24 @@ class _AvailabilityScreenState extends State<AvailabilityScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: isSelected ? Colors.green : Colors.grey[300],
+                        color: isSelected ? Theme.of(context).focusColor : Colors.grey[300],
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         day,
                         style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black,
+                          color:  Colors.black,
                         ),
                       ),
                     ),
                   );
                 }).toList(),
               ),
-
-            const Spacer(),
-
-            // Save Button
+            SizedBox(height: 32,),
             Center(
-              child: ElevatedButton(
+              child: TextButton(
                 onPressed: saveAvailability,
-                child: const Text("Save"),
+                child: const Text("حفظ"),
               ),
             ),
           ],

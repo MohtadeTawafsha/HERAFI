@@ -6,62 +6,45 @@ class ProjectModel extends ProjectEntity {
   ProjectModel({
     required super.id,
     required super.title,
-    super.price,
-    super.startDate,
-    super.endDate,
-    super.customerId,
-    super.craftsmanId,
+    required super.price,
+    required super.startDate,
+    required super.endDate,
+    required super.customerId,
+    required super.craftsmanId,
     super.state = 'تم الإرسال للعميل',
-    super.steps, // جديد
+    required super.isCraftsmanConfirm,
+    required super.isCustomerConfirm,
+    required super.isRatingHappen,
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return ProjectModel(
       id: json['id'],
-      title: json['title'] ?? '',
+      title: json['title'],
       price: json['price'] != null ? json['price'].toDouble() : null,
-      startDate: json['start_date'] != null
-          ? DateTime.parse(json['start_date'])
-          : null,
-      endDate: json['end_date'] != null
-          ? DateTime.parse(json['end_date'])
-          : null,
+      startDate:DateTime.parse(json['start_date']),
+      endDate: DateTime.parse(json['end_date']),
       customerId: json['customer_id'],
       craftsmanId: json['craftsman_id'],
       state: json['state'] ?? 'تم الإرسال للعميل',
-      steps: json['steps'] != null
-          ? (json['steps'] as List)
-          .map((step) => ProjectStepEntity(
-        stepNumber: step['step_number'],
-        title: step['title'],
-        price: step['price'].toDouble(),
-        duration: step['duration'], // String
-        isPaid: step['is_paid'],
-      ))
-          .toList()
-          : null, // جديد
+      isCraftsmanConfirm: json['isCraftsmanConfirm'],
+      isCustomerConfirm: json['isCustomerConfirm'],
+      isRatingHappen: (json['ratings'] as List).isNotEmpty,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'title': title,
       'price': price,
-      'start_date': startDate?.toIso8601String(),
-      'end_date': endDate?.toIso8601String(),
+      'start_date': startDate.toIso8601String(),
+      'end_date': endDate.toIso8601String(),
       'customer_id': customerId,
       'craftsman_id': craftsmanId,
       'state': state,
-      'steps': steps
-          ?.map((step) => {
-        'step_number': step.stepNumber,
-        'title': step.title,
-        'price': step.price,
-        'duration': step.duration, // String
-        'is_paid': step.isPaid,
-      })
-          .toList(),
+      'isCraftsmanConfirm': isCraftsmanConfirm,
+      'isCustomerConfirm': isCustomerConfirm,
     };
   }
 }

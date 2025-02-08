@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:herafi/domain/entites/user.dart';
+import 'package:herafi/presentation/routes/app_routes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../Widgets/leadingAppBar.dart';
+import '../../controllers/crossDataContoller.dart';
 import '../project/projectPage.dart';
 import 'package:herafi/presentation/controllers/orderPageControllers/chatPageController.dart';
 import 'package:herafi/presentation/Widgets/progressIndicator.dart';
@@ -15,38 +18,10 @@ class chatPage extends StatelessWidget {
     final SupabaseClient supabaseClient = Supabase.instance.client;
 
     try {
-      // جلب بيانات المستخدم الحالي والطرف الآخر من `controller`
-      final currentUserId = controller.currentUserId;
-      final otherUser = controller.chat.user;
-
-      // تحديد العميل والحرفي بناءً على نوع المستخدم
-      final String customerId =
-      otherUser.userType == 'customer' ? otherUser.id : currentUserId;
-      final String craftsmanId =
-      otherUser.userType == 'craftsman' ? otherUser.id : currentUserId;
-
-      // التحقق من وجود المشروع
-      final existingProject = await supabaseClient
-          .from('projects')
-          .select('id')
-          .eq('customer_id', customerId)
-          .eq('craftsman_id', craftsmanId)
-          .limit(1)
-          .maybeSingle();
-
-      if (existingProject == null) {
-        // إذا لم يكن المشروع موجودًا، يتم إضافته
-        await supabaseClient.from('projects').insert({
-          'customer_id': customerId,
-          'craftsman_id': craftsmanId,
-        });
-      }
-
-      // الانتقال إلى صفحة المشروع مع تمرير بيانات العميل والحرفي
-      Get.to(() => ProjectPage(
-        customerId: customerId,
-        craftsmanId: craftsmanId,
-      ));
+      Get.toNamed(AppRoutes.createProject,arguments: {
+        "customer": Get.find<crossData>().userEntity,
+        "craftsman": controller.chat.user,
+      });
     } catch (error) {
       Get.snackbar(
         'خطأ',
@@ -62,6 +37,7 @@ class chatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chatPageController controller = Get.find();
+    final crossData data = Get.find();
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -81,30 +57,23 @@ class chatPage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // زر تفاصيل المشروع
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              color: Colors.blue[50],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'تفاصيل المشروع:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      handleProjectDetails(controller);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('تفاصيل المشروع'),
-                  ),
-                ],
-              ),
-            ),
+            if(data.userEntity!.isCustomer())
+            ...[SizedBox(height: 10,),
+              Container(
+                color: Colors.grey.shade800,
+                padding: EdgeInsets.symmetric(horizontal: 32,vertical: 12),
+                child: TextButton(
+                  onPressed: ()=>handleProjectDetails(controller),
+                  child: Container(
+                      height: 35,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('انشاء مشروع',style:Theme.of(context).textTheme!.bodyLarge!.copyWith(color: Colors.black),),
+                        ],
+                      )),
+                ),
+              ),],
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value && !controller.isItNewChat) {

@@ -1,16 +1,17 @@
-import 'package:herafi/domain/entites/ProjectStepEntity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:herafi/domain/entites/ProjectEntity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProjectRemoteDataSource {
-  final SupabaseClient supabaseClient;
+  final SupabaseClient supabaseClient=Supabase.instance.client;
 
-  ProjectRemoteDataSource(this.supabaseClient);
+  ProjectRemoteDataSource();
 
   /// Fetch project details by ID
   Future<Map<String, dynamic>?> fetchProjectDetails(int projectId) async {
     final response = await supabaseClient
         .from('projects')
-        .select('*')
+        .select('*, ratings(*)')
         .eq('id', projectId)
         .maybeSingle();
 
@@ -18,43 +19,25 @@ class ProjectRemoteDataSource {
   }
 
   /// Insert a new project
-  Future<void> insertProject({
-    required String customerId,
-    required String craftsmanId,
-    required String title,
-    double? price,
-    DateTime? startDate,
-    DateTime? endDate,
-    String state = 'تم الإرسال للعميل',
-  }) async {
-    await supabaseClient.from('projects').insert({
-      'customer_id': customerId,
-      'craftsman_id': craftsmanId,
-      'title': title,
-      'price': price,
-      'start_date': startDate?.toIso8601String(),
-      'end_date': endDate?.toIso8601String(),
-      'state': state,
-    });
+  Future<void> insertProject({required ProjectEntity project}) async {
+      await supabaseClient.from('projects').insert(project.toModel().toJson());
   }
 
-  /// Update project details
-  Future<void> updateProject({
-    required int projectId,
-    required String title,
-    double? price,
-    DateTime? startDate,
-    DateTime? endDate,
-    String state = 'تم الإرسال للعميل',
-  }) async {
-    await supabaseClient.from('projects').update({
-      'title': title,
-      'price': price,
-      'start_date': startDate?.toIso8601String(),
-      'end_date': endDate?.toIso8601String(),
-      'state': state,
-    }).eq('id', projectId);
+  Future<List<Map<String,dynamic>>> fetchProjects() async {
+    String userId=FirebaseAuth.instance.currentUser!.uid;
+    return  await supabaseClient
+        .from('projects') // Replace with your actual table name
+        .select('*, ratings(*)')
+        .or('customer_id.eq.$userId,craftsman_id.eq.$userId');
   }
+
+
+  /// Update project details
+  Future<void> updateProject({required ProjectEntity product}) async {
+    await supabaseClient.from('projects').update(product.toModel().toJson()).eq('id', product.id);
+  }
+
+
 
   /// Delete a project by ID
   Future<void> deleteProject(int projectId) async {
@@ -103,39 +86,54 @@ class ProjectRemoteDataSource {
     return List<Map<String, dynamic>>.from(response);
   }
 
-  Future<void> insertProjectStep({
-    required int projectId,
-    required int stepNumber,
-    required String title,
-    required double price,
-    required String duration,
-  }) async {
-    try {
-      await supabaseClient.from('project_steps').insert({
-        'project_id': projectId, // يجب أن يكون هذا المعرف صالحًا
-        'step_number': stepNumber,
-        'title': title,
-        'price': price,
-        'duration': duration,
-        'is_paid': false, // القيمة الافتراضية
-      });
-    } catch (error) {
-      throw Exception('Failed to insert project step: $error');
-    }
-  }
 
 
 
   Future<Map<String, dynamic>?> fetchProjectByCustomerAndCraftsmann(
       String customerId, String craftsmanId) async {
-    final response = await supabaseClient
+    final response = await Supabase.instance.client
         .from('projects')
         .select('*')
         .eq('customer_id', customerId)
         .eq('craftsman_id', craftsmanId)
-        .maybeSingle();
+        .maybeSingle(); // Ensures a single result or null
 
     return response;
   }
+
+  Future<List<Map<String, dynamic>>> fetchProjectStepsByProjectId(int projectId) async {
+    final response = await Supabase.instance.client
+        .from('project_steps')
+        .select('*') // Fetch all columns
+        .eq('project_id', projectId); // New Code: No .execute()
+
+    if (response == null) {
+      throw Exception('Error fetching project steps: No data found.');
+    }
+
+    return List<Map<String, dynamic>>.from(response);
+  }
+
+
+
+  Future<void> updateProjectStep(int stepId, Map<String, dynamic> data) async {
+    final response = await Supabase.instance.client
+        .from('project_steps') // Table name
+        .update(data) // Data to update
+        .eq('id', stepId) // Match the specific step by ID
+        .select();
+
+    if (response == null || response.isEmpty) {
+      throw Exception('Error updating project step: No rows were updated.');
+    }
+  }
+
+
+
+
+
+
+
+
 
 }

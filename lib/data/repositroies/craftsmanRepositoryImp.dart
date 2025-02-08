@@ -37,8 +37,7 @@ class CraftsmanRepositoryImpl extends CraftsmanRepository {
         yearsOfExperience: craftsman.yearsOfExp,
         category: craftsman.category,
         image: craftsman.image,
-        mapLatitude: craftsman.mapLatitude, // إرسال خط العرض
-        mapLongitude: craftsman.mapLongitude, // إرسال خط الطول
+
       );
 
       return const Right(null);

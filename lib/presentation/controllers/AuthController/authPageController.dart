@@ -1,12 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:herafi/global/alers.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../../global/setOfMethods.dart';
-import '../../Widgets/progressIndicator.dart';
 import '../../routes/app_routes.dart';
 
 class authPageController extends GetxController{
@@ -40,9 +36,9 @@ class authPageController extends GetxController{
           Get.back();
           alerts().showErrorSnackBar(Get.context!, "لقد حدثة مشكلة ما تأكد من الرقم وحاول مرة اخرى");
         },
-        codeSent: (String verificationId, int? resendToken) {
+        codeSent: (String verificationId, int? resendToken)async{
+          await Get.toNamed(AppRoutes.smsVerification,arguments: {"verificationId":verificationId,"phoneNumber":phoneNumber});
           Get.back();
-          Get.toNamed(AppRoutes.smsVerification,arguments: {"verificationId":verificationId,"phoneNumber":phoneNumber});
         },
         codeAutoRetrievalTimeout: (String verificationId) {
         },

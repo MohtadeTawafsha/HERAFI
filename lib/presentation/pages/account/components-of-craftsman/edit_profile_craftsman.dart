@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:herafi/data/remotDataSource/craftsmanRemotDataSource.dart';
 import 'package:herafi/data/repositroies/craftsmanRepositoryImp.dart';
 import 'package:herafi/domain/entites/craftsman.dart';
+import 'package:herafi/global/constants.dart';
+import 'package:herafi/presentation/Widgets/leadingAppBar.dart';
+import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../domain/entites/user.dart';
 
 class EditCraftsmanScreen extends StatefulWidget {
   @override
@@ -17,107 +21,19 @@ class EditCraftsmanScreen extends StatefulWidget {
 
 class _EditCraftsmanScreenState extends State<EditCraftsmanScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _locationController = TextEditingController();
-  final _yearsOfExperienceController = TextEditingController();
-  final _categoryController = TextEditingController();
-  double? _latitude;
-  double? _longitude;
-  String? _imageUrl;
-  bool _isLoading = false;
+  final _nameController = TextEditingController(text: (Get.find<crossData>().userEntity as CraftsmanEntity).name);
+  final _locationController = TextEditingController(text: (Get.find<crossData>().userEntity as CraftsmanEntity).location);
+  final _yearsOfExperienceController = TextEditingController(text: (Get.find<crossData>().userEntity as CraftsmanEntity).yearsOfExp.toString());
+  final _categoryController = TextEditingController(text: (Get.find<crossData>().userEntity as CraftsmanEntity).category);
+  String _imageUrl=(Get.find<crossData>().userEntity as CraftsmanEntity).image;
+  bool _isLoading=false;
+
 
   @override
   void initState() {
     super.initState();
-    _fetchCraftsmanDetails();
   }
-  Future<void> _getLocation() async {
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('خدمة تحديد الموقع غير مفعّلة.')),
-        );
-        return;
-      }
 
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم رفض صلاحيات تحديد الموقع.')),
-          );
-          return;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم رفض صلاحيات الموقع بشكل دائم.')),
-        );
-        return;
-      }
-
-      // الحصول على الموقع الحالي
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      setState(() {
-        _latitude = position.latitude;
-        _longitude = position.longitude;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('تم تحديد الموقع: $_latitude, $_longitude')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('حدث خطأ أثناء تحديد الموقع: $e')),
-      );
-    }
-  }
-  Future<void> _fetchCraftsmanDetails() async {
-    setState(() => _isLoading = true);
-    try {
-      final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
-      if (craftsmanId == null) throw Exception("User not logged in");
-
-      final repository = CraftsmanRepositoryImpl(CraftsmanRemoteDataSource(
-        Supabase.instance.client,
-        FirebaseAuth.instance,
-      ));
-
-      final result = await repository.fetchCraftsmanById(craftsmanId);
-      result.fold(
-            (failure) => throw Exception(failure.message),
-            (fetchedCraftsman) {
-          _nameController.text = fetchedCraftsman.name;
-          _locationController.text = fetchedCraftsman.location;
-          _yearsOfExperienceController.text = fetchedCraftsman.yearsOfExp.toString();
-          _categoryController.text = fetchedCraftsman.category;
-          _imageUrl = fetchedCraftsman.image;
-
-          // تحديث خطوط الطول والعرض
-          _latitude = fetchedCraftsman.mapLatitude != null
-              ? double.tryParse(fetchedCraftsman.mapLatitude!)
-              : null;
-          _longitude = fetchedCraftsman.mapLongitude != null
-              ? double.tryParse(fetchedCraftsman.mapLongitude!)
-              : null;
-
-          setState(() {});
-        },
-      );
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to fetch craftsman details: $error")),
-      );
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
 
   Future<void> _updateCraftsmanProfile() async {
     if (!_formKey.currentState!.validate()) return;
@@ -125,7 +41,7 @@ class _EditCraftsmanScreenState extends State<EditCraftsmanScreen> {
     setState(() => _isLoading = true);
     try {
       final craftsmanId = FirebaseAuth.instance.currentUser?.uid;
-      if (craftsmanId == null) throw Exception("User not logged in");
+      if (craftsmanId == null) throw Exception("المستخدم غير مسجل الدخول");
 
       final repository = CraftsmanRepositoryImpl(CraftsmanRemoteDataSource(
         Supabase.instance.client,
@@ -140,7 +56,7 @@ class _EditCraftsmanScreenState extends State<EditCraftsmanScreen> {
       );
 
       if (fetchedCraftsman == null) {
-        throw Exception("Failed to fetch craftsman details");
+        throw Exception("فشل في جلب بيانات الحرفي");
       }
 
       final craftsman = CraftsmanEntity(
@@ -154,34 +70,31 @@ class _EditCraftsmanScreenState extends State<EditCraftsmanScreen> {
         phoneNumber: fetchedCraftsman?.phoneNumber ?? 'رقم غير متوفر',
         userType: fetchedCraftsman!.userType,
         dateOfBirth: fetchedCraftsman?.dateOfBirth ?? DateTime(2000, 1, 1),
-        mapLatitude: _latitude?.toString() ?? fetchedCraftsman?.mapLatitude ?? 'default_latitude',
-        mapLongitude: _longitude?.toString() ?? fetchedCraftsman?.mapLongitude ?? 'default_longitude',
-      );
 
+      );
 
       final result = await repository.updateCraftsman(craftsman);
       result.fold(
             (failure) => throw Exception(failure.message),
             (_) => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Profile updated successfully")),
+          SnackBar(content: Text("تم تحديث الملف الشخصي بنجاح")),
         ),
       );
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to update profile: $error")),
+        SnackBar(content: Text("فشل في تحديث الملف الشخصي: $error")),
       );
     } finally {
       setState(() => _isLoading = false);
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Craftsman Info"),
+        title: Text("تعديل معلومات الحرفي"),
+        leading: leadingAppBar(),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
@@ -208,50 +121,124 @@ class _EditCraftsmanScreenState extends State<EditCraftsmanScreen> {
               SizedBox(height: 20),
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: "Name"),
+                decoration: InputDecoration(labelText: "الاسم"),
                 validator: (value) =>
-                value == null || value.isEmpty ? "Enter name" : null,
+                value == null || value.isEmpty ? "يرجى إدخال الاسم" : null,
               ),
               SizedBox(height: 10),
-              TextFormField(
-                controller: _locationController,
-                decoration: InputDecoration(labelText: "Location"),
-                validator: (value) =>
-                value == null || value.isEmpty ? "Enter location" : null,
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                controller: _yearsOfExperienceController,
-                decoration: InputDecoration(labelText: "Years of Experience"),
-                keyboardType: TextInputType.number,
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'الموقع',
+                  labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white, // Label color
+                  ),
+                  border: InputBorder.none, // Remove the default border
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Add padding
+                ),
+                dropdownColor: Theme.of(context).focusColor,
+                value: _locationController.text.isNotEmpty ? _locationController.text : null,
+                items: constants.palestinianCities.map((String city) {
+                  return DropdownMenuItem<String>(
+                    value: city,
+                    child: Text(city,style: Theme.of(context).textTheme!.bodyMedium!.copyWith(color:_locationController.text==city?Colors.white: Colors.black),),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    _locationController.text = newValue;
+                  }
+                },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Enter years of experience";
-                  }
-                  final years = int.tryParse(value);
-                  if (years == null || years < 0) {
-                    return "Enter a valid number";
+                    return 'يرجى اختيار الموقع';
                   }
                   return null;
                 },
               ),
+
               SizedBox(height: 10),
-              TextFormField(
-                controller: _categoryController,
-                decoration: InputDecoration(labelText: "Category"),
-                validator: (value) =>
-                value == null || value.isEmpty ? "Enter category" : null,
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove),
+                    onPressed: () {
+                      final currentValue = int.tryParse(_yearsOfExperienceController.text) ?? 0;
+                      if (currentValue > 0) {
+                        _yearsOfExperienceController.text = (currentValue - 1).toString();
+                      }
+                    },
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _yearsOfExperienceController,
+                      decoration: const InputDecoration(
+                        labelText: 'سنوات الخبرة',
+                        border: OutlineInputBorder(),
+                      ),
+                      readOnly: true,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "يرجى إدخال سنوات الخبرة";
+                        }
+                        final years = int.tryParse(value);
+                        if (years == null || years < 0 || years > 60) {
+                          return "يرجى إدخال رقم صحيح بين 0 و60";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      final currentValue = int.tryParse(_yearsOfExperienceController.text) ?? 0;
+                      if (currentValue < 60) {
+                        _yearsOfExperienceController.text = (currentValue + 1).toString();
+                      }
+                    },
+                  ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: _getLocation,
-                child: const Text('تحديد الموقع'),
+
+              SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'التخصص',
+                  labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white, // Label color
+                  ),
+                  border: InputBorder.none, // Remove the default border
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Add padding
+                ),
+                dropdownColor: Theme.of(context).focusColor,
+                value: _categoryController.text.isNotEmpty ? _categoryController.text : null,
+                items: constants.categories.map((String category) {
+                  return DropdownMenuItem<String>(
+                    value: category,
+                    child: Text(category,style: Theme.of(context).textTheme!.bodyMedium!.copyWith(color:_categoryController.text==category?Colors.white: Colors.black),),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      _categoryController.text = newValue;
+                    });
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'يرجى اختيار التخصص';
+                  }
+                  return null;
+                },
               ),
-              if (_latitude != null && _longitude != null)
-                Text("الموقع: خط العرض $_latitude, خط الطول $_longitude"),
+
               SizedBox(height: 20),
-              ElevatedButton(
+              TextButton(
                 onPressed: _updateCraftsmanProfile,
-                child: Text("Save Changes"),
+                child: Text("حفظ التغييرات"),
               ),
             ],
           ),
@@ -285,7 +272,7 @@ class _EditCraftsmanScreenState extends State<EditCraftsmanScreen> {
 
       return imageUrl;
     } catch (e) {
-      throw Exception("Failed to upload image: $e");
+      throw Exception("فشل في تحميل الصورة: $e");
     }
   }
 }

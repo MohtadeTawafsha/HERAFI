@@ -10,7 +10,7 @@ class AccountType extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('اختار نوع الحساب للبدء'),backgroundColor: Colors.blue,
+          title: const Text('اختار نوع الحساب للبدء')
         ),
         body: Center(
           child: Padding(

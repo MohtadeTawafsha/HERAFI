@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:herafi/presentation/pages/CraftsmanListPage.dart';
+import 'package:get/get.dart';
+import 'package:herafi/presentation/pages/CraftsmansearchPage.dart';
 import 'package:herafi/presentation/pages/account/components-of-craftsman/availability-Page.dart';
 import 'package:herafi/presentation/pages/account/components-of-craftsman/certificate-Page.dart';
 import 'package:herafi/presentation/pages/account/components-of-craftsman/craftsman-profile-Page.dart';
 import 'package:herafi/presentation/pages/account/components-of-craftsman/work_Page.dart';
 import 'package:herafi/presentation/pages/account/components-of-customer/customer_profile_page.dart';
-
-import 'package:supabase_flutter/supabase_flutter.dart';
-
+import '../../../domain/entites/craftsman.dart';
+import '../../controllers/crossDataContoller.dart';
 import '../states/RateCraftsmanScreen.dart';
 import 'components-of-craftsman/edit_profile_craftsman.dart';
 import 'components-of-customer/edit-profile-customer.dart';
@@ -19,82 +19,46 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  String _userName = '';
-  String? _userType;
-  String? _userId;
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
-  }
-
-  Future<void> _fetchUserData() async {
-    try {
-      _userId = FirebaseAuth.instance.currentUser?.uid;
-      if (_userId == null) throw Exception("User not logged in");
-
-      final response = await Supabase.instance.client
-          .from('users')
-          .select('name, user_type')
-          .eq('id', _userId as Object)
-          .single();
-
-      if (response != null) {
-        setState(() {
-          _userName = response['name'] ?? 'Unknown User';
-          _userType = response['user_type'];
-        });
-      }
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to fetch user data: $error")),
-      );
-    } finally {
-      setState(() => _isLoading = false);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final crossData data=Get.find<crossData>();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Account"),
+        title: Text("الملف الشخصي"),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView(
+      body: ListView(
         shrinkWrap: true,
         children: [
           ListTile(
             leading: Icon(Icons.person),
-            title: Text(_userName),
+            title: Text(data.userEntity!.name),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
-              if (_userType == 'craftsman') {
+              if (data.userEntity is CraftsmanEntity) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => EditCraftsmanScreen()),
                 );
-              } else if (_userType == 'customer') {
+              }
+              else{
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => EditCustomerScreen()),
                 );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("نوع الحساب غير معروف.")),
-                );
               }
             },
           ),
-
           Divider(),
-          if (_userType == 'craftsman') ...[
-            ListTile(
+          if (data.userEntity is CraftsmanEntity) ...[
+          ListTile(
               leading: Icon(Icons.work),
-              title: Text('Works'),
+              title: Text('الأعمال'),
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 Navigator.push(
@@ -103,9 +67,9 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               },
             ),
-            ListTile(
+          ListTile(
               leading: Icon(Icons.school),
-              title: Text('Certificates'),
+              title: Text('الشهادات'),
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 Navigator.push(
@@ -114,9 +78,9 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               },
             ),
-            ListTile(
+          ListTile(
               leading: Icon(Icons.schedule),
-              title: Text('Availability'),
+              title: Text('التوفر'),
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 Navigator.push(
@@ -125,60 +89,50 @@ class _AccountScreenState extends State<AccountScreen> {
                 );
               },
             ),
-          ],
           ListTile(
             leading: Icon(Icons.person),
-            title: Text('Profile'),
+            title: Text('ملف الحرفي'),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
-              if (_userType == 'craftsman') {
+              if (data.userEntity is CraftsmanEntity) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CraftsmanProfilePage(craftsmanId: _userId!),
+                    builder: (context) => CraftsmanProfilePage(craftsmanId: data.userEntity!.id),
                   ),
                 );
               } else {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CustomerProfilePage(customerId: _userId!,),
+                    builder: (context) => CustomerProfilePage(customerId:data.userEntity!.id,),
                   ),
                 );
               }
             },
           ),
-          ListTile(
-            leading: Icon(Icons.people),
-            title: Text('Craftsmen List'),
+          /*ListTile(
+            leading: Icon(Icons.star),
+            title: Text('التقييم'),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CraftsmanListPage()),
+                MaterialPageRoute(builder: (context) => RateCraftsmanScreen(craftsmanId: FirebaseAuth.instance.currentUser!.uid)),
               );
             },
-          ),
-          ListTile(
-            leading: Icon(Icons.people),
-            title: Text('Raiting'),
-            trailing: Icon(Icons.arrow_forward),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RateCraftsmanScreen(craftsmanId: "jA1t5UPThWRLKJZOs89irszOlYo1"!)),
-              );
-            },
-          ),
+          ),*/
+        ],
           ListTile(
             leading: Icon(Icons.logout),
-            title: Text('Log out'),
+            title: Text('تسجيل الخروج'),
             onTap: () {
               FirebaseAuth.instance.signOut();
             },
           ),
-        ],
-      ),
+    ]
+    )
     );
+
   }
 }

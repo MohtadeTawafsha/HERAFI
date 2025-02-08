@@ -4,8 +4,7 @@ class CraftsmanModel extends CraftsmanEntity {
   CraftsmanModel({
     required super.category,
     required super.yearsOfExp,
-    super.mapLatitude,
-    super.mapLongitude,
+
     required super.name,
     required super.id,
     required super.image,
@@ -18,10 +17,8 @@ class CraftsmanModel extends CraftsmanEntity {
 
   factory CraftsmanModel.fromJson(Map<String, dynamic> json) {
     return CraftsmanModel(
-      category: json['category'],
-      yearsOfExp: json['years_of_experience'],
-      mapLatitude: json['map_latitude'],
-      mapLongitude: json['map_longitude'],
+      category: json["craftsman"]['category'],
+      yearsOfExp: json["craftsman"]['years_of_experience'],
       name: json['name'],
       id: json['id'],
       image: json['image'] ?? '',
@@ -38,8 +35,6 @@ class CraftsmanModel extends CraftsmanEntity {
       'id': id,
       'category': category,
       'years_of_experience': yearsOfExp,
-      'map_latitude': mapLatitude,
-      'map_longitude': mapLongitude,
       'name': name,
       'image': image,
       'created_at': createdAt.toIso8601String(),

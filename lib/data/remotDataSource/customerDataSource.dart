@@ -37,8 +37,7 @@ class CustomerRemoteDataSource {
     required String location,
     required String phoneNumber,
     required DateTime dateOfBirth,
-    String? mapLatitude, // تخزين خطوط العرض
-    String? mapLongitude, // تخزين خطوط الطول
+
   }) async {
     final user = firebaseAuth.currentUser;
     if (user == null) {
@@ -53,8 +52,7 @@ class CustomerRemoteDataSource {
       'user_type': 'customer',
       'location': location,
       'date_of_birth': dateOfBirth.toIso8601String(),
-      'map_latitude': mapLatitude,
-      'map_longitude': mapLongitude,
+
     });
 
     await supabaseClient.from('customer').upsert({'id': uid});
@@ -65,16 +63,14 @@ class CustomerRemoteDataSource {
     required String name,
     required String location,
     required DateTime dateOfBirth,
-    String? mapLatitude,
-    String? mapLongitude,
+
     String? image,
   }) async {
     await supabaseClient.from('users').update({
       'name': name,
       'location': location,
       'date_of_birth': dateOfBirth.toIso8601String(),
-      if (mapLatitude != null) 'map_latitude': mapLatitude, // تحديث خط العرض
-      if (mapLongitude != null) 'map_longitude': mapLongitude, // تحديث خط الطول
+
       if (image != null) 'image': image, // تحديث الصورة إذا كانت موجودة
     }).eq('id', id);
   }

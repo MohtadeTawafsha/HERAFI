@@ -1,7 +1,7 @@
 abstract class Failure {
   final String message;
   Failure(this.message){
-    print('\x1B[31m[ERROR] $message\x1B[0m'); // Red color
+    print('\x1B[31m[ERROR] $message\x1B[0m');
   }
 }
 

@@ -47,8 +47,7 @@ class CustomerRepositoryImpl extends CustomerRepository {
       name: customer.name,
       location: customer.location, // احتفظ بالموقع الحالي
       dateOfBirth: customer.dateOfBirth,
-      mapLatitude: null, // لا تعدل خطوط العرض
-      mapLongitude: null, // لا تعدل خطوط الطول
+
     );
   }
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:get/get.dart';
+import 'package:herafi/presentation/Widgets/leadingAppBar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../data/remotDataSource/customerDataSource.dart';
@@ -23,57 +24,12 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   final _dobController = TextEditingController();
   final _locationController = TextEditingController();
   String? _selectedCity;
-  double? _latitude; // خط العرض
-  double? _longitude; // خط الطول
+
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final SupabaseClient supabaseClient = Supabase.instance.client;
-  Future<void> _getLocation() async {
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('خدمة تحديد الموقع غير مفعّلة.')),
-        );
-        return;
-      }
 
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم رفض صلاحيات تحديد الموقع.')),
-          );
-          return;
-        }
-      }
 
-      if (permission == LocationPermission.deniedForever) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم رفض صلاحيات الموقع بشكل دائم.')),
-        );
-        return;
-      }
-
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      setState(() {
-        _latitude = position.latitude;
-        _longitude = position.longitude;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('تم تحديد الموقع: $_latitude, $_longitude')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('حدث خطأ أثناء تحديد الموقع: $e')),
-      );
-    }
-  }
 
   Future<void> _registerCustomer() async {
     if (_formKey.currentState!.validate()) {
@@ -86,11 +42,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
         final String name = _nameController.text.trim();
         final String dob = _dobController.text.trim();
 
-        if (_latitude == null || _longitude == null) {
-          Get.back();
-          Get.snackbar('Error', 'يرجى تحديد الموقع قبل التسجيل.');
-          return;
-        }
+
 
         final CustomerRemoteDataSource dataSource = CustomerRemoteDataSource(
           supabaseClient,
@@ -102,8 +54,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
           location: _selectedCity!,
           phoneNumber: FirebaseAuth.instance.currentUser!.phoneNumber!,
           dateOfBirth: DateTime.parse(dob), // Pass DOB
-          mapLatitude: _latitude.toString(), // تخزين خط العرض
-          mapLongitude: _longitude.toString(), // تخزين خط الطول
+
         );
 
         Get.find<crossData>().userEntity = UserEntity(
@@ -132,15 +83,16 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('تسجيل حساب العميل'),
-          backgroundColor: Colors.blue,
+          leading: leadingAppBar(),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: ListView(
+              padding: EdgeInsets.symmetric(vertical: 16),
               children: [
-                // Name Field
+                SizedBox(height: 16,),
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'الاسم'),
@@ -151,7 +103,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                     return null;
                   },
                 ),
-
+                SizedBox(height: 16,),
                 // Date of Birth Field
                 TextFormField(
                   controller: _dobController,
@@ -178,16 +130,22 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                     return null;
                   },
                 ),
-
-                // Location Field
-
+                SizedBox(height: 16,),
                 DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(labelText: 'الموقع'),
+                  decoration: InputDecoration(
+                    labelText: 'الموقع',
+                    labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.white, // Label color
+                    ),
+                    border: InputBorder.none, // Remove the default border
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Add padding
+                  ),
+                  dropdownColor: Theme.of(context).focusColor,
                   value: _selectedCity,
                   items: constants.palestinianCities.map((String category) {
                     return DropdownMenuItem<String>(
                       value: category,
-                      child: Text(category),
+                      child: Text(category,style: Theme.of(context).textTheme!.bodyMedium!.copyWith(color:_selectedCity==category?Colors.white: Colors.black)),
                     );
                   }).toList(),
                   onChanged: (newValue) {
@@ -202,23 +160,12 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                     return null;
                   },
                 ),
-                ElevatedButton(
-                  onPressed: _getLocation,
-                  child: const Text('تحديد الموقع'),
-                ),
-
-
-                const SizedBox(height: 20),
+                SizedBox(height: 16,),
 
                 // Register Button
-                ElevatedButton(
+                TextButton(
                   onPressed: _registerCustomer,
                   child: const Text('تسجيل'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    textStyle: const TextStyle(fontSize: 16),
-                  ),
                 ),
               ],
             ),

@@ -131,8 +131,10 @@ class _CraftsmanProjectDetailsPageState
               child: ElevatedButton(
                 onPressed: () {
                   final craftsmanId = projectDetails?['craftsman_id'];
+                  final projectId = projectDetails?['id'];
+
                   if (craftsmanId != null) {
-                    Get.to(() => RateCraftsmanScreen(craftsmanId: craftsmanId));
+                    Get.to(() => RateCraftsmanScreen(craftsmanId: craftsmanId, projectId: projectId,));
                   } else {
                     Get.snackbar(
                       'خطأ',

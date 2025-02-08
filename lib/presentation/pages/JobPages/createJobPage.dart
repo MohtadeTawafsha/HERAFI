@@ -5,10 +5,7 @@ import 'package:get/get.dart';
 import 'package:herafi/global/constants.dart';
 import 'package:herafi/global/setOfMethods.dart';
 import 'package:herafi/global/validator.dart';
-import 'package:herafi/presentation/controllers/crossDataContoller.dart';
 import 'package:herafi/presentation/controllers/jobsControllers/createJopController.dart';
-
-import '../../../domain/entites/customer.dart';
 
 class createJobPage extends StatelessWidget {
   const createJobPage({super.key});
@@ -57,10 +54,18 @@ class createJobPage extends StatelessWidget {
                             value: controller.selectedService.value.isEmpty
                                 ? null
                                 : controller.selectedService.value,
-                            decoration: InputDecoration(labelText: 'الخدمة'),
+                            decoration: InputDecoration(
+                              labelText: 'الفئة',
+                              labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.white, // Label color
+                              ),
+                              border: InputBorder.none, // Remove the default border
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Add padding
+                            ),
+                            dropdownColor: Theme.of(context).focusColor, // Set dropdown menu background color
                             items: constants.categories
                                 .map((service) =>
-                                DropdownMenuItem(value: service, child: Text(service)))
+                                DropdownMenuItem(value: service, child: Text(service,style: Theme.of(context).textTheme!.bodyMedium!.copyWith(color:service==controller.selectedService.value?Colors.white: Colors.black))))
                                 .toList(),
                             onChanged: (value) {
                               if (value != null) {
@@ -164,8 +169,8 @@ class createJobPage extends StatelessWidget {
                             validator: Validator().notEmpty,
                             controller: controller.mapPointController,
                             decoration: InputDecoration(
-                              labelText: 'حقل النص',
-                              hintText: 'اضغط لتعبئة البيانات',
+                              labelText: 'الخريطة',
+                              hintText: 'اضغط الموقع على الخريطة',
                               suffixIcon: Icon(Icons.edit,color: Colors.white,),
                             ),
                             readOnly: false,

@@ -47,4 +47,13 @@ class JobRepositoryImpl implements JobRepository {
       return Left(DatabaseFailure('Error searching for jobs'));
     }
   }
+
+  Future<Either<Failure, List<JobEntity>>> fetchCustomerForCustomer(String customerId) async {
+    try {
+      final jobs = await remoteDataSource.fetchJobForCustomer(customerId);
+      return Right(jobs);
+    } catch (e) {
+      return Left(DatabaseFailure('Error searching for jobs'));
+    }
+  }
 }
